@@ -67,6 +67,8 @@ router.put('/', async function(req, res, next) {
             ],
             columnLinks,
         )
+
+        await res.json({ status: 'ok' })
     } catch (e) {
         await errorHandling(e, res)
     }
@@ -129,6 +131,8 @@ router.put('/radar/:radar', async function(req, res, next) {
                 parametersRows,
             )
         }
+
+        await res.json({ status: 'ok' })
     } catch (e) {
         await errorHandling(e, res)
     }
@@ -195,7 +199,7 @@ router.get('/radar/:radar', async function(req, res, next) {
                 const blip = dict[id];
                 output.push(Object.values(blip))
             }
-            await res.json(output);
+            return await res.json(output);
         }
         res.status(404);
         await res.json({});
