@@ -49,6 +49,15 @@ async function selectFrom(table, columns, where = []) {
     if (client) return await client.query(sql)
 }
 
+async function selectFromInnerJoin(table, columns, innerJoins = []) {
+    const sql = `SELECT ${columns.join(', ')} \n` +
+        `FROM ${table} \n` +
+        innerJoins.map(join => `INNER JOIN ${join}`).join('\n') +
+        ';'
+    if (shouldLog) logQuery(sql)
+    if (client) return await client.query(sql)
+}
+
 async function insertInto(table, columns = [], rows = []) {
     const sql = `INSERT INTO ${table} (${columns.join(', ')}) \n` +
         'VALUES \n'
@@ -124,6 +133,7 @@ module.exports = {
     createTables,
     dropTables,
     selectFrom,
+    selectFromInnerJoin,
     insertInto,
     upsert,
     update,
