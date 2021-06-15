@@ -143,7 +143,7 @@ router.get('/radar/:radar', async function(req, res, next) {
 
     res.set('Access-Control-Allow-Origin', '*');
     try {
-        const data = await utils.selectFrom('radars', [ 'id' ], [ `id = ${radar}` ]);
+        const data = await utils.selectFrom('radars', [ 'id' ], [ `id = '${radar}'` ]);
         if (data.rows.length > 0) {
             const blips = await utils.selectFromInnerJoin(
                 'blips',
@@ -169,7 +169,7 @@ router.get('/radar/:radar', async function(req, res, next) {
             const params = await utils.selectFrom(
                 'radar_parameters',
                 [ 'name', 'value' ],
-                [ `radar = ${radar}` ],
+                [ `radar = '${radar}'` ],
             );
             const dict = {};
             for (const row of blips.rows) {
