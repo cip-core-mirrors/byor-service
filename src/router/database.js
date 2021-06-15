@@ -83,7 +83,7 @@ router.put('/radar/:radar', async function(req, res, next) {
         await utils.upsert(
             'radars',
             [ 'id' ],
-            [ radar ],
+            [ [ radar ] ],
         );
 
         if (links.length > 0) {
