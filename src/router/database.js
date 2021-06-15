@@ -6,7 +6,126 @@ const router = express.Router();
 
 utils.init();
 
-router.get('/:radar', async function(req, res, next) {
+router.put('/', async function(req, res, next) {
+    const { blips = [] } = req.body;
+
+    res.set('Access-Control-Allow-Origin', '*');
+    try {
+        const columnLinks = [];
+        for (const blip of blips) {
+            const {
+                id,
+                name,
+                lastUpdate,
+            } = blip;
+            delete blip.hash;
+            const columns = Object.entries(blip);
+            blip.hash = await crypto.sha256DigestBase64(
+                `${name}${lastUpdate ? `-${lastUpdate}` : ''}-${columns.map(row => row.join('-').join('-'))}`
+            );
+
+            columns.forEach(function(row) {
+                row.unshift(id);
+                row.unshift(`${id}-${name}`)
+            });
+            columnLinks.push(...columns);
+        }
+
+        await utils.upsert(
+            'blips',
+            [
+                'id',
+                'hash',
+                'name',
+                'lastUpdate',
+            ],
+            blips.map(function(blip) {
+                return [
+                    blip.id,
+                    blip.hash,
+                    blip.name,
+                    blip.lastUpdate,
+                ]
+            }),
+        );
+        await utils.upsert(
+            'column_links',
+            [
+                'id',
+                'blip',
+                'name',
+                'value',
+            ],
+            columnLinks,
+        )
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
+router.put('/radar/:radar', async function(req, res, next) {
+    const radar = req.params.radar;
+    const { links = [], parameters = []} = req.body;
+
+    res.set('Access-Control-Allow-Origin', '*');
+    try {
+        await utils.upsert(
+            'radars',
+            [ 'id' ],
+            [ radar ],
+        );
+
+        if (links.length > 0) {
+            const linksRows = links.map(function (link) {
+                return [
+                    `${link.radar}-${link.blip}`,
+                    link.radar,
+                    link.sector,
+                    link.ring,
+                    link.blip,
+                    link.value,
+                ]
+            });
+            await utils.upsert(
+                'blip_links',
+                [
+                    'id',
+                    'radar',
+                    'sector',
+                    'ring',
+                    'blip',
+                    'value',
+                ],
+                linksRows,
+            )
+        }
+
+        if (parameters.length > 0) {
+            const parametersRows = parameters.map(function(parameter) {
+                return [
+                    `${parameter.radar}-${parameter.name}`,
+                    parameter.radar,
+                    parameter.name,
+                    parameter.value,
+                ]
+            });
+            await utils.upsert(
+                'radar_parameters',
+                [
+                    'id',
+                    'radar',
+                    'name',
+                    'value',
+                ],
+                parametersRows,
+            )
+        }
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
+router.get('/radar/:radar', async function(req, res, next) {
     const radar = req.params.radar;
 
     res.set('Access-Control-Allow-Origin', '*');
@@ -72,19 +191,23 @@ router.get('/:radar', async function(req, res, next) {
         res.status(404);
         await res.json({});
     } catch (e) {
-        const response = e.response;
-        if (e.response && e.response.data) {
-            const error = e.response.data.error;
-            res.status(error.code);
-            return await res.json(error.errors);
-        }
-        res.status(500);
-        await res.json(e);
+        await errorHandling(e, res)
     }
 });
 
 function onlyUnique(value, index, self) {
-    return self.indexOf(value) === index;
+    return self.indexOf(value) === index
+}
+
+async function errorHandling(e, res) {
+    const response = e.response;
+    if (e.response && e.response.data) {
+        const error = e.response.data.error;
+        res.status(error.code);
+        return await res.json(error.errors);
+    }
+    res.status(500);
+    await res.json(e);
 }
 
 module.exports = router;
