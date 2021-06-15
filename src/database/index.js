@@ -54,21 +54,12 @@ async function selectFrom(table, columns, where = []) {
 }
 
 async function selectFromInnerJoin(table, columns, innerJoins = [], where = []) {
-    let sql
-    try {
-        sql = `SELECT ${columns.join(', ')} \n` +
-            `FROM ${table} \n` +
-            innerJoins.map(join => `INNER JOIN ${join}`).join('\n') + ' \n' +
-            (where.length > 0 ? `WHERE ${where.join(' AND \n')}` : '') +
-            ';'
-        if (shouldLog) logQuery(sql)
-    } catch (e) {
-        console.error(table)
-        console.error(columns)
-        console.error(innerJoins)
-        console.error(where)
-        throw e
-    }
+    const sql = `SELECT ${columns.join(', ')} \n` +
+        `FROM ${table} \n` +
+        innerJoins.map(join => `INNER JOIN ${join}`).join('\n') + ' \n' +
+        (where.length > 0 ? `WHERE ${where.join(' AND \n')}` : '') +
+        ';'
+    if (shouldLog) logQuery(sql)
     if (client) return await client.query(sql)
 }
 
@@ -81,29 +72,19 @@ async function insertInto(table, columns = [], rows = []) {
 }
 
 async function upsert(table, columns = [], rows = []) {
-    let sql
-    try {
-        const idColumn = columns[0]
-        const valueColumn = columns[columns.length - 1]
-        const sql1 = `INSERT INTO ${table} (${columns.join(', ')}) \n` +
-            'VALUES \n'
-        const values = rows.map(row => `(${row.map(v => `'${v.toString().replace(/'/g, '\\')}'`).join(', ')})`)
-        const sql3 = `ON CONFLICT (${idColumn}) \n` +
-            'DO UPDATE SET \n' +
-            `${valueColumn} = excluded.${valueColumn} ;`
+    const idColumn = columns[0]
+    const valueColumn = columns[columns.length - 1]
+    const sql1 = `INSERT INTO ${table} (${columns.join(', ')}) \n` +
+        'VALUES \n'
+    const values = rows.map(row => `(${row.map(v => `'${v.toString().replace(/'/g, '\\')}'`).join(', ')})`)
+    const sql3 = `ON CONFLICT (${idColumn}) \n` +
+        'DO UPDATE SET \n' +
+        `${valueColumn} = excluded.${valueColumn} ;`
 
-        if (shouldLog) logQuery(sql1, values, sql3)
+    if (shouldLog) logQuery(sql1, values, sql3)
 
-        const sql2 = `${values.join(',\n')} \n`
-        sql = sql1 + sql2 + sql3
-    } catch (e) {
-        console.error(table)
-        console.error('columns')
-        console.error(columns)
-        console.error('rows')
-        console.error(rows)
-        throw e
-    }
+    const sql2 = `${values.join(',\n')} \n`
+    const sql = sql1 + sql2 + sql3
 
     if (client) return await client.query(sql)
 }
