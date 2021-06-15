@@ -19,6 +19,10 @@ router.put('/', async function(req, res, next) {
                 lastUpdate,
             } = blip;
             delete blip.hash;
+            delete blip.id;
+            delete blip.name;
+            delete blip.lastUpdate;
+
             const columns = Object.entries(blip);
             blip.hash = await crypto.sha256DigestBase64(
                 `${name}${lastUpdate ? `-${lastUpdate}` : ''}-${columns.map(row => row.join('-').join('-'))}`
