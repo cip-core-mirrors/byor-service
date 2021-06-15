@@ -166,11 +166,17 @@ router.get('/radar/:radar', async function(req, res, next) {
                     `blip_links.radar = '${radar}'`
                 ],
             );
+            console.log('= = =')
+            console.log(blips.rows)
+            console.log('= = = = = = = =')
             const params = await utils.selectFrom(
                 'radar_parameters',
                 [ 'name', 'value' ],
                 [ `radar = '${radar}'` ],
             );
+            console.log('= = =')
+            console.log(params.rows)
+            console.log('= = = = = = = =')
             const dict = {};
             for (const row of blips.rows) {
                 let blip = dict[row.id];
