@@ -152,11 +152,11 @@ router.get('/radar/:radar', async function(req, res, next) {
                     'blip_links.value AS value',
                     'blips.id AS id',
                     'blips.hash AS hash',
-                    'blips.lastUpdate AS lastUpdate',
+                    'blips.lastUpdate AS lastupdate',
                     'blip_links.sector AS sector',
                     'blip_links.ring AS ring',
-                    'column_links.name AS columnName',
-                    'column_links.value AS columnValue',
+                    'column_links.name AS columnname',
+                    'column_links.value AS columnvalue',
                 ],
                 [
                     `blip_links ON blips.id = blip_links.blip`,
@@ -183,13 +183,13 @@ router.get('/radar/:radar', async function(req, res, next) {
                 if (!blip) {
                     blip = row;
                     dict[row.id] = blip;
-                    delete blip.columnName;
-                    delete blip.columnValue;
+                    delete blip.columnname;
+                    delete blip.columnvalue;
                 }
-                blip[row.columnName] = row.columnValue;
+                blip[row.columnname] = row.columnvalue;
             }
 
-            const columns = blips.rows.map(blip => blip.columnName).filter(onlyUnique);
+            const columns = blips.rows.map(blip => blip.columnname).filter(onlyUnique);
             const headers = [
                 'name',
                 'value',
