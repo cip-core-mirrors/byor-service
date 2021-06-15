@@ -26,7 +26,7 @@ router.put('/', async function(req, res, next) {
 
             const columns = Object.entries(blip);
             blip.hash = crypto.SHA256(
-                `${name}${lastUpdate ? `-${lastUpdate}` : ''}-${columns.map(row => row.join('-').join('-'))}`
+                `${name}${lastUpdate ? `-${lastUpdate}` : ''}-${columns.map(row => row.join('-')).join('-')}`
             ).toString();
 
             columns.forEach(function(row) {
