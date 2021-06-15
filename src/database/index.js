@@ -54,12 +54,21 @@ async function selectFrom(table, columns, where = []) {
 }
 
 async function selectFromInnerJoin(table, columns, innerJoins = [], where = []) {
-    const sql = `SELECT ${columns.join(', ')} \n` +
-        `FROM ${table} \n` +
-        innerJoins.map(join => `INNER JOIN ${join}`).join('\n') + ' \n' +
-        (where.length > 0 ? `WHERE ${where.join(' AND \n')}` : '') +
-        ';'
-    if (shouldLog) logQuery(sql)
+    let sql
+    try {
+        sql = `SELECT ${columns.join(', ')} \n` +
+            `FROM ${table} \n` +
+            innerJoins.map(join => `INNER JOIN ${join}`).join('\n') + ' \n' +
+            (where.length > 0 ? `WHERE ${where.join(' AND \n')}` : '') +
+            ';'
+        if (shouldLog) logQuery(sql)
+    } catch (e) {
+        console.error(table)
+        console.error(columns)
+        console.error(innerJoins)
+        console.error(where)
+        throw e
+    }
     if (client) return await client.query(sql)
 }
 
