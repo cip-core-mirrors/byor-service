@@ -203,7 +203,9 @@ function onlyUnique(value, index, self) {
     return self.indexOf(value) === index
 }
 
+const shouldLog = process.env.LOG_QUERIES === 'true';
 async function errorHandling(e, res) {
+    if (shouldLog) console.error(e);
     const response = e.response;
     if (e.response && e.response.data) {
         const error = e.response.data.error;

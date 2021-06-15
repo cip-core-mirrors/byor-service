@@ -3,7 +3,7 @@ const fs = require('fs')
 const { Client } = require('pg')
 
 let client
-let shouldLog
+let shouldLog = process.env.LOG_QUERIES === 'true';
 
 async function init() {
     await connect()
@@ -11,10 +11,6 @@ async function init() {
         await dropTables()
     }
     await createTables()
-}
-
-function setLogging(logging) {
-    shouldLog = logging
 }
 
 function logQuery(sqlBegin, values = [], sqlEnd = '') {
