@@ -162,6 +162,9 @@ router.get('/radar/:radar', async function(req, res, next) {
                     `blip_links ON blips.id = blip_links.blip`,
                     `column_links ON blips.id = column_links.blip`,
                 ],
+                [
+                    `blip_links.radar = '${radar}'`
+                ],
             );
             const params = await utils.selectFrom(
                 'radar_parameters',
