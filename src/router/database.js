@@ -33,8 +33,9 @@ router.put('/', async function(req, res, next) {
             blip.lastUpdate = lastUpdate;
 
             columns.forEach(function(row) {
+                const columnName = row[0];
                 row.unshift(id);
-                row.unshift(`${id}-${name}`)
+                row.unshift(`${id}-${columnName}`)
             });
             columnLinks.push(...columns);
         }
