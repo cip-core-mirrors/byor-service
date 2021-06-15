@@ -89,8 +89,8 @@ router.put('/radar/:radar', async function(req, res, next) {
         if (links.length > 0) {
             const linksRows = links.map(function (link) {
                 return [
-                    `${link.radar}-${link.blip}`,
-                    link.radar,
+                    `${radar}-${link.blip}`,
+                    radar,
                     link.sector,
                     link.ring,
                     link.blip,
@@ -114,8 +114,8 @@ router.put('/radar/:radar', async function(req, res, next) {
         if (parameters.length > 0) {
             const parametersRows = parameters.map(function(parameter) {
                 return [
-                    `${parameter.radar}-${parameter.name}`,
-                    parameter.radar,
+                    `${radar}-${parameter.name}`,
+                    radar,
                     parameter.name,
                     parameter.value,
                 ]
