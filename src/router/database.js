@@ -181,7 +181,7 @@ router.get('/radar/:radar', async function(req, res, next) {
             for (const row of blips.rows) {
                 let blip = dict[row.id];
                 if (!blip) {
-                    blip = row;
+                    blip = Object.assign({}, row);
                     dict[row.id] = blip;
                     delete blip.columnname;
                     delete blip.columnvalue;
