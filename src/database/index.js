@@ -134,7 +134,6 @@ module.exports = {
     init,
     connect,
     disconnect,
-    setLogging,
     createTables,
     dropTables,
     selectFrom,
