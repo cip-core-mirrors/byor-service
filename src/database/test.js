@@ -1,4 +1,4 @@
-const utils = require('./utils')
+const utils = require('./index')
 
 async function test() {
     try {

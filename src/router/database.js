@@ -1,8 +1,10 @@
 const express = require('express');
 
-const utils = require('../database/utils');
+const utils = require('../database');
 
 const router = express.Router();
+
+utils.init();
 
 router.get('/:radar', async function(req, res, next) {
     const radar = req.params.radar;
