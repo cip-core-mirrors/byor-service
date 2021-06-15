@@ -1,4 +1,5 @@
 const express = require('express');
+const crypto = require('crypto-js');
 
 const utils = require('../database');
 
@@ -24,9 +25,9 @@ router.put('/', async function(req, res, next) {
             delete blip.lastUpdate;
 
             const columns = Object.entries(blip);
-            blip.hash = await crypto.sha256DigestBase64(
+            blip.hash = crypto.SHA256(
                 `${name}${lastUpdate ? `-${lastUpdate}` : ''}-${columns.map(row => row.join('-').join('-'))}`
-            );
+            ).toString();
 
             columns.forEach(function(row) {
                 row.unshift(id);
