@@ -7,11 +7,16 @@ const router = express.Router();
 
 utils.init();
 
+router.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  next();
+});
+
 router.put('/', async function(req, res, next) {
     const { blips = [] } = req.body;
 
-    res.set('Access-Control-Allow-Origin', '*');
-    res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     try {
         const columnLinks = [];
         for (const blip of blips) {
@@ -79,8 +84,6 @@ router.put('/radar/:radar', async function(req, res, next) {
     const radar = req.params.radar;
     const { links = [], parameters = []} = req.body;
 
-    res.set('Access-Control-Allow-Origin', '*');
-    res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     try {
         await utils.upsert(
             'radars',
@@ -143,8 +146,6 @@ router.put('/radar/:radar', async function(req, res, next) {
 router.get('/radar/:radar', async function(req, res, next) {
     const radar = req.params.radar;
 
-    res.set('Access-Control-Allow-Origin', '*');
-    res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     try {
         const data = await utils.selectFrom('radars', [ 'id' ], [ `id = '${radar}'` ]);
         if (data.rows.length > 0) {
