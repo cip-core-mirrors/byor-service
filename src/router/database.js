@@ -11,6 +11,7 @@ router.put('/', async function(req, res, next) {
     const { blips = [] } = req.body;
 
     res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     try {
         const columnLinks = [];
         for (const blip of blips) {
@@ -79,6 +80,7 @@ router.put('/radar/:radar', async function(req, res, next) {
     const { links = [], parameters = []} = req.body;
 
     res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     try {
         await utils.upsert(
             'radars',
@@ -142,6 +144,7 @@ router.get('/radar/:radar', async function(req, res, next) {
     const radar = req.params.radar;
 
     res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     try {
         const data = await utils.selectFrom('radars', [ 'id' ], [ `id = '${radar}'` ]);
         if (data.rows.length > 0) {
