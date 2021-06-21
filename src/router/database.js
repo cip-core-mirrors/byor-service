@@ -15,11 +15,7 @@ router.use(function(req, res, next) {
 });
 
 router.put('/', async function(req, res, next) {
-    console.log('BODY')
-    console.log(req.body)
     const { blips = [] } = req.body;
-    console.log('BLIPS')
-    console.log(blips)
 
     try {
         const columnLinks = [];

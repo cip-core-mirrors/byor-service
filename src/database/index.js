@@ -72,12 +72,6 @@ async function insertInto(table, columns = [], rows = []) {
 }
 
 async function upsert(table, columns = [], rows = []) {
-    console.log('= = =')
-    console.log(table)
-    console.log(columns)
-    console.log(rows)
-    console.log('= = =')
-    
     const idColumn = columns[0]
     const valueColumn = columns[columns.length - 1]
     const sql1 = `INSERT INTO ${table} (${columns.join(', ')}) \n` +
