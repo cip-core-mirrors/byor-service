@@ -65,9 +65,10 @@ async function selectFromInnerJoin(table, columns, innerJoins = [], where = []) 
 }
 
 async function insertInto(table, columns = [], rows = []) {
-    const sql = `INSERT INTO ${table} (${columns.join(', ')}) VALUES %L`
-    if (shouldLog) logQuery(sql, rows.map(row => `(${row.map(v => v.replace(/\n/g, '\\n')).join(', ')})`))
-    if (client) return await client.query(format(sql, rows))
+    const sql1 = `INSERT INTO ${table} (${columns.join(', ')}) VALUES %L`
+    const sql = format(sql1, rows)
+    if (shouldLog) logQuery(sql)
+    if (client) return await client.query(sql)
 }
 
 async function upsert(table, columns = [], rows = []) {
@@ -82,9 +83,10 @@ async function upsert(table, columns = [], rows = []) {
     }
     sql3 += ';'
 
-    if (shouldLog) logQuery(sql1, rows.map(row => `(${row.map(v => v.replace(/\n/g, '\\n')).join(', ')})`), sql3)
+    const sql = `${format(sql1, rows)} \n${sql3}`
+    if (shouldLog) logQuery(sql)
 
-    if (client) return await client.query(`${format(sql1, rows)} \n${sql3}`)
+    if (client) return await client.query(sql)
 }
 
 async function update(table, values = {}, conditions = []) {
