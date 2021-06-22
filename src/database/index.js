@@ -1,6 +1,7 @@
 const path = require('path')
 const fs = require('fs')
 const { Client } = require('pg')
+const format = require('pg-format')
 
 let client
 let shouldLog = process.env.LOG_QUERIES === 'true';
@@ -73,9 +74,7 @@ async function insertInto(table, columns = [], rows = []) {
 
 async function upsert(table, columns = [], rows = []) {
     const idColumn = columns[0]
-    const sql1 = `INSERT INTO ${table} (${columns.join(', ')}) \n` +
-        'VALUES \n'
-    const values = rows.map(row => `(${row.map(v => `'${v.toString().replace(/'/g, '\\').replace(/\n/g, '\\n')}'`).join(', ')})`)
+    const sql1 = `INSERT INTO ${table} (${columns.join(', ')}) VALUES %L \n`
     let sql3 = `ON CONFLICT (${idColumn}) \n`
     if (columns.length > 1) {
         sql3 += 'DO UPDATE SET \n' +
@@ -85,15 +84,9 @@ async function upsert(table, columns = [], rows = []) {
     }
     sql3 += ';'
 
-    if (shouldLog) logQuery(sql1, values, sql3)
+    if (shouldLog) logQuery(sql1, rows.map(row => `(${row.join(', ')})`), sql3)
 
-    const sql2 = `${values.join(',\n')} \n`
-    const sql = sql1 + sql2 + sql3
-    console.log('= = = = =')
-    console.log(sql)
-    console.log('= = = = =')
-
-    if (client) return await client.query(sql)
+    if (client) return await client.query(`${format(sql1, rows)} \n${sql3}`)
 }
 
 async function update(table, values = {}, conditions = []) {
