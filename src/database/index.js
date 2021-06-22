@@ -75,7 +75,7 @@ async function upsert(table, columns = [], rows = []) {
     const idColumn = columns[0]
     const sql1 = `INSERT INTO ${table} (${columns.join(', ')}) \n` +
         'VALUES \n'
-    const values = rows.map(row => `(${row.map(v => `'${v.toString().replace(/'/g, '\\')}'`).join(', ')})`)
+    const values = rows.map(row => `(${row.map(v => `'${v.toString().replace(/'/g, '\\').replace(/\n/g, '\\n')}'`).join(', ')})`)
     let sql3 = `ON CONFLICT (${idColumn}) \n`
     if (columns.length > 1) {
         sql3 += 'DO UPDATE SET \n' +
