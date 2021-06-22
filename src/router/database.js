@@ -33,6 +33,7 @@ router.put('/', async function(req, res, next) {
     const tempCache = {};
     try {
         const columnLinks = [];
+        const blipsToInsert = [];
         for (const blip of blips) {
             const cachedHash = blipsHashCache[blip.id];
             if (cachedHash === blip.hash) continue;
@@ -61,7 +62,9 @@ router.put('/', async function(req, res, next) {
                 row.unshift(`${id}-${columnName}`)
             });
             columnLinks.push(...columns);
+
             tempCache[blip.id] = blip.hash;
+            blipsToInsert.push(blip)
         }
 
         await utils.upsert(
@@ -72,7 +75,7 @@ router.put('/', async function(req, res, next) {
                 'name',
                 'lastUpdate',
             ],
-            blips.map(function(blip) {
+            blipsToInsert.map(function(blip) {
                 return [
                     blip.id,
                     blip.hash,
