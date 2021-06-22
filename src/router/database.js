@@ -58,11 +58,13 @@ router.put('/', async function(req, res, next) {
                 row.unshift(id);
                 row.unshift(`${id}-${columnName}`)
             });
-            columnLinks.push(...columns);
 
             const cachedHash = blipsHashCache[blip.id];
-            if (cachedHash !== blip.hash) blipsToInsert.push(blip);
-            tempCache[blip.id] = blip.hash
+            if (cachedHash !== blip.hash) {
+                blipsToInsert.push(blip);
+                columnLinks.push(...columns);
+                tempCache[blip.id] = blip.hash
+            }
         }
 
         if (blipsToInsert.length > 0) {
@@ -96,7 +98,7 @@ router.put('/', async function(req, res, next) {
             Object.assign(blipsHashCache, tempCache)
         }
 
-        await res.json({ status: 'ok' })
+        await res.json({ status: 'ok', 'numberRows': blipsToInsert.length })
     } catch (e) {
         await errorHandling(e, res)
     }
