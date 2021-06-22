@@ -3,34 +3,32 @@ const utils = require('./index')
 async function test() {
     try {
         await utils.connect()
-        utils.setLogging(true)
 
         console.log(await utils.selectFrom('blips', [
             'id',
             'hash',
             'name',
             'lastUpdate',
-            'value',
         ]))
         console.log(await utils.selectFrom('column_links', [
+            'id',
             'blip',
             'name',
             'value',
         ]))
         console.log(await utils.selectFrom('blip_links', [
-            'blip',
+            'id',
             'radar',
+            'sector',
+            'ring',
+            'blip',
             'value',
         ]))
         console.log(await utils.selectFrom('radars', [
             'id',
         ]))
-        console.log(await utils.selectFrom('radar_links', [
-            'radar',
-            'sector',
-            'ring',
-        ]))
         console.log(await utils.selectFrom('radar_parameters', [
+            'id',
             'radar',
             'name',
             'value',
