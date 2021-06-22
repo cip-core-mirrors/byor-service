@@ -73,13 +73,16 @@ async function insertInto(table, columns = [], rows = []) {
 
 async function upsert(table, columns = [], rows = []) {
     const idColumn = columns[0]
-    const valueColumn = columns[columns.length - 1]
     const sql1 = `INSERT INTO ${table} (${columns.join(', ')}) \n` +
         'VALUES \n'
     const values = rows.map(row => `(${row.map(v => `'${v.toString().replace(/'/g, '\\')}'`).join(', ')})`)
-    const sql3 = `ON CONFLICT (${idColumn}) \n` +
-        'DO UPDATE SET \n' +
-        `${valueColumn} = excluded.${valueColumn} ;`
+    let sql3 = `ON CONFLICT (${idColumn}) \n`
+    if (columns.length > 1) {
+        sql3 += 'DO UPDATE SET \n' +
+            columns.slice(1).map(column => `${column} = ${table}.${column}`).join(';') + ';'
+    } else {
+        sql3 += 'DO NOTHING;'
+    }
 
     if (shouldLog) logQuery(sql1, values, sql3)
 

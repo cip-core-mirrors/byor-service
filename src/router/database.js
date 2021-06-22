@@ -5,7 +5,20 @@ const utils = require('../database');
 
 const router = express.Router();
 
-utils.init();
+const blipsHashCache = {};
+
+utils.init().then(async function() {
+    const blips = await utils.selectFrom('blips', [
+        'id',
+        'hash',
+        'name',
+        'lastUpdate',
+    ]);
+
+    for (const blip of blips.rows) {
+        blipsHashCache[blip.id] = blip.hash
+    }
+});
 
 router.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
@@ -17,9 +30,13 @@ router.use(function(req, res, next) {
 router.put('/', async function(req, res, next) {
     const { blips = [] } = req.body;
 
+    const tempCache = {};
     try {
         const columnLinks = [];
         for (const blip of blips) {
+            const cachedHash = blipsHashCache[blip.id];
+            if (cachedHash === blip.hash) continue;
+
             const {
                 id,
                 name,
@@ -44,6 +61,7 @@ router.put('/', async function(req, res, next) {
                 row.unshift(`${id}-${columnName}`)
             });
             columnLinks.push(...columns);
+            tempCache[blip.id] = blip.hash;
         }
 
         await utils.upsert(
@@ -72,8 +90,9 @@ router.put('/', async function(req, res, next) {
                 'value',
             ],
             columnLinks,
-        )
+        );
 
+        Object.assign(blipsHashCache, tempCache);
         await res.json({ status: 'ok' })
     } catch (e) {
         await errorHandling(e, res)
@@ -105,7 +124,7 @@ router.put('/radar/:radar', async function(req, res, next) {
             await utils.deleteFrom('blip_links', [
                 `radar = '${radar}'`,
             ]);
-            await utils.upsert(
+            await utils.insertInto(
                 'blip_links',
                 [
                     'id',
@@ -131,7 +150,7 @@ router.put('/radar/:radar', async function(req, res, next) {
             await utils.deleteFrom('radar_parameters', [
                 `radar = '${radar}'`,
             ]);
-            await utils.upsert(
+            await utils.insertInto(
                 'radar_parameters',
                 [
                     'id',
