@@ -89,6 +89,9 @@ async function upsert(table, columns = [], rows = []) {
 
     const sql2 = `${values.join(',\n')} \n`
     const sql = sql1 + sql2 + sql3
+    console.log('= = = = =')
+    console.log(sql)
+    console.log('= = = = =')
 
     if (client) return await client.query(sql)
 }
