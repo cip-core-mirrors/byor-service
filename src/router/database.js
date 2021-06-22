@@ -35,9 +35,6 @@ router.put('/', async function(req, res, next) {
         const columnLinks = [];
         const blipsToInsert = [];
         for (const blip of blips) {
-            const cachedHash = blipsHashCache[blip.id];
-            if (cachedHash === blip.hash) continue;
-
             const {
                 id,
                 name,
@@ -56,6 +53,9 @@ router.put('/', async function(req, res, next) {
             blip.name = name;
             blip.lastUpdate = lastUpdate;
 
+            const cachedHash = blipsHashCache[blip.id];
+            if (cachedHash === blip.hash) continue;
+
             columns.forEach(function(row) {
                 const columnName = row[0];
                 row.unshift(id);
@@ -67,35 +67,37 @@ router.put('/', async function(req, res, next) {
             blipsToInsert.push(blip)
         }
 
-        await utils.upsert(
-            'blips',
-            [
-                'id',
-                'hash',
-                'name',
-                'lastUpdate',
-            ],
-            blipsToInsert.map(function(blip) {
-                return [
-                    blip.id,
-                    blip.hash,
-                    blip.name,
-                    blip.lastUpdate,
-                ]
-            }),
-        );
-        await utils.upsert(
-            'column_links',
-            [
-                'id',
-                'blip',
-                'name',
-                'value',
-            ],
-            columnLinks,
-        );
+        if (blipsToInsert.length > 0) {
+            await utils.upsert(
+                'blips',
+                [
+                    'id',
+                    'hash',
+                    'name',
+                    'lastUpdate',
+                ],
+                blipsToInsert.map(function (blip) {
+                    return [
+                        blip.id,
+                        blip.hash,
+                        blip.name,
+                        blip.lastUpdate,
+                    ]
+                }),
+            );
+            await utils.upsert(
+                'column_links',
+                [
+                    'id',
+                    'blip',
+                    'name',
+                    'value',
+                ],
+                columnLinks,
+            );
+            Object.assign(blipsHashCache, tempCache)
+        }
 
-        Object.assign(blipsHashCache, tempCache);
         await res.json({ status: 'ok' })
     } catch (e) {
         await errorHandling(e, res)
