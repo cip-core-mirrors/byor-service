@@ -84,10 +84,10 @@ async function upsert(table, columns = [], rows = []) {
     }
     sql3 += ';'
 
-    if (shouldLog) logQuery(sql1, rows.map(row => `(${row.join(', ')})`), sql3)
+    if (shouldLog) logQuery(sql1, rows.map(row => `(${row.map(v => v.replace(/\n/g, '\\n')).join(', ')})`), sql3)
 
     console.log('= = = = =')
-    console.log(`${format(sql1, rows)} \n${sql3}`)
+    console.log(`${format(sql1, rows.map(row => row.map(v => v.replace(/\n/g, '\\n'))))} \n${sql3}`)
     console.log('= = = = =')
 
     if (client) return await client.query(`${format(sql1, rows)} \n${sql3}`)
