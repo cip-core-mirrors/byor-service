@@ -98,7 +98,11 @@ router.put('/', async function(req, res, next) {
             Object.assign(blipsHashCache, tempCache)
         }
 
-        await res.json({ status: 'ok', 'numberRows': blipsToInsert.length })
+        await res.json({
+            status: 'ok',
+            data: blipsToInsert,
+            rows: blipsToInsert.length,
+        })
     } catch (e) {
         await errorHandling(e, res)
     }
