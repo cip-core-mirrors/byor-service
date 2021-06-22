@@ -86,6 +86,10 @@ async function upsert(table, columns = [], rows = []) {
 
     if (shouldLog) logQuery(sql1, rows.map(row => `(${row.join(', ')})`), sql3)
 
+    console.log('= = = = =')
+    console.log(`${format(sql1, rows)} \n${sql3}`)
+    console.log('= = = = =')
+
     if (client) return await client.query(`${format(sql1, rows)} \n${sql3}`)
 }
 
