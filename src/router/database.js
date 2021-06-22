@@ -102,6 +102,9 @@ router.put('/radar/:radar', async function(req, res, next) {
                     link.value,
                 ]
             });
+            await utils.deleteFrom('blip_links', [
+                `radar = '${radar}'`,
+            ]);
             await utils.upsert(
                 'blip_links',
                 [
@@ -125,6 +128,9 @@ router.put('/radar/:radar', async function(req, res, next) {
                     parameter.value,
                 ]
             });
+            await utils.deleteFrom('radar_parameters', [
+                `radar = '${radar}'`,
+            ]);
             await utils.upsert(
                 'radar_parameters',
                 [
@@ -167,7 +173,7 @@ router.get('/radar/:radar', async function(req, res, next) {
                     `column_links ON blips.id = column_links.blip`,
                 ],
                 [
-                    `blip_links.radar = '${radar}'`
+                    `blip_links.radar = '${radar}'`,
                 ],
             );
             const params = await utils.selectFrom(
