@@ -65,11 +65,11 @@ async function selectFromInnerJoin(table, columns, innerJoins = [], where = []) 
 }
 
 async function insertInto(table, columns = [], rows = []) {
-    const sql = `INSERT INTO ${table} (${columns.join(', ')}) \n` +
-        'VALUES \n'
-    const values = rows.map(row => `(${row.join(', ')})`)
+    const sql = `INSERT INTO ${table} (${columns.join(', ')}) VALUES %L \n`
+    //const values = rows.map(row => `(${row.join(', ')})`)
+    const values = rows.map(row => `(${row.map(v => v.replace(/\n/g, '\\n')).join(', ')})`)
     if (shouldLog) logQuery(sql, values)
-    if (client) return await client.query(sql + `${values.join(',\n')} ;`)
+    if (client) return await client.query(format(sql, values))
 }
 
 async function upsert(table, columns = [], rows = []) {
@@ -85,10 +85,6 @@ async function upsert(table, columns = [], rows = []) {
     sql3 += ';'
 
     if (shouldLog) logQuery(sql1, rows.map(row => `(${row.map(v => v.replace(/\n/g, '\\n')).join(', ')})`), sql3)
-
-    console.log('= = = = =')
-    console.log(`${format(sql1, rows.map(row => row.map(v => v.replace(/\n/g, '\\n'))))} \n${sql3}`)
-    console.log('= = = = =')
 
     if (client) return await client.query(`${format(sql1, rows)} \n${sql3}`)
 }
