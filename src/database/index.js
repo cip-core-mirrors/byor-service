@@ -65,11 +65,9 @@ async function selectFromInnerJoin(table, columns, innerJoins = [], where = []) 
 }
 
 async function insertInto(table, columns = [], rows = []) {
-    const sql = `INSERT INTO ${table} (${columns.join(', ')}) VALUES %L \n`
-    //const values = rows.map(row => `(${row.join(', ')})`)
-    const values = rows.map(row => `(${row.map(v => v.replace(/\n/g, '\\n')).join(', ')})`)
-    if (shouldLog) logQuery(sql, values)
-    if (client) return await client.query(format(sql, values))
+    const sql = `INSERT INTO ${table} (${columns.join(', ')}) VALUES %L`
+    if (shouldLog) logQuery(sql, rows.map(row => `(${row.map(v => v.replace(/\n/g, '\\n')).join(', ')})`))
+    if (client) return await client.query(format(sql, rows))
 }
 
 async function upsert(table, columns = [], rows = []) {
