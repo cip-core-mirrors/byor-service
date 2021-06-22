@@ -53,9 +53,6 @@ router.put('/', async function(req, res, next) {
             blip.name = name;
             blip.lastUpdate = lastUpdate;
 
-            const cachedHash = blipsHashCache[blip.id];
-            if (cachedHash === blip.hash) continue;
-
             columns.forEach(function(row) {
                 const columnName = row[0];
                 row.unshift(id);
@@ -63,8 +60,9 @@ router.put('/', async function(req, res, next) {
             });
             columnLinks.push(...columns);
 
-            tempCache[blip.id] = blip.hash;
-            blipsToInsert.push(blip)
+            const cachedHash = blipsHashCache[blip.id];
+            if (cachedHash !== blip.hash) blipsToInsert.push(blip);
+            tempCache[blip.id] = blip.hash
         }
 
         if (blipsToInsert.length > 0) {

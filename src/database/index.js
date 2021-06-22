@@ -72,12 +72,6 @@ async function insertInto(table, columns = [], rows = []) {
 }
 
 async function upsert(table, columns = [], rows = []) {
-    console.log('= = =')
-    console.log(table)
-    console.log(columns)
-    console.log(rows)
-    console.log('= = =')
-
     const idColumn = columns[0]
     const sql1 = `INSERT INTO ${table} (${columns.join(', ')}) \n` +
         'VALUES \n'
@@ -85,10 +79,11 @@ async function upsert(table, columns = [], rows = []) {
     let sql3 = `ON CONFLICT (${idColumn}) \n`
     if (columns.length > 1) {
         sql3 += 'DO UPDATE SET \n' +
-            columns.slice(1).map(column => `${column} = ${table}.${column}`).join(';') + ';'
+            columns.slice(1).map(column => `${column} = ${table}.${column}`).join(', ')
     } else {
-        sql3 += 'DO NOTHING;'
+        sql3 += 'DO NOTHING'
     }
+    sql3 += ';'
 
     if (shouldLog) logQuery(sql1, values, sql3)
 
