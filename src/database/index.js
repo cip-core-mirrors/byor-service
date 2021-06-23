@@ -113,6 +113,7 @@ async function connect() {
         database: process.env.POSTGRESQL_DATABASE,
         password: process.env.POSTGRESQL_PASSWORD,
         port: parseInt(process.env.POSTGRESQL_PORT),
+        ssl: true,
     }
 
     try {
