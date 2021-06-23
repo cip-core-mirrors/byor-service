@@ -25,6 +25,13 @@ Backend server that loads data from multiple services
    |`GOOGLE_CLIENT_EMAIL`|Email of the Google account used||
    |`GOOGLE_PRIVATE_KEY`|Private key of the Google account used||
    |`PORT`|Port the server listens to|3000|
+   |`POSTGRESQL_HOST`|PostgreSQL server host||
+   |`POSTGRESQL_PORT`|PostgreSQL server port||
+   |`POSTGRESQL_DATABASE`|PostgreSQL database||
+   |`POSTGRESQL_USER`|PostgreSQL user||
+   |`POSTGRESQL_PASSWORD`|PostgreSQL user password||
+
+If Google-related environment variables are not provided, the `/spreadsheet` endpoint will not be available.
 
 ## Start server
 
