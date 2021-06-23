@@ -3,11 +3,12 @@ const bodyParser = require('body-parser');
 
 require('dotenv').config(); // load environment variables from .env file
 
-const spreadsheet = require('./utils/spreadsheet');
-
 async function init() {
-    await spreadsheet.connect();
-
+    if (process.env.GOOGLE_CLIENT_EMAIL && process.env.GOOGLE_PRIVATE_KEY) {
+        const spreadsheet = require('./utils/spreadsheet');
+        await spreadsheet.connect();
+    }
+    
     const app = express();
 
     app.use(bodyParser.json());
