@@ -17,7 +17,7 @@ async function init() {
     }));
 
     const router = require('./router');
-    app.use('/', router);
+    app.use(process.env.BASE_URL || '/', router);
 
     return app;
 }

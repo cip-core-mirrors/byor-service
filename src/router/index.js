@@ -4,12 +4,7 @@ const router = express.Router();
 
 router.use(function(req, res, next) {
     console.log(`${new Date().toISOString()}: [${req.method}] ${req.originalUrl} ${JSON.stringify(req.body)}`);
-    next()
-});
-
-router.use(function(req, res, next) {
-    console.log(req.url);
-    next()
+    next();
 });
 
 if (process.env.GOOGLE_CLIENT_EMAIL && process.env.GOOGLE_PRIVATE_KEY) {
