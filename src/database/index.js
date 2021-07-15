@@ -121,7 +121,7 @@ async function connect() {
             ca: process.env.CA_CERTS,
         }
     } else {
-        config.ssl = true
+        config.ssl = false
     }
 
     try {
