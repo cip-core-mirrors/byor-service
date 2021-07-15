@@ -27,6 +27,10 @@ router.use(function(req, res, next) {
   next();
 });
 
+router.options('/', async function(req, res, next) {
+    await res.send(200)
+})
+
 router.put('/', async function(req, res, next) {
     const { blips = [] } = req.body;
 
