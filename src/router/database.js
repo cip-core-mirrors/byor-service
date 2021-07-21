@@ -240,10 +240,20 @@ router.get('/radar/:radar', async function(req, res, next) {
             for (const row of params.rows) {
                 output.push(Object.values(row))
             }
+
+            const blips = [];
             for (const id in dict) {
                 const blip = dict[id];
-                output.push(Object.values(blip))
+                blips.push(Object.values(blip))
             }
+
+            const idIndex = 2
+            blips.sort(function(a, b) {
+                if (a[idIndex] < b[idIndex]) return -1
+                else if (a[idIndex] > b[idIndex]) return 1
+                return 0
+            });
+
             return await res.json(output);
         }
         res.status(404);
