@@ -241,18 +241,19 @@ router.get('/radar/:radar', async function(req, res, next) {
                 output.push(Object.values(row))
             }
 
-            const blips = [];
+            const outputBlips = [];
             for (const id in dict) {
                 const blip = dict[id];
-                blips.push(Object.values(blip))
+                outputBlips.push(Object.values(blip));
             }
 
-            const idIndex = 2
-            blips.sort(function(a, b) {
-                if (a[idIndex] < b[idIndex]) return -1
-                else if (a[idIndex] > b[idIndex]) return 1
-                return 0
+            const idIndex = 2;
+            outputBlips.sort(function(a, b) {
+                if (a[idIndex] < b[idIndex]) return -1;
+                else if (a[idIndex] > b[idIndex]) return 1;
+                return 0;
             });
+            output.push(...outputBlips);
 
             return await res.json(output);
         }
