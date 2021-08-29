@@ -12,11 +12,26 @@ utils.init().then(async function() {
         'id',
         'hash',
         'name',
+        'version',
         'lastUpdate',
     ]);
 
     for (const blip of blips.rows) {
-        blipsHashCache[blip.id] = blip.hash
+        const cache = blipsHashCache[blip.id];
+        if (cache) {
+            if (blip.version > cache.version) {
+                blipsHashCache[blip.id] = {
+                    hash: blip.hash,
+                    version: blip.version,
+                }
+            }
+        } else {
+            blipsHashCache[blip.id] = {
+                hash: blip.hash,
+                version: blip.version || 0,
+            }
+
+        }
     }
 });
 
@@ -36,6 +51,8 @@ router.put('/', async function(req, res, next) {
 
     const tempCache = {};
     try {
+        let maxVersion = 0;
+
         const columnLinks = [];
         const blipsToInsert = [];
         for (const blip of blips) {
@@ -43,11 +60,13 @@ router.put('/', async function(req, res, next) {
                 id,
                 name,
                 lastUpdate,
+                version,
             } = blip;
             delete blip.hash;
             delete blip.id;
             delete blip.name;
             delete blip.lastUpdate;
+            delete blip.version;
 
             const columns = Object.entries(blip);
             blip.hash = crypto.SHA256(
@@ -56,18 +75,27 @@ router.put('/', async function(req, res, next) {
             blip.id = id;
             blip.name = name;
             blip.lastUpdate = lastUpdate;
+            blip.version = version || 0;
 
-            columns.forEach(function(row) {
-                const columnName = row[0];
-                row.unshift(id);
-                row.unshift(`${id}-${columnName}`)
-            });
+            const cachedBlip = blipsHashCache[blip.id];
+            if (!cachedBlip || (cachedBlip.hash !== blip.hash)) {
+                blip.version = (cachedBlip ? cachedBlip.version : 0) + 1;
+                if (blip.version > maxVersion) maxVersion = blip.version;
 
-            const cachedHash = blipsHashCache[blip.id];
-            if (cachedHash !== blip.hash) {
                 blipsToInsert.push(blip);
+
+                columns.forEach(function(row) {
+                    const columnName = row[0];
+                    row.unshift(blip.version);
+                    row.unshift(blip.id);
+                    row.unshift(`${blip.id}-${columnName}`)
+                })
                 columnLinks.push(...columns);
-                tempCache[blip.id] = blip.hash
+
+                tempCache[blip.id] = {
+                    hash: blip.hash,
+                    version: blip.version,
+                }
             }
         }
 
@@ -78,6 +106,7 @@ router.put('/', async function(req, res, next) {
                     'id',
                     'hash',
                     'name',
+                    'version',
                     'lastUpdate',
                 ],
                 blipsToInsert.map(function (blip) {
@@ -85,6 +114,7 @@ router.put('/', async function(req, res, next) {
                         blip.id,
                         blip.hash,
                         blip.name,
+                        blip.version,
                         blip.lastUpdate,
                     ]
                 }),
@@ -94,6 +124,7 @@ router.put('/', async function(req, res, next) {
                 [
                     'id',
                     'blip',
+                    'blip_version',
                     'name',
                     'value',
                 ],
@@ -106,6 +137,7 @@ router.put('/', async function(req, res, next) {
             status: 'ok',
             data: blipsToInsert,
             rows: blipsToInsert.length,
+            version: maxVersion,
         })
     } catch (e) {
         await errorHandling(e, res)
@@ -131,6 +163,7 @@ router.put('/radar/:radar', async function(req, res, next) {
                     link.sector,
                     link.ring,
                     link.blip,
+                    link.blipVersion || -1,
                     link.value,
                 ]
             });
@@ -145,6 +178,7 @@ router.put('/radar/:radar', async function(req, res, next) {
                     'sector',
                     'ring',
                     'blip',
+                    'blip_version',
                     'value',
                 ],
                 linksRows,
@@ -193,6 +227,7 @@ router.get('/radar/:radar', async function(req, res, next) {
                     'blips.name AS name',
                     'blip_links.value AS value',
                     'blips.id AS id',
+                    //'blips.version AS version',
                     'blips.hash AS hash',
                     'blips.lastUpdate AS lastupdate',
                     'blip_links.sector AS sector',
