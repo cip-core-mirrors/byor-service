@@ -227,7 +227,7 @@ router.get('/radar/:radar', async function(req, res, next) {
                     'blips.name AS name',
                     'blip_links.value AS value',
                     'blips.id AS id',
-                    //'blips.version AS version',
+                    'blips.version AS version',
                     'blips.hash AS hash',
                     'blips.lastUpdate AS lastupdate',
                     'blip_links.sector AS sector',
@@ -243,6 +243,8 @@ router.get('/radar/:radar', async function(req, res, next) {
                     `blip_links.radar = '${radar}'`,
                 ],
             );
+
+            res.header('blips-version', Math.max(blips.rows.map(blip => blip.version)));
             const params = await utils.selectFrom(
                 'radar_parameters',
                 [ 'name', 'value' ],
