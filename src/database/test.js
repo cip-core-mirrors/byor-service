@@ -5,14 +5,17 @@ async function test() {
         await utils.connect()
 
         console.log(await utils.selectFrom('blips', [
+            'id_version',
             'id',
             'hash',
             'name',
+            'version',
             'lastUpdate',
         ]))
         console.log(await utils.selectFrom('column_links', [
             'id',
             'blip',
+            'blip_version',
             'name',
             'value',
         ]))
@@ -22,6 +25,7 @@ async function test() {
             'sector',
             'ring',
             'blip',
+            'blip_version',
             'value',
         ]))
         console.log(await utils.selectFrom('radars', [
