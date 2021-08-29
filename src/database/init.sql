@@ -1,4 +1,5 @@
 CREATE TABLE IF NOT EXISTS blips (
+    id_version varchar unique,
     id varchar,
     hash varchar,
     name varchar,

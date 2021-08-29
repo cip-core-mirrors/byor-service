@@ -60,7 +60,6 @@ router.put('/', async function(req, res, next) {
                 id,
                 name,
                 lastUpdate,
-                version,
             } = blip;
             delete blip.hash;
             delete blip.id;
@@ -75,7 +74,6 @@ router.put('/', async function(req, res, next) {
             blip.id = id;
             blip.name = name;
             blip.lastUpdate = lastUpdate;
-            blip.version = version || 0;
 
             const cachedBlip = blipsHashCache[blip.id];
             if (!cachedBlip || (cachedBlip.hash !== blip.hash)) {
@@ -103,6 +101,7 @@ router.put('/', async function(req, res, next) {
             await utils.upsert(
                 'blips',
                 [
+                    'id_version',
                     'id',
                     'hash',
                     'name',
@@ -111,6 +110,7 @@ router.put('/', async function(req, res, next) {
                 ],
                 blipsToInsert.map(function (blip) {
                     return [
+                        `${blip.id}-${blip.version}`,
                         blip.id,
                         blip.hash,
                         blip.name,
