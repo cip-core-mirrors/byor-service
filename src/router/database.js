@@ -157,13 +157,14 @@ router.put('/radar/:radar', async function(req, res, next) {
 
         if (links.length > 0) {
             const linksRows = links.map(function (link) {
+                const blipCache = blipsHashCache[link.blip];
                 return [
                     `${radar}-${link.blip}`,
                     radar,
                     link.sector,
                     link.ring,
                     link.blip,
-                    link.blipVersion || -1,
+                    blipCache ? blipCache.version : 0,
                     link.value,
                 ]
             });
