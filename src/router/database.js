@@ -30,7 +30,6 @@ utils.init().then(async function() {
                 hash: blip.hash,
                 version: blip.version || 0,
             }
-
         }
     }
 });
@@ -75,9 +74,9 @@ router.put('/', async function(req, res, next) {
             blip.name = name;
             blip.lastUpdate = lastUpdate;
 
-            const cachedBlip = blipsHashCache[blip.id];
-            if (!cachedBlip || (cachedBlip.hash !== blip.hash)) {
-                blip.version = (cachedBlip ? cachedBlip.version : 0) + 1;
+            const cachedBlip = blipsHashCache[blip.id] || {};
+            if (cachedBlip.hash !== blip.hash) {
+                blip.version = (cachedBlip.version || 0) + 1;
                 if (blip.version > maxVersion) maxVersion = blip.version;
 
                 blipsToInsert.push(blip);
