@@ -250,6 +250,8 @@ router.get('/radar/:radar', async function(req, res, next) {
             );
 
             res.header('blips-version', Math.max(...blips.rows.map(blip => blip.version)));
+            blips.rows.map(blip => delete blip.version);
+
             const params = await utils.selectFrom(
                 'radar_parameters',
                 [ 'name', 'value' ],
