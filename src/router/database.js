@@ -74,8 +74,12 @@ router.put('/', async function(req, res, next) {
             blip.name = name;
             blip.lastUpdate = lastUpdate;
 
+            console.log('= = = = =')
+            console.log(blipsHashCache)
+            console.log(blip.id)
             const cachedBlip = blipsHashCache[blip.id] || {};
             if (cachedBlip.hash !== blip.hash) {
+                console.log(cachedBlip)
                 blip.version = (cachedBlip.version || 0) + 1;
                 if (blip.version > maxVersion) maxVersion = blip.version;
 
