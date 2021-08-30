@@ -297,6 +297,7 @@ router.get('/radar/:radar', async function(req, res, next) {
             });
             output.push(...outputBlips);
 
+            res.set('access-control-expose-headers', 'blips-version');
             return await res.json(output);
         }
         res.status(404);
