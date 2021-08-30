@@ -48,7 +48,6 @@ router.options('/', async function(req, res, next) {
 router.put('/', async function(req, res, next) {
     const { blips = [] } = req.body;
 
-    console.log(blipsHashCache)
     const tempCache = {};
     try {
         let maxVersion = 0;
@@ -75,11 +74,7 @@ router.put('/', async function(req, res, next) {
             blip.name = name;
             blip.lastUpdate = lastUpdate;
 
-            console.log('= = = = =')
-            console.log(blip.id)
-            console.log(blip.hash)
             const cachedBlip = blipsHashCache[blip.id] || {};
-            console.log(cachedBlip)
             if (cachedBlip.hash !== blip.hash) {
                 blip.version = (cachedBlip.version || 0) + 1;
                 if (blip.version > maxVersion) maxVersion = blip.version;
@@ -137,12 +132,17 @@ router.put('/', async function(req, res, next) {
             Object.assign(blipsHashCache, tempCache)
         }
 
-        await res.json({
+        const response = {
             status: 'ok',
             data: blipsToInsert,
             rows: blipsToInsert.length,
-            version: maxVersion,
-        })
+        };
+
+        if (maxVersion > 0) {
+            response.version = maxVersion
+        }
+
+        await res.json(response)
     } catch (e) {
         await errorHandling(e, res)
     }
