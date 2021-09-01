@@ -220,6 +220,30 @@ router.put('/radar/:radar', async function(req, res, next) {
     }
 });
 
+router.get('/blips', async function(req, res, next) {
+    try {
+        const blips = await utils.selectFromInnerJoin(
+            'blips',
+            [
+                'blips.name AS name',
+                'blips.id AS id',
+                'blips.id_version as id_version',
+                'blips.version AS version',
+                'blips.lastUpdate AS lastupdate',
+                'column_links.name AS columnname',
+                'column_links.value AS columnvalue',
+            ],
+            [
+                `column_links ON blips.id = column_links.blip`,
+            ],
+        );
+
+        return await res.json(blips);
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
 router.get('/radar/:radar', async function(req, res, next) {
     const radar = req.params.radar;
 
