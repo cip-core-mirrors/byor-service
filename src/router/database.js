@@ -253,7 +253,22 @@ router.get('/blips', async function(req, res, next) {
             blip[columnName] = columnValue
         }
 
-        return await res.json(Object.values(dict));
+        const output = {}
+        for (const blip of Object.values(dict)) {
+            let blipVersions = output[blip.id]
+            if (!blipVersions) {
+                blipVersions = []
+                output[blip.id] = blipVersions
+            }
+
+            while (blipVersions.length < blip.version) {
+                blipVersions.push(undefined)
+            }
+
+            blipVersions[blip.version - 1] = blip
+        }
+
+        return await res.json(output);
     } catch (e) {
         await errorHandling(e, res)
     }
