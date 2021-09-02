@@ -313,16 +313,19 @@ router.get('/parameters', async function(req, res, next) {
             {
                 name: "legend1",
                 type: "string",
-                default: "New or moved"
+                default: "New or moved",
+                fieldset: "legend",
             },
             {
                 name: "legend2",
                 type: "string",
                 default: "No change",
+                fieldset: "legend",
             },
             {
                 name: "legend3",
                 type: "string",
+                fieldset: "legend",
             },
             {
                 name: "hideColumnTitle",
@@ -335,10 +338,12 @@ router.get('/parameters', async function(req, res, next) {
             {
                 name: "renameRings",
                 type: "list",
+                fieldset: "rename",
             },
             {
                 name: "renameSectors",
                 type: "list",
+                fieldset: "rename",
             },
             {
                 name: "ignoreColumns",
@@ -347,10 +352,12 @@ router.get('/parameters', async function(req, res, next) {
             {
                 name: "ringsOrder",
                 type: "list",
+                fieldset: "order",
             },
             {
                 name: "sectorsOrder",
                 type: "list",
+                fieldset: "order",
             },
         ];
 
