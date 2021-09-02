@@ -274,6 +274,26 @@ router.get('/blips', async function(req, res, next) {
     }
 });
 
+router.get('/radar/:radar/parameters', async function(req, res, next) {
+    const radar = req.params.radar;
+
+    try {
+        const data = await utils.selectFrom('radars', [ 'id' ], [ `id = '${radar}'` ]);
+        if (data.rows.length > 0) {
+            const params = await utils.selectFrom(
+                'radar_parameters',
+                [ 'name', 'value' ],
+                [ `radar = '${radar}'` ],
+            );
+            return await res.json(params.rows);
+        }
+        res.status(404);
+        await res.json({});
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
 router.get('/radar/:radar', async function(req, res, next) {
     const radar = req.params.radar;
 
