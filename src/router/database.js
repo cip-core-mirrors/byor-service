@@ -285,7 +285,7 @@ router.get('/parameters', async function(req, res, next) {
             {
                 name: "blipNewDuration",
                 type: "integer",
-                value: "120",
+                default: "120",
             },
             {
                 name: "titlePageHTML",
