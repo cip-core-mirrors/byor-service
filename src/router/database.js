@@ -274,6 +274,92 @@ router.get('/blips', async function(req, res, next) {
     }
 });
 
+router.get('/parameters', async function(req, res, next) {
+    try {
+        const output = [
+            {
+                name: "paramSheet",
+                type: "string",
+                default: "https://ethercalc-byor-cip-apps-common.apps.c1.ocp.dev.sgcip.com/theme.csv",
+            },
+            {
+                name: "blipNewDuration",
+                type: "integer",
+                value: "120",
+            },
+            {
+                name: "titlePageHTML",
+                type: "string",
+            },
+            {
+                name: "title",
+                type: "string",
+            },
+            {
+                name: "isProportional",
+                type: "boolean",
+                default: "1",
+            },
+            {
+                name: "embed",
+                type: "boolean",
+                default: "1",
+            },
+            {
+                name: "theme",
+                type: "integer",
+                default: "1",
+            },
+            {
+                name: "legend1",
+                type: "string",
+                default: "New or moved"
+            },
+            {
+                name: "legend2",
+                type: "string",
+                default: "No change",
+            },
+            {
+                name: "legend3",
+                type: "string",
+            },
+            {
+                name: "hideColumnTitle",
+                type: "list",
+            },
+            {
+                name: "sheetId",
+                type: "string",
+            },
+            {
+                name: "renameRings",
+                type: "list",
+            },
+            {
+                name: "renameSectors",
+                type: "list",
+            },
+            {
+                name: "ignoreColumns",
+                type: "list",
+            },
+            {
+                name: "ringsOrder",
+                type: "list",
+            },
+            {
+                name: "sectorsOrder",
+                type: "list",
+            },
+        ];
+
+        return await res.json(output);
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
 router.get('/radar/:radar/parameters', async function(req, res, next) {
     const radar = req.params.radar;
 
