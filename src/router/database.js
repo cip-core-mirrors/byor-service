@@ -3,6 +3,7 @@ const crypto = require('crypto-js');
 
 const utils = require('../database');
 
+const parametersJson = process.env.DATABASE_PARAMETERS ? JSON.parse(process.env.DATABASE_PARAMETERS) : [];
 const router = express.Router();
 
 const blipsHashCache = {};
@@ -276,92 +277,7 @@ router.get('/blips', async function(req, res, next) {
 
 router.get('/parameters', async function(req, res, next) {
     try {
-        const output = [
-            {
-                name: "paramSheet",
-                type: "string",
-                default: "https://ethercalc-byor-cip-apps-common.apps.c1.ocp.dev.sgcip.com/theme.csv",
-            },
-            {
-                name: "blipNewDuration",
-                type: "integer",
-                default: "120",
-            },
-            {
-                name: "titlePageHTML",
-                type: "string",
-            },
-            {
-                name: "title",
-                type: "string",
-            },
-            {
-                name: "isProportional",
-                type: "boolean",
-                default: "1",
-            },
-            {
-                name: "embed",
-                type: "boolean",
-                default: "1",
-            },
-            {
-                name: "theme",
-                type: "integer",
-                default: "1",
-            },
-            {
-                name: "legend1",
-                type: "string",
-                default: "New or moved",
-                fieldset: "legend",
-            },
-            {
-                name: "legend2",
-                type: "string",
-                default: "No change",
-                fieldset: "legend",
-            },
-            {
-                name: "legend3",
-                type: "string",
-                fieldset: "legend",
-            },
-            {
-                name: "hideColumnTitle",
-                type: "list",
-            },
-            {
-                name: "sheetId",
-                type: "string",
-            },
-            {
-                name: "renameRings",
-                type: "list",
-                fieldset: "rename",
-            },
-            {
-                name: "renameSectors",
-                type: "list",
-                fieldset: "rename",
-            },
-            {
-                name: "ignoreColumns",
-                type: "list",
-            },
-            {
-                name: "ringsOrder",
-                type: "list",
-                fieldset: "order",
-            },
-            {
-                name: "sectorsOrder",
-                type: "list",
-                fieldset: "order",
-            },
-        ];
-
-        return await res.json(output);
+        return await res.json(parametersJson);
     } catch (e) {
         await errorHandling(e, res)
     }
