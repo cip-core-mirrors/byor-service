@@ -2,6 +2,7 @@ const express = require('express');
 const crypto = require('crypto-js');
 
 const utils = require('../database');
+const iam = require('../utils/iam');
 
 const parametersJson = process.env.DATABASE_PARAMETERS ? JSON.parse(process.env.DATABASE_PARAMETERS) : [];
 const router = express.Router();
@@ -31,6 +32,27 @@ utils.init().then(async function() {
                 hash: blip.hash,
                 version: blip.version || 0,
             }
+        }
+    }
+});
+
+router.use(async function(req, res, next) {
+    const headers = req.headers;
+    try {
+        await iam.getUserInfo(headers.authorization);
+        next();
+    } catch (e) {
+        console.error(e)
+        const response = e.response;
+        if (response) {
+            res.statusCode = response.status || 500;
+            if (res.headers['content-type'] === 'application/json') {
+                return await res.json(res.data);
+            }
+            await res.send(res.data);
+        } else {
+            res.statusCode = 500;
+            await res.send('Error');
         }
     }
 });
