@@ -7,7 +7,7 @@ const router = express.Router();
 router.all('*', async function(req, res, next) {
     try {
         const response = await utils.call(req.method, req.url, req.headers.authorization, req.data);
-        return await res.json(response);
+        return await res.json(response.data);
     } catch (e) {
         console.error(e)
         const response = e.response;
