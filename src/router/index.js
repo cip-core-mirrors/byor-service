@@ -31,7 +31,7 @@ if (process.env.IAM_URL) {
 }
 if (process.env.POSTGRESQL_HOST) {
     console.log('[Database] Connecting service...');
-    const database = require('../database');
+    const database = require('../utils/database');
     database.connect()
         .then(async function() {
             console.log('[Database] Connected');

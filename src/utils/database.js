@@ -196,6 +196,7 @@ async function getUserRadarRights(userId) {
 
 module.exports = {
     init,
+    connect: utils.connect,
 
     getBlips,
     insertBlips,
