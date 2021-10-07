@@ -6,13 +6,6 @@ const format = require('pg-format')
 let client
 let shouldLog = process.env.LOG_QUERIES === 'true';
 
-async function init() {
-    if (process.env.RESET_DATABASE === 'true') {
-        await dropTables()
-    }
-    await createTables()
-}
-
 function logQuery(sqlBegin, values = [], sqlEnd = '') {
     let subValues = []
     const displayedItems = 4
@@ -137,7 +130,6 @@ async function disconnect() {
 }
 
 module.exports = {
-    init,
     connect,
     disconnect,
     createTables,

@@ -26,7 +26,14 @@ CREATE TABLE IF NOT EXISTS blip_links (
 );
 
 CREATE TABLE IF NOT EXISTS radars (
-    id varchar unique
+    id varchar unique,
+    author varchar
+);
+
+CREATE TABLE IF NOT EXISTS radar_rights (
+    radar varchar,
+    user varchar,
+    rights varchar
 );
 
 CREATE TABLE IF NOT EXISTS radar_parameters (

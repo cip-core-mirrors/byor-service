@@ -1,7 +1,7 @@
 const express = require('express');
 const crypto = require('crypto-js');
 
-const utils = require('../database');
+const utils = require('../utils/database');
 const iam = require('../utils/iam');
 
 const parametersJson = process.env.DATABASE_PARAMETERS ? JSON.parse(process.env.DATABASE_PARAMETERS) : [];
@@ -10,15 +10,9 @@ const router = express.Router();
 const blipsHashCache = {};
 
 utils.init().then(async function() {
-    const blips = await utils.selectFrom('blips', [
-        'id',
-        'hash',
-        'name',
-        'version',
-        'lastUpdate',
-    ]);
+    const blips = await utils.getBlips();
 
-    for (const blip of blips.rows) {
+    for (const blip of blips) {
         const cache = blipsHashCache[blip.id];
         if (cache) {
             if (blip.version > cache.version) {
@@ -39,7 +33,8 @@ utils.init().then(async function() {
 router.use(async function(req, res, next) {
     const headers = req.headers;
     try {
-        await iam.getUserInfo(headers.authorization);
+        const user = await iam.getUserInfo(headers.authorization);
+        req.user = user.data;
         next();
     } catch (e) {
         console.error(e)
@@ -66,7 +61,7 @@ router.use(function(req, res, next) {
 
 router.options('/', async function(req, res, next) {
     await res.send(200)
-})
+});
 
 router.put('/', async function(req, res, next) {
     const { blips = [] } = req.body;
@@ -120,38 +115,8 @@ router.put('/', async function(req, res, next) {
         }
 
         if (blipsToInsert.length > 0) {
-            await utils.upsert(
-                'blips',
-                [
-                    'id_version',
-                    'id',
-                    'hash',
-                    'name',
-                    'version',
-                    'lastUpdate',
-                ],
-                blipsToInsert.map(function (blip) {
-                    return [
-                        `${blip.id}-${blip.version}`,
-                        blip.id,
-                        blip.hash,
-                        blip.name,
-                        blip.version,
-                        blip.lastUpdate,
-                    ]
-                }),
-            );
-            await utils.upsert(
-                'column_links',
-                [
-                    'id',
-                    'blip',
-                    'blip_version',
-                    'name',
-                    'value',
-                ],
-                columnLinks,
-            );
+            await utils.insertBlips(blipsToInsert);
+            await utils.insertColumnLinks(columnLinks);
             Object.assign(blipsHashCache, tempCache)
         }
 
@@ -172,15 +137,26 @@ router.put('/', async function(req, res, next) {
 });
 
 router.put('/radar/:radar', async function(req, res, next) {
+    const userId = req.user.mail;
     const radar = req.params.radar;
     const { links = [], parameters = []} = req.body;
 
     try {
-        await utils.upsert(
-            'radars',
-            [ 'id' ],
-            [ [ radar ] ],
-        );
+        const radars = await utils.getRadars();
+        let radarFound = false;
+        for (const row of radars) {
+            if (row[0] === radar) {
+                radarFound = row[1] !== userId;
+                break;
+            }
+        }
+
+        if (radarFound) {
+            res.statusCode = 404;
+            await res.json({message: `Radar "${radar}" already exists`});
+        }
+
+        await utils.insertRadar(radar, req.user.mail);
 
         if (links.length > 0) {
             const linksRows = links.map(function (link) {
@@ -195,22 +171,8 @@ router.put('/radar/:radar', async function(req, res, next) {
                     link.value,
                 ]
             });
-            await utils.deleteFrom('blip_links', [
-                `radar = '${radar}'`,
-            ]);
-            await utils.insertInto(
-                'blip_links',
-                [
-                    'id',
-                    'radar',
-                    'sector',
-                    'ring',
-                    'blip',
-                    'blip_version',
-                    'value',
-                ],
-                linksRows,
-            )
+            await utils.deleteBlipLinks(radar);
+            await utils.insertBlipLinks(linksRows);
         }
 
         if (parameters.length > 0) {
@@ -222,19 +184,8 @@ router.put('/radar/:radar', async function(req, res, next) {
                     parameter.value,
                 ]
             });
-            await utils.deleteFrom('radar_parameters', [
-                `radar = '${radar}'`,
-            ]);
-            await utils.insertInto(
-                'radar_parameters',
-                [
-                    'id',
-                    'radar',
-                    'name',
-                    'value',
-                ],
-                parametersRows,
-            )
+            await utils.deleteRadarParameters(radar);
+            await utils.insertRadarParameters(parametersRows);
         }
 
         await res.json({ status: 'ok' })
@@ -245,24 +196,10 @@ router.put('/radar/:radar', async function(req, res, next) {
 
 router.get('/blips', async function(req, res, next) {
     try {
-        const blips = await utils.selectFromInnerJoin(
-            'blips',
-            [
-                'blips.name AS name',
-                'blips.id AS id',
-                'blips.id_version as id_version',
-                'blips.version AS version',
-                'blips.lastUpdate AS lastupdate',
-                'column_links.name AS columnname',
-                'column_links.value AS columnvalue',
-            ],
-            [
-                `column_links ON blips.id = column_links.blip`,
-            ],
-        );
+        const blips = await utils.selectBlipsWithColumnLinks();
 
         const dict = {}
-        for (const row of blips.rows) {
+        for (const row of blips) {
             const columnName = row.columnname
             const columnValue = row.columnvalue
             delete row.columnname
@@ -306,64 +243,36 @@ router.get('/parameters', async function(req, res, next) {
 });
 
 router.get('/radar/:radar/parameters', async function(req, res, next) {
+    const userId = req.user.mail;
     const radar = req.params.radar;
 
     try {
-        const data = await utils.selectFrom('radars', [ 'id' ], [ `id = '${radar}'` ]);
-        if (data.rows.length > 0) {
-            const params = await utils.selectFrom(
-                'radar_parameters',
-                [ 'name', 'value' ],
-                [ `radar = '${radar}'` ],
-            );
-            return await res.json(params.rows);
+        const canEditRadar = await utils.userCanEditRadar(userId, radar);
+        if (canEditRadar) {
+            const params = await utils.getRadarParameters(radar);
+            return await res.json(params);
         }
         res.status(404);
-        await res.json({});
+        await res.json({message: `Radar not found`});
     } catch (e) {
         await errorHandling(e, res)
     }
 });
 
 router.get('/radar/:radar', async function(req, res, next) {
+    const userId = req.user.mail;
     const radar = req.params.radar;
 
     try {
-        const data = await utils.selectFrom('radars', [ 'id' ], [ `id = '${radar}'` ]);
-        if (data.rows.length > 0) {
-            const blips = await utils.selectFromInnerJoin(
-                'blips',
-                [
-                    'blips.name AS name',
-                    'blip_links.value AS value',
-                    'blips.id AS id',
-                    'blips.version AS version',
-                    'blips.hash AS hash',
-                    'blips.lastUpdate AS lastupdate',
-                    'blip_links.sector AS sector',
-                    'blip_links.ring AS ring',
-                    'column_links.name AS columnname',
-                    'column_links.value AS columnvalue',
-                ],
-                [
-                    `blip_links ON blips.id = blip_links.blip`,
-                    `column_links ON blips.id = column_links.blip`,
-                ],
-                [
-                    `blip_links.radar = '${radar}'`,
-                ],
-            );
+        const canEditRadar = await utils.userCanEditRadar(userId, radar);
+        if (canEditRadar) {
+            const blips = await utils.selectBlipsWithColumnLinks(radar);
 
-            res.header('blips-version', Math.max(...blips.rows.map(blip => blip.version)));
-            blips.rows.map(blip => delete blip.version);
+            blips.map(blip => delete blip.version);
 
-            const params = await utils.selectFrom(
-                'radar_parameters',
-                [ 'name', 'value' ],
-                [ `radar = '${radar}'` ],
-            );
+            const params = await utils.getRadarParameters(radar);
             const dict = {};
-            for (const row of blips.rows) {
+            for (const row of blips) {
                 let blip = dict[row.id];
                 if (!blip) {
                     blip = Object.assign({}, row);
@@ -374,7 +283,7 @@ router.get('/radar/:radar', async function(req, res, next) {
                 blip[row.columnname] = row.columnvalue;
             }
 
-            const columns = blips.rows.map(blip => blip.columnname).filter(onlyUnique);
+            const columns = blips.map(blip => blip.columnname).filter(onlyUnique);
             const headers = [
                 'name',
                 'value',
@@ -386,7 +295,7 @@ router.get('/radar/:radar', async function(req, res, next) {
             ];
             headers.push(...columns);
             const output = [ headers ];
-            for (const row of params.rows) {
+            for (const row of params) {
                 output.push(Object.values(row))
             }
 
@@ -404,11 +313,10 @@ router.get('/radar/:radar', async function(req, res, next) {
             });
             output.push(...outputBlips);
 
-            res.set('access-control-expose-headers', 'blips-version');
             return await res.json(output);
         }
-        res.status(404);
-        await res.json({});
+        res.status(403);
+        await res.json({message: 'You cannot edit this radar'});
     } catch (e) {
         await errorHandling(e, res)
     }

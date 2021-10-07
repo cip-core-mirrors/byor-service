@@ -2,5 +2,5 @@ DROP TABLE IF EXISTS blips;
 DROP TABLE IF EXISTS column_links;
 DROP TABLE IF EXISTS blip_links;
 DROP TABLE IF EXISTS radars;
-DROP TABLE IF EXISTS radar_links;
+DROP TABLE IF EXISTS radar_rights;
 DROP TABLE IF EXISTS radar_parameters;
