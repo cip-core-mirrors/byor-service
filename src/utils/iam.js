@@ -29,7 +29,24 @@ async function getUserInfo(token) {
     return await call('get', '/userinfo', token);
 }
 
+const resourceId = process.env.IAM_CREATE_RADAR_RESOURCE_ID;
+const permissionName = process.env.IAM_CREATE_RADAR_PERMISSION_NAME;
+function isAuthorizedToCreateRadar(userInfo) {
+    for (const authorization of (userInfo || {}).user_authorization) {
+        if (authorization.resource_id === resourceId) {
+            for (const permission of authorization.permissions) {
+                if (permission.name === permissionName) {
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
 module.exports = {
     call,
     getUserInfo,
+    isAuthorizedToCreateRadar,
 };

@@ -136,10 +136,21 @@ router.put('/', async function(req, res, next) {
     }
 });
 
+router.get('/radar/permissions', async function(req, res, next) {
+    await res.json({
+        create_radar: iam.isAuthorizedToCreateRadar(req.user),
+    })
+});
+
 router.put('/radar/:radar', async function(req, res, next) {
     const userId = req.user.mail;
     const radar = req.params.radar;
     const { links = [], parameters = []} = req.body;
+
+    if (!iam.isAuthorizedToCreateRadar(req.user)) {
+        res.statusCode = 403;
+        return await res.json({message: 'You are not authorized to create a radar'});
+    }
 
     try {
         const radars = await utils.getRadars();
@@ -153,7 +164,7 @@ router.put('/radar/:radar', async function(req, res, next) {
 
         if (radarFound) {
             res.statusCode = 404;
-            await res.json({message: `Radar "${radar}" already exists`});
+            return await res.json({message: `Radar "${radar}" already exists`});
         }
 
         await utils.insertRadar(radar, req.user.mail);
