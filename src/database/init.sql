@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS radars (
 
 CREATE TABLE IF NOT EXISTS radar_rights (
     radar varchar,
-    user varchar,
+    userId varchar,
     rights varchar
 );
 

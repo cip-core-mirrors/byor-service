@@ -190,7 +190,7 @@ async function getUserAuthorRadars(userId) {
 }
 
 async function getUserRadarRights(userId) {
-    const data = await utils.selectFrom('radar_rights', [ 'radar', 'user', 'rights' ], [ `user = '${userId}'` ]);
+    const data = await utils.selectFrom('radar_rights', [ 'radar', 'userId', 'rights' ], [ `userId = '${userId}'` ]);
     return data.rows;
 }
 
