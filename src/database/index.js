@@ -7,7 +7,6 @@ let client
 let shouldLog = process.env.LOG_QUERIES === 'true';
 
 async function init() {
-    await connect()
     if (process.env.RESET_DATABASE === 'true') {
         await dropTables()
     }
@@ -32,7 +31,7 @@ function logQuery(sqlBegin, values = [], sqlEnd = '') {
 async function createTables() {
     const filePath = 'init.sql'
     const sql = fs.readFileSync(path.join(__dirname, filePath), { encoding: 'utf8' })
-    console.log('Creating tables...')
+    console.log('[Database] Creating tables...')
     if (shouldLog) logQuery(sql)
     if (client) return await client.query(sql);
 }
@@ -40,7 +39,7 @@ async function createTables() {
 async function dropTables() {
     const filePath = 'reset.sql'
     const sql = fs.readFileSync(path.join(__dirname, filePath), { encoding: 'utf8' })
-    console.log('Dropping tables...')
+    console.log('[Database] Dropping tables...')
     if (shouldLog) logQuery(sql)
     if (client) return await client.query(sql);
 }
@@ -126,11 +125,8 @@ async function connect() {
 
     try {
         client = new Client(config)
-        console.log('Database connection...')
         await client.connect()
-        console.log('Database connected')
     } catch (e) {
-        console.error('Database connection error')
         client = undefined
         throw e
     }

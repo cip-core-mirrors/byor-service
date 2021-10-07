@@ -9,15 +9,29 @@ router.all('*', async function(req, res, next) {
         const response = await utils.call(req.method, req.url, req.headers.authorization, req.data);
         return await res.json(response.data);
     } catch (e) {
-        console.error(e)
         const response = e.response;
         if (response) {
+            const config = response.config;
+            const log = {
+                status: response.status,
+                statusText: response.statusText,
+                headers: response.headers,
+                config: {
+                    url: config.url,
+                    method: config.method,
+                    headers: config.headers,
+                    data: config.data,
+                }
+            };
+            console.error(JSON.stringify(log));
+
             res.statusCode = response.status || 500;
-            if (res.headers['content-type'] === 'application/json') {
-                return await res.json(res.data);
+            if (response.headers && (response.headers['content-type'] === 'application/json')) {
+                return await res.json(response.data || {});
             }
-            await res.send(res.data);
+            await res.send(response.data);
         } else {
+            console.error(e);
             res.statusCode = 500;
             await res.send('Error');
         }

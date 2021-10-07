@@ -5,11 +5,6 @@ const cors = require('cors');
 require('dotenv').config(); // load environment variables from .env file
 
 async function init() {
-    if (process.env.GOOGLE_CLIENT_EMAIL && process.env.GOOGLE_PRIVATE_KEY) {
-        const spreadsheet = require('./utils/spreadsheet');
-        await spreadsheet.connect();
-    }
-
     const app = express();
     app.use(cors())
 

@@ -19,13 +19,10 @@ async function call(method, endpoint, token, data) {
             accept: 'application/json',
         },
         httpsAgent: httpsAgent,
-    }
+    };
     if (data) config.data = data;
 
-    console.log(config) // TODO : debug
-    const response = await axios(config);
-
-    return response;
+    return await axios(config);
 }
 
 async function getUserInfo(token) {
