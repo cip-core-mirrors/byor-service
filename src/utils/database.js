@@ -43,13 +43,8 @@ async function insertBlips(blips) {
     );
 }
 
-async function getRadars(radarId) {
-    let data;
-    if (radarId) {
-        data = await utils.selectFrom('radars', [ 'id', 'author' ], [ `id = '${radarId}'` ]);
-    } else {
-        data = await utils.selectFrom('radars', [ 'id', 'author' ]);
-    }
+async function getRadars() {
+    const data = await utils.selectFrom('radars', [ 'id' ]);
     return data.rows;
 }
 
