@@ -67,7 +67,7 @@ async function insertRadarRights(radarId, userId, rights) {
         [
             'id',
             'radar',
-            'userId',
+            'user_id',
             'rights',
         ],
         [ [ `${radarId}-${userId}` , radarId, userId, rights.join(',') ] ],
@@ -203,7 +203,7 @@ async function getUserAuthorRadars(userId) {
 }
 
 async function getUserRadarRights(userId) {
-    const data = await utils.selectFrom('radar_rights', [ 'radar', 'userId', 'rights' ], [ `userId = '${userId}'` ]);
+    const data = await utils.selectFrom('radar_rights', [ 'radar', 'user_id', 'rights' ], [ `user_id = '${userId}'` ]);
     return data.rows;
 }
 
