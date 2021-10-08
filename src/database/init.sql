@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS radars (
 );
 
 CREATE TABLE IF NOT EXISTS radar_rights (
+    id varchar unique,
     radar varchar,
     userId varchar,
     rights varchar

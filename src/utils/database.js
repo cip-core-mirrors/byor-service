@@ -65,11 +65,12 @@ async function insertRadarRights(radarId, userId, rights) {
     await utils.upsert(
         'radar_rights',
         [
+            'id',
             'radar',
             'userId',
             'rights',
         ],
-        [ [ radarId, userId, rights.join(',') ] ],
+        [ [ `${radarId}-${userId}` , radarId, userId, rights.join(',') ] ],
     );
 }
 

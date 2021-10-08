@@ -157,9 +157,9 @@ router.get('/radar/permissions', async function(req, res, next) {
 });
 
 router.post('/radar', async function(req, res, next) {
-    const { radar } = req.body;
+    const { id: radarId } = req.body;
 
-    if (!radar) {
+    if (!radarId) {
         res.statusCode = 404;
         return await res.json({message: 'Radar ID should not be empty'});
     }
@@ -172,7 +172,7 @@ router.post('/radar', async function(req, res, next) {
     const radars = await utils.getRadars();
     let radarFound = false;
     for (const row of radars) {
-        if (row[0] === radar) {
+        if (row[0] === radarId) {
             radarFound = true;
             break;
         }
@@ -180,12 +180,12 @@ router.post('/radar', async function(req, res, next) {
 
     if (radarFound) {
         res.statusCode = 404;
-        return await res.json({message: `Radar "${radar}" already exists`});
+        return await res.json({message: `Radar "${radarId}" already exists`});
     }
 
     const userId = req.user.mail;
-    await utils.insertRadar(radar, userId);
-    await utils.insertRadarRights(radar, userId, ['edit']);
+    await utils.insertRadar(radarId, userId);
+    await utils.insertRadarRights(radarId, userId, ['edit']);
 
     await res.json({ status: 'ok' });
 });
