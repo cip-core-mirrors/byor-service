@@ -150,6 +150,18 @@ router.put('/', async function(req, res, next) {
     }
 });
 
+router.get('/radar', async function(req, res, next) {
+    const userId = req.user.mail;
+    const radarRights = await utils.getUserRadarRights(userId);
+
+    await res.json(radarRights.map(function(entry) {
+        return {
+            id: entry.radar,
+            rights: entry.rights,
+        }
+    }));
+});
+
 router.get('/radar/permissions', async function(req, res, next) {
     await res.json({
         create_radar: iam.isAuthorizedToCreateRadar(req.user),
@@ -185,7 +197,6 @@ router.post('/radar', async function(req, res, next) {
 
     const userId = req.user.mail;
     await utils.insertRadar(radarId, userId);
-    await utils.insertRadarRights(radarId, userId, ['edit']);
 
     await res.json({ status: 'ok' });
 });

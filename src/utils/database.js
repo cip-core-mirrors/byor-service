@@ -56,9 +56,10 @@ async function getRadars(radarId) {
 async function insertRadar(id, author) {
     await utils.upsert(
         'radars',
-        [ 'id', 'author' ],
-        [ [ id, author ] ],
+        [ 'id' ],
+        [ [ id ] ],
     );
+    await insertRadarRights(id, author, ['owner', 'edit']);
 }
 
 async function insertRadarRights(radarId, userId, rights) {
@@ -197,11 +198,6 @@ async function userCanEditRadar(userId, radarId) {
     return false;
 }
 
-async function getUserAuthorRadars(userId) {
-    const data = await utils.selectFrom('radars', [ 'id', 'author' ], [ `author = '${userId}'` ]);
-    return data.rows;
-}
-
 async function getUserRadarRights(userId) {
     const data = await utils.selectFrom('radar_rights', [ 'radar', 'user_id', 'rights' ], [ `user_id = '${userId}'` ]);
     return data.rows;
@@ -227,8 +223,6 @@ module.exports = {
 
     insertBlipLinks,
     deleteBlipLinks,
-
-    getUserAuthorRadars,
 
     getUserRadarRights,
     userCanEditRadar,
