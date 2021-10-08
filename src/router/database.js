@@ -30,6 +30,63 @@ utils.init().then(async function() {
     }
 });
 
+router.get('/radar/:radar', async function(req, res, next) {
+    const radar = req.params.radar;
+
+    try {
+        const blips = await utils.selectBlipsWithColumnLinks(radar);
+
+        blips.map(blip => delete blip.version);
+
+        const params = await utils.getRadarParameters(radar);
+        const dict = {};
+        for (const row of blips) {
+            let blip = dict[row.id];
+            if (!blip) {
+                blip = Object.assign({}, row);
+                dict[row.id] = blip;
+                delete blip.columnname;
+                delete blip.columnvalue;
+            }
+            blip[row.columnname] = row.columnvalue;
+        }
+
+        const columns = blips.map(blip => blip.columnname).filter(onlyUnique);
+        const headers = [
+            'name',
+            'value',
+            'id',
+            'hash',
+            'lastUpdate',
+            'sector',
+            'ring',
+        ];
+        headers.push(...columns);
+        const output = [ headers ];
+        for (const row of params) {
+            output.push(Object.values(row))
+        }
+
+        const outputBlips = [];
+        for (const id in dict) {
+            const blip = dict[id];
+            outputBlips.push(Object.values(blip));
+        }
+
+        const idIndex = 2;
+        outputBlips.sort(function(a, b) {
+            if (a[idIndex] < b[idIndex]) return -1;
+            else if (a[idIndex] > b[idIndex]) return 1;
+            return 0;
+        });
+        output.push(...outputBlips);
+
+        return await res.json(output);
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
 router.use(async function(req, res, next) {
     const headers = req.headers;
     try {
@@ -338,69 +395,6 @@ router.get('/radar/:radar/blip-links', async function(req, res, next) {
         }
         res.status(404);
         await res.json({message: `Radar not found`});
-    } catch (e) {
-        await errorHandling(e, res)
-    }
-});
-
-router.get('/radar/:radar', async function(req, res, next) {
-    const userId = req.user.mail;
-    const radar = req.params.radar;
-
-    try {
-        const canEditRadar = await utils.userCanEditRadar(userId, radar);
-        if (canEditRadar) {
-            const blips = await utils.selectBlipsWithColumnLinks(radar);
-
-            blips.map(blip => delete blip.version);
-
-            const params = await utils.getRadarParameters(radar);
-            const dict = {};
-            for (const row of blips) {
-                let blip = dict[row.id];
-                if (!blip) {
-                    blip = Object.assign({}, row);
-                    dict[row.id] = blip;
-                    delete blip.columnname;
-                    delete blip.columnvalue;
-                }
-                blip[row.columnname] = row.columnvalue;
-            }
-
-            const columns = blips.map(blip => blip.columnname).filter(onlyUnique);
-            const headers = [
-                'name',
-                'value',
-                'id',
-                'hash',
-                'lastUpdate',
-                'sector',
-                'ring',
-            ];
-            headers.push(...columns);
-            const output = [ headers ];
-            for (const row of params) {
-                output.push(Object.values(row))
-            }
-
-            const outputBlips = [];
-            for (const id in dict) {
-                const blip = dict[id];
-                outputBlips.push(Object.values(blip));
-            }
-
-            const idIndex = 2;
-            outputBlips.sort(function(a, b) {
-                if (a[idIndex] < b[idIndex]) return -1;
-                else if (a[idIndex] > b[idIndex]) return 1;
-                return 0;
-            });
-            output.push(...outputBlips);
-
-            return await res.json(output);
-        }
-        res.status(403);
-        await res.json({message: 'You cannot edit this radar'});
     } catch (e) {
         await errorHandling(e, res)
     }
