@@ -87,49 +87,6 @@ router.get('/radar/:radar', async function(req, res, next) {
     }
 });
 
-router.use(async function(req, res, next) {
-    const headers = req.headers;
-    try {
-        const user = await iam.getUserInfo(headers.authorization);
-        req.user = user.data;
-        next();
-    } catch (e) {
-        const response = e.response;
-        if (response) {
-            const config = response.config;
-            const log = {
-                status: response.status,
-                statusText: response.statusText,
-                headers: response.headers,
-                config: {
-                    url: config.url,
-                    method: config.method,
-                    headers: config.headers,
-                    data: config.data,
-                }
-            };
-            console.error(JSON.stringify(log));
-
-            res.statusCode = response.status || 500;
-            if (response.headers && (response.headers['content-type'] === 'application/json')) {
-                return await res.json(response.data || {});
-            }
-            await res.send(response.data);
-        } else {
-            console.error(e);
-            res.statusCode = 500;
-            await res.send('Error');
-        }
-    }
-});
-
-router.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  next();
-});
-
 router.options('/', async function(req, res, next) {
     await res.send(200)
 });
@@ -205,6 +162,49 @@ router.put('/', async function(req, res, next) {
     } catch (e) {
         await errorHandling(e, res)
     }
+});
+
+router.use(async function(req, res, next) {
+    const headers = req.headers;
+    try {
+        const user = await iam.getUserInfo(headers.authorization);
+        req.user = user.data;
+        next();
+    } catch (e) {
+        const response = e.response;
+        if (response) {
+            const config = response.config;
+            const log = {
+                status: response.status,
+                statusText: response.statusText,
+                headers: response.headers,
+                config: {
+                    url: config.url,
+                    method: config.method,
+                    headers: config.headers,
+                    data: config.data,
+                }
+            };
+            console.error(JSON.stringify(log));
+
+            res.statusCode = response.status || 500;
+            if (response.headers && (response.headers['content-type'] === 'application/json')) {
+                return await res.json(response.data || {});
+            }
+            await res.send(response.data);
+        } else {
+            console.error(e);
+            res.statusCode = 500;
+            await res.send('Error');
+        }
+    }
+});
+
+router.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  next();
 });
 
 router.get('/radar', async function(req, res, next) {
