@@ -157,7 +157,12 @@ router.get('/radar/permissions', async function(req, res, next) {
 });
 
 router.post('/radar', async function(req, res, next) {
-    const radar = req.params.radar;
+    const { radar } = req.body;
+
+    if (!radar) {
+        res.statusCode = 404;
+        return await res.json({message: 'Radar ID should not be empty'});
+    }
 
     if (!iam.isAuthorizedToCreateRadar(req.user)) {
         res.statusCode = 403;
