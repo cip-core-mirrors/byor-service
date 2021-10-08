@@ -208,7 +208,7 @@ async function deleteRadarRights(radarId, userId) {
 }
 
 async function userCanEditRadar(userId, radarId) {
-    const radars = await getUserRadarRights(userId);
+    const radars = await getRadarRights(userId);
     for (const entry of radars) {
         if (entry.radar === radarId) {
             const rights = entry.rights.split(',');
