@@ -219,7 +219,7 @@ router.get('/radar', async function(req, res, next) {
     }));
 });
 
-router.get('/radar/permissions', async function(req, res, next) {
+router.get('/permissions', async function(req, res, next) {
     await res.json({
         create_radar: iam.isAuthorizedToCreateRadar(req.user),
     })
