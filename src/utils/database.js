@@ -174,8 +174,13 @@ async function deleteBlipLinks(radarId) {
     ]);
 }
 
-async function getUserRadarRights(userId) {
-    const data = await utils.selectFrom('radar_rights', [ 'radar', 'user_id', 'rights' ], [ `user_id = '${userId}'` ]);
+async function getRadarRights(userId) {
+    let data;
+    if (userId) {
+        data = await utils.selectFrom('radar_rights', [ 'radar', 'user_id', 'rights' ], [ `user_id = '${userId}'` ]);
+    } else {
+        data = await utils.selectFrom('radar_rights', [ 'radar', 'user_id', 'rights' ]);
+    }
     return data.rows;
 }
 
@@ -235,7 +240,7 @@ module.exports = {
     insertBlipLinks,
     deleteBlipLinks,
 
-    getUserRadarRights,
+    getRadarRights,
     insertRadarRights,
     deleteRadarRights,
     userCanEditRadar,

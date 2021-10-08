@@ -209,12 +209,28 @@ router.use(function(req, res, next) {
 
 router.get('/radar', async function(req, res, next) {
     const userId = req.user.mail;
-    const radarRights = await utils.getUserRadarRights(userId);
+    const radarRights = await utils.getRadarRights();
 
-    await res.json(radarRights.map(function(entry) {
+    const userRadars = radarRights.filter(function(entry) {
+        return entry.user_id === userId && entry.rights.split(',').indexOf('owner') !== -1;
+    });
+
+    for (const userRadar of userRadars) {
+        userRadar.editors = [];
+        for (const radarRight of radarRights) {
+            if (radarRight.radar === userRadar.radar) {
+                if (radarRight.rights.split(',').indexOf('edit') !== -1) {
+                    userRadar.editors.push(radarRight.user_id);
+                }
+            }
+        }
+    }
+
+    await res.json(userRadars.map(function(entry) {
         return {
             id: entry.radar,
             rights: entry.rights.split(','),
+            editors: entry.editors,
         }
     }));
 });
