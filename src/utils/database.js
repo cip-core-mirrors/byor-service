@@ -187,11 +187,9 @@ async function deleteBlipLinks(radarId) {
 
 async function userCanEditRadar(userId, radarId) {
     const radars = await getUserRadarRights(userId);
-    console.log('userCanEditRadar');
-    console.log(radars);
-    for (const row of radars) {
-        if (row[0] === radarId) {
-            const rights = row[2].split(',');
+    for (const entry of radars) {
+        if (entry.radar === radarId) {
+            const rights = entry.rights.split(',');
             return rights.indexOf('edit') !== -1;
         }
     }

@@ -303,10 +303,7 @@ router.get('/radar/:radar/parameters', async function(req, res, next) {
     const radar = req.params.radar;
 
     try {
-        console.log(req.user);
-        console.log(radar);
         const canEditRadar = await utils.userCanEditRadar(userId, radar);
-        console.log(canEditRadar);
         if (canEditRadar) {
             const params = await utils.getRadarParameters(radar);
             return await res.json(params);
