@@ -61,6 +61,18 @@ async function insertRadar(id, author) {
     );
 }
 
+async function insertRadarRights(radarId, userId, rights) {
+    await utils.upsert(
+        'radar_rights',
+        [
+            'radar',
+            'userId',
+            'rights',
+        ],
+        [ [ radarId, userId, rights.join(',') ] ],
+    );
+}
+
 async function getRadarParameters(radarId) {
     const data = await utils.selectFrom(
         'radar_parameters',
@@ -203,6 +215,7 @@ module.exports = {
 
     getRadars,
     insertRadar,
+    insertRadarRights,
 
     getRadarParameters,
     insertRadarParameters,
