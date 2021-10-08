@@ -225,6 +225,13 @@ router.get('/permissions', async function(req, res, next) {
     })
 });
 
+router.delete('/radar/:radarId', async function(req, res, next) {
+    const radar = req.params.radar;
+
+    await utils.deleteRadar(radar);
+    await res.json({message: 'ok'});
+});
+
 router.post('/radar', async function(req, res, next) {
     const { id: radarId } = req.body;
 

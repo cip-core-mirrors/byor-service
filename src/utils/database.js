@@ -57,17 +57,10 @@ async function insertRadar(id, author) {
     await insertRadarRights(id, author, ['owner', 'edit']);
 }
 
-async function insertRadarRights(radarId, userId, rights) {
-    await utils.upsert(
-        'radar_rights',
-        [
-            'id',
-            'radar',
-            'user_id',
-            'rights',
-        ],
-        [ [ `${radarId}-${userId}` , radarId, userId, rights.join(',') ] ],
-    );
+async function deleteRadar(radarId) {
+    await deleteRadarParameters(radarId);
+    await deleteRadarRights(radarId);
+    await utils.deleteFrom('radars', [ `id = '${radarId}'` ]);
 }
 
 async function getRadarParameters(radarId) {
@@ -181,6 +174,34 @@ async function deleteBlipLinks(radarId) {
     ]);
 }
 
+async function getUserRadarRights(userId) {
+    const data = await utils.selectFrom('radar_rights', [ 'radar', 'user_id', 'rights' ], [ `user_id = '${userId}'` ]);
+    return data.rows;
+}
+
+async function insertRadarRights(radarId, userId, rights) {
+    await utils.upsert(
+        'radar_rights',
+        [
+            'id',
+            'radar',
+            'user_id',
+            'rights',
+        ],
+        [ [ `${radarId}-${userId}` , radarId, userId, rights.join(',') ] ],
+    );
+}
+
+async function deleteRadarRights(radarId, userId) {
+    let data;
+    if (userId) {
+        data = await utils.deleteFrom('radar_rights', [ `radar = '${radarId}'`, `user_id = '${userId}'` ]);
+    } else {
+        data = await utils.deleteFrom('radar_rights', [ `radar = '${radarId}'` ]);
+    }
+    return data.rows;
+}
+
 async function userCanEditRadar(userId, radarId) {
     const radars = await getUserRadarRights(userId);
     for (const entry of radars) {
@@ -193,11 +214,6 @@ async function userCanEditRadar(userId, radarId) {
     return false;
 }
 
-async function getUserRadarRights(userId) {
-    const data = await utils.selectFrom('radar_rights', [ 'radar', 'user_id', 'rights' ], [ `user_id = '${userId}'` ]);
-    return data.rows;
-}
-
 module.exports = {
     init,
     connect: utils.connect,
@@ -207,7 +223,7 @@ module.exports = {
 
     getRadars,
     insertRadar,
-    insertRadarRights,
+    deleteRadar,
 
     getRadarParameters,
     insertRadarParameters,
@@ -220,5 +236,7 @@ module.exports = {
     deleteBlipLinks,
 
     getUserRadarRights,
+    insertRadarRights,
+    deleteRadarRights,
     userCanEditRadar,
 };
