@@ -157,7 +157,7 @@ router.get('/radar', async function(req, res, next) {
     await res.json(radarRights.map(function(entry) {
         return {
             id: entry.radar,
-            rights: entry.rights,
+            rights: entry.rights.split(','),
         }
     }));
 });
