@@ -315,6 +315,23 @@ router.get('/radar/:radar/parameters', async function(req, res, next) {
     }
 });
 
+router.get('/radar/:radar/blip-links', async function(req, res, next) {
+    const userId = req.user.mail;
+    const radar = req.params.radar;
+
+    try {
+        const canEditRadar = await utils.userCanEditRadar(userId, radar);
+        if (canEditRadar) {
+            const blipLinks = await utils.selectBlipsWithColumnLinks(radar);
+            return await res.json(blipLinks);
+        }
+        res.status(404);
+        await res.json({message: `Radar not found`});
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
 router.get('/radar/:radar', async function(req, res, next) {
     const userId = req.user.mail;
     const radar = req.params.radar;
