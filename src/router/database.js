@@ -263,8 +263,8 @@ router.post('/radar', async function(req, res, next) {
 
     const radars = await utils.getRadars();
     let radarFound = false;
-    for (const row of radars) {
-        if (row[0] === radarId) {
+    for (const entry of radars) {
+        if (entry.id === radarId) {
             radarFound = true;
             break;
         }
@@ -282,16 +282,15 @@ router.post('/radar', async function(req, res, next) {
 });
 
 router.put('/radar/:radar', async function(req, res, next) {
-    const userId = req.user.mail;
     const radar = req.params.radar;
     const { links = [], parameters = [], permissions = [] } = req.body;
 
     try {
         const radars = await utils.getRadars();
         let radarFound = false;
-        for (const row of radars) {
-            if (row[0] === radar) {
-                radarFound = row[1] !== userId;
+        for (const entry of radars) {
+            if (entry.id === radar) {
+                radarFound = true;
                 break;
             }
         }
