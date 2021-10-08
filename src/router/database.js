@@ -226,9 +226,9 @@ router.get('/permissions', async function(req, res, next) {
 });
 
 router.delete('/radar/:radarId', async function(req, res, next) {
-    const radar = req.params.radar;
+    const radarId = req.params.radarId;
 
-    await utils.deleteRadar(radar);
+    await utils.deleteRadar(radarId);
     await res.json({message: 'ok'});
 });
 
