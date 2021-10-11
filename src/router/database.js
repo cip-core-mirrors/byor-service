@@ -285,6 +285,7 @@ router.post('/radar', async function(req, res, next) {
 });
 
 router.put('/radar/:radar', async function(req, res, next) {
+    const userId = req.user.mail;
     const radar = req.params.radar;
     const { links = [], parameters = [], permissions = [] } = req.body;
 
@@ -303,8 +304,22 @@ router.put('/radar/:radar', async function(req, res, next) {
             return await res.json({message: `Radar "${radar}" does not exist`});
         }
 
+        const userRadars = await utils.getRadarRights(userId);
+        let userFound = false;
+        for (const entry of userRadars) {
+            if (entry.radar === radar && entry.rights.split(',').indexOf('edit') !== -1) {
+                userFound = true;
+                break;
+            }
+        }
+
+        if (!userFound) {
+            res.statusCode = 401;
+            return await res.json({message: `You cannot edit radar "${radar}"`});
+        }
+
         for (const permission of permissions) {
-            await utils.insertRadarRights(radar, permission.userId, permission.rights.join(','));
+            await utils.insertRadarRights(radar, permission.user_id, permission.rights.join(','));
         }
 
         if (links.length > 0) {
