@@ -207,6 +207,17 @@ async function deleteRadarRights(radarId, userId) {
     return data.rows;
 }
 
+async function radarExists(radarId) {
+    const radars = await utils.getRadars();
+    for (const entry of radars) {
+        if (entry.id === radarId) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 async function userCanEditRadar(userId, radarId) {
     const radars = await getRadarRights(userId);
     for (const entry of radars) {
@@ -243,5 +254,7 @@ module.exports = {
     getRadarRights,
     insertRadarRights,
     deleteRadarRights,
+
+    radarExists,
     userCanEditRadar,
 };

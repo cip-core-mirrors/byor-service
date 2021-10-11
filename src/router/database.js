@@ -264,15 +264,7 @@ router.post('/radar', async function(req, res, next) {
         return await res.json({message: 'You are not authorized to create a radar'});
     }
 
-    const radars = await utils.getRadars();
-    let radarFound = false;
-    for (const entry of radars) {
-        if (entry.id === radarId) {
-            radarFound = true;
-            break;
-        }
-    }
-
+    const radarFound = await utils.radarExists(radarId);
     if (radarFound) {
         res.statusCode = 404;
         return await res.json({message: `Radar "${radarId}" already exists`});
@@ -284,42 +276,75 @@ router.post('/radar', async function(req, res, next) {
     await res.json({ status: 'ok' });
 });
 
-router.put('/radar/:radar', async function(req, res, next) {
+router.post('/radar/:radar/permissions', async function(req, res, next) {
     const userId = req.user.mail;
     const radar = req.params.radar;
-    const { links = [], parameters = [], permissions = [] } = req.body;
+    const { permissions = [] } = req.body;
 
     try {
-        const radars = await utils.getRadars();
-        let radarFound = false;
-        for (const entry of radars) {
-            if (entry.id === radar) {
-                radarFound = true;
-                break;
-            }
-        }
-
+        const radarFound = await utils.radarExists(radar);
         if (!radarFound) {
             res.statusCode = 404;
             return await res.json({message: `Radar "${radar}" does not exist`});
         }
 
-        const userRadars = await utils.getRadarRights(userId);
-        let userFound = false;
-        for (const entry of userRadars) {
-            if (entry.radar === radar && entry.rights.split(',').indexOf('edit') !== -1) {
-                userFound = true;
-                break;
-            }
-        }
-
-        if (!userFound) {
+        const userCanEdit = await utils.userCanEditRadar(userId, radar);
+        if (!userCanEdit) {
             res.statusCode = 401;
             return await res.json({message: `You cannot edit radar "${radar}"`});
         }
 
         for (const permission of permissions) {
             await utils.insertRadarRights(radar, permission.user_id, permission.rights);
+        }
+
+        await res.json({ status: 'ok' })
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
+router.delete('/radar/:radar/permissions/:userId', async function(req, res, next) {
+    const userId = req.params.userId;
+    const radar = req.params.radar;
+
+    try {
+        const radarFound = await utils.radarExists(radar);
+        if (!radarFound) {
+            res.statusCode = 404;
+            return await res.json({message: `Radar "${radar}" does not exist`});
+        }
+
+        const userCanEdit = await utils.userCanEditRadar(userId, radar);
+        if (!userCanEdit) {
+            res.statusCode = 401;
+            return await res.json({message: `You cannot edit radar "${radar}"`});
+        }
+
+        await utils.deleteRadarRights(radar, userId);
+
+        await res.json({ status: 'ok' })
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
+router.put('/radar/:radar', async function(req, res, next) {
+    const userId = req.user.mail;
+    const radar = req.params.radar;
+    const { links = [], parameters = [] } = req.body;
+
+    try {
+        const radarFound = await utils.radarExists(radar);
+        if (!radarFound) {
+            res.statusCode = 404;
+            return await res.json({message: `Radar "${radar}" does not exist`});
+        }
+
+        const userCanEdit = await utils.userCanEditRadar(userId, radar);
+        if (!userCanEdit) {
+            res.statusCode = 401;
+            return await res.json({message: `You cannot edit radar "${radar}"`});
         }
 
         if (links.length > 0) {
