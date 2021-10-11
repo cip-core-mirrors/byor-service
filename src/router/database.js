@@ -319,7 +319,7 @@ router.put('/radar/:radar', async function(req, res, next) {
         }
 
         for (const permission of permissions) {
-            await utils.insertRadarRights(radar, permission.user_id, permission.rights.join(','));
+            await utils.insertRadarRights(radar, permission.user_id, permission.rights);
         }
 
         if (links.length > 0) {
