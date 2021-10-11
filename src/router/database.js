@@ -281,6 +281,7 @@ const possibleRights = [
     'view',
 ];
 router.post('/radar/:radar/permissions', async function(req, res, next) {
+    const authorId = req.user.mail;
     const radar = req.params.radar;
     const { user_id: userId, rights } = req.body;
 
@@ -291,7 +292,7 @@ router.post('/radar/:radar/permissions', async function(req, res, next) {
             return await res.json({message: `Radar "${radar}" does not exist`});
         }
 
-        const userCanEdit = await utils.userCanEditRadar(userId, radar);
+        const userCanEdit = await utils.userCanEditRadar(authorId, radar);
         if (!userCanEdit) {
             res.statusCode = 401;
             return await res.json({message: `You cannot edit radar "${radar}"`});
