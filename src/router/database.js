@@ -388,6 +388,7 @@ router.put('/radar/:radar', async function(req, res, next) {
 router.get('/blips', async function(req, res, next) {
     try {
         const blips = await utils.selectBlipsWithColumnLinks();
+        console.log(blips)
 
         const dict = {}
         for (const row of blips) {
