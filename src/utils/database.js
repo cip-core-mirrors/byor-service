@@ -208,7 +208,7 @@ async function deleteRadarRights(radarId, userId) {
 }
 
 async function radarExists(radarId) {
-    const radars = await utils.getRadars();
+    const radars = await getRadars();
     for (const entry of radars) {
         if (entry.id === radarId) {
             return true;
