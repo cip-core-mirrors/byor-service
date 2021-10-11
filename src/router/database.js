@@ -276,10 +276,13 @@ router.post('/radar', async function(req, res, next) {
     await res.json({ status: 'ok' });
 });
 
+const possibleRights = [
+    'edit',
+    'view',
+];
 router.post('/radar/:radar/permissions', async function(req, res, next) {
-    const userId = req.user.mail;
     const radar = req.params.radar;
-    const { permissions = [] } = req.body;
+    const { user_id: userId, rights } = req.body;
 
     try {
         const radarFound = await utils.radarExists(radar);
@@ -294,9 +297,7 @@ router.post('/radar/:radar/permissions', async function(req, res, next) {
             return await res.json({message: `You cannot edit radar "${radar}"`});
         }
 
-        for (const permission of permissions) {
-            await utils.insertRadarRights(radar, permission.user_id, permission.rights);
-        }
+        await utils.insertRadarRights(radar, userId, rights.filter(right => possibleRights.indexOf(right) !== -1));
 
         await res.json({ status: 'ok' })
     } catch (e) {
