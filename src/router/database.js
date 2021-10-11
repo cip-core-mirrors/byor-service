@@ -212,15 +212,18 @@ router.get('/radar', async function(req, res, next) {
     const radarRights = await utils.getRadarRights();
 
     const userRadars = radarRights.filter(function(entry) {
-        return entry.user_id === userId && entry.rights.split(',').indexOf('owner') !== -1;
+        return entry.user_id === userId && entry.rights.split(',').indexOf('edit') !== -1;
     });
 
     for (const userRadar of userRadars) {
-        userRadar.editors = [];
+        userRadar.permissions = [];
         for (const radarRight of radarRights) {
             if (radarRight.radar === userRadar.radar) {
                 if (radarRight.rights.split(',').indexOf('edit') !== -1) {
-                    userRadar.editors.push(radarRight.user_id);
+                    userRadar.permissions.push({
+                        user_id: radarRight.user_id,
+                        rights: radarRight.rights.split(','),
+                    });
                 }
             }
         }
@@ -230,7 +233,7 @@ router.get('/radar', async function(req, res, next) {
         return {
             id: entry.radar,
             rights: entry.rights.split(','),
-            editors: entry.editors,
+            permissions: entry.permissions,
         }
     }));
 });
