@@ -87,6 +87,16 @@ router.get('/radar/:radar', async function(req, res, next) {
     }
 });
 
+router.get('/radars', async function(req, res, next) {
+    const radars = await utils.getRadars();
+
+    await res.json(radars.map(function(entry) {
+        return {
+            id: entry.radar,
+        }
+    }));
+});
+
 router.options('/', async function(req, res, next) {
     await res.send(200)
 });
