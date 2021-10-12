@@ -1,9 +1,12 @@
 const utils = require('../database');
 
 async function init() {
-    if (process.env.RESET_DATABASE === 'true') {
-        await utils.dropTables()
+    const tablesToDrop = (process.env.RESET_TABLES || '').split(',');
+    console.log(`[Database] Dropping ${tablesToDrop.length} table${tablesToDrop.length > 1 ? 's' : ''}...`);
+    for (const tableName of tablesToDrop) {
+        await utils.dropTable(tableName);
     }
+    console.log(`[Database] Dropped ${tablesToDrop.length} table${tablesToDrop.length > 1 ? 's' : ''}`);
     await utils.createTables()
 }
 

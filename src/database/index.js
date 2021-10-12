@@ -29,12 +29,10 @@ async function createTables() {
     if (client) return await client.query(sql);
 }
 
-async function dropTables() {
-    const filePath = 'reset.sql'
-    const sql = fs.readFileSync(path.join(__dirname, filePath), { encoding: 'utf8' })
-    console.log('[Database] Dropping tables...')
+async function dropTable(table) {
+    const sql = `DROP TABLE IF EXISTS ${table};`;
     if (shouldLog) logQuery(sql)
-    if (client) return await client.query(sql);
+    if (client) return await client.query(sql)
 }
 
 async function selectFrom(table, columns, where = []) {
@@ -133,7 +131,7 @@ module.exports = {
     connect,
     disconnect,
     createTables,
-    dropTables,
+    dropTable,
     selectFrom,
     selectFromInnerJoin,
     insertInto,
