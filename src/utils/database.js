@@ -52,7 +52,11 @@ async function getRadars() {
 }
 
 async function insertRadar(id, author) {
-    await setRadarState(id);
+    await utils.upsert(
+        'radars',
+        [ 'id', 'state' ],
+        [[ id, 0 ]], // default state
+    );
     if (author) await insertRadarRights(id, author, ['owner', 'edit']);
 }
 
@@ -62,11 +66,14 @@ async function deleteRadar(radarId) {
     await utils.deleteFrom('radars', [ `id = '${radarId}'` ]);
 }
 
-async function setRadarState(id, state = 0) {
-    await utils.upsert(
+async function updateRadarState(id, state = 0) {
+    await utils.update(
         'radars',
-        [ 'id', 'state' ],
-        [ [ id, state ] ],
+        {
+            id: id,
+            state: state,
+        },
+        [ `id = '${id}'` ],
     );
 }
 
@@ -252,7 +259,7 @@ module.exports = {
     getRadars,
     insertRadar,
     deleteRadar,
-    setRadarState,
+    updateRadarState,
 
     getRadarParameters,
     insertRadarParameters,

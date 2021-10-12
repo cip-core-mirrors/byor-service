@@ -392,7 +392,7 @@ router.put('/radar/:radar', async function(req, res, next) {
                 res.statusCode = 404;
                 return await res.json({message: `Unknown radar state "${state}"`});
             }
-            await utils.setRadarState(radar, state);
+            await utils.updateRadarState(radar, state);
         }
 
         if (links.length > 0) {
@@ -612,7 +612,7 @@ router.put('/admin/radar/:radar', async function(req, res, next) {
                 res.statusCode = 404;
                 return await res.json({message: `Unknown radar state "${state}"`});
             }
-            await utils.setRadarState(radar, state);
+            await utils.updateRadarState(radar, state);
         }
 
         if (links.length > 0) {
