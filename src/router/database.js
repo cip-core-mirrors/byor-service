@@ -5,7 +5,7 @@ const utils = require('../utils/database');
 const iam = require('../utils/iam');
 
 const parametersJson = process.env.DATABASE_PARAMETERS ? JSON.parse(process.env.DATABASE_PARAMETERS) : [];
-const adminUsers = process.env.ADMIN_USERS ? JSON.parse(process.env.ADMIN_USERS) : [];
+const adminUsers = (process.env.ADMIN_USERS || '').split(',');
 const router = express.Router();
 
 const blipsHashCache = {};
