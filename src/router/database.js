@@ -607,12 +607,13 @@ router.put('/admin/radar/:radar', async function(req, res, next) {
             return await res.json({message: `Radar "${radar}" does not exist`});
         }
 
-        if (possiblesStates.indexOf(parseInt(state)) === -1) {
-            res.statusCode = 404;
-            return await res.json({message: `Unknown radar state "${state}"`});
+        if (state !== undefined) {
+            if (possiblesStates.indexOf(parseInt(state)) === -1) {
+                res.statusCode = 404;
+                return await res.json({message: `Unknown radar state "${state}"`});
+            }
+            await utils.setRadarState(radar, state);
         }
-
-        await utils.setRadarState(radar, state);
 
         if (links.length > 0) {
             const linksRows = links.map(function (link) {
