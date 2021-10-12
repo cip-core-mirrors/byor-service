@@ -254,7 +254,7 @@ router.get('/radar', async function(req, res, next) {
     const radars = await utils.getRadars();
     for (const userRadar of userRadars) {
         for (const radar of radars) {
-            if (radar.id === userRadar.id) {
+            if (radar.id === userRadar.radar) {
                 userRadar.state = radar.state;
                 break;
             }
@@ -264,6 +264,7 @@ router.get('/radar', async function(req, res, next) {
     await res.json(userRadars.map(function(entry) {
         return {
             id: entry.radar,
+            state: entry.state,
             rights: entry.rights.split(','),
             permissions: entry.permissions,
         }
