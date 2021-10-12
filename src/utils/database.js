@@ -47,16 +47,12 @@ async function insertBlips(blips) {
 }
 
 async function getRadars() {
-    const data = await utils.selectFrom('radars', [ 'id' ]);
+    const data = await utils.selectFrom('radars', [ 'id', 'state' ]);
     return data.rows;
 }
 
 async function insertRadar(id, author) {
-    await utils.upsert(
-        'radars',
-        [ 'id' ],
-        [ [ id ] ],
-    );
+    await setRadarState(id);
     if (author) await insertRadarRights(id, author, ['owner', 'edit']);
 }
 
@@ -64,6 +60,14 @@ async function deleteRadar(radarId) {
     await deleteRadarParameters(radarId);
     await deleteRadarRights(radarId);
     await utils.deleteFrom('radars', [ `id = '${radarId}'` ]);
+}
+
+async function setRadarState(id, state = 0) {
+    await utils.upsert(
+        'radars',
+        [ 'id', 'state' ],
+        [ [ id, state ] ],
+    );
 }
 
 async function getRadarParameters(radarId) {
@@ -248,6 +252,7 @@ module.exports = {
     getRadars,
     insertRadar,
     deleteRadar,
+    setRadarState,
 
     getRadarParameters,
     insertRadarParameters,

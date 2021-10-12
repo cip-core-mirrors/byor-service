@@ -93,9 +93,7 @@ router.get('/radars', async function(req, res, next) {
     const radarRights = await utils.getRadarRights();
     const out = [];
 
-    for (const radarId of radars.map(radar => radar.id)) {
-        const radar = {};
-        radar.id = radarId;
+    for (const radar of radars) {
         radar.permissions = [];
         for (const radarRight of radarRights) {
             if (radarRight.radar === radarId) {
@@ -356,10 +354,14 @@ router.delete('/radar/:radar/permissions/:userId', async function(req, res, next
     }
 });
 
+const possiblesStates = [
+    0, // draft
+    1, // published
+];
 router.put('/radar/:radar', async function(req, res, next) {
     const userId = req.user.mail;
     const radar = req.params.radar;
-    const { links = [], parameters = [] } = req.body;
+    const { state, links = [], parameters = [] } = req.body;
 
     try {
         const radarFound = await utils.radarExists(radar);
@@ -373,6 +375,13 @@ router.put('/radar/:radar', async function(req, res, next) {
             res.statusCode = 401;
             return await res.json({message: `You cannot edit radar "${radar}"`});
         }
+
+        if (possiblesStates.indexOf(parseInt(state)) === -1) {
+            res.statusCode = 404;
+            return await res.json({message: `Unknown radar state "${state}"`});
+        }
+
+        await utils.setRadarState(radar, state);
 
         if (links.length > 0) {
             const linksRows = links.map(function (link) {
@@ -568,6 +577,60 @@ router.delete('/admin/radar/:radar/permissions/:userId', async function(req, res
         }
 
         await utils.deleteRadarRights(radar, userId);
+
+        await res.json({ status: 'ok' })
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
+router.put('/admin/radar/:radar', async function(req, res, next) {
+    const radar = req.params.radar;
+    const { state, links = [], parameters = [] } = req.body;
+
+    try {
+        const radarFound = await utils.radarExists(radar);
+        if (!radarFound) {
+            res.statusCode = 404;
+            return await res.json({message: `Radar "${radar}" does not exist`});
+        }
+
+        if (possiblesStates.indexOf(parseInt(state)) === -1) {
+            res.statusCode = 404;
+            return await res.json({message: `Unknown radar state "${state}"`});
+        }
+
+        await utils.setRadarState(radar, state);
+
+        if (links.length > 0) {
+            const linksRows = links.map(function (link) {
+                const blipCache = blipsHashCache[link.blip];
+                return [
+                    `${radar}-${link.blip}`,
+                    radar,
+                    link.sector,
+                    link.ring,
+                    link.blip,
+                    blipCache ? blipCache.version : 0,
+                    link.value,
+                ]
+            });
+            await utils.deleteBlipLinks(radar);
+            await utils.insertBlipLinks(linksRows);
+        }
+
+        if (parameters.length > 0) {
+            const parametersRows = parameters.map(function(parameter) {
+                return [
+                    `${radar}-${parameter.name}`,
+                    radar,
+                    parameter.name,
+                    parameter.value,
+                ]
+            });
+            await utils.deleteRadarParameters(radar);
+            await utils.insertRadarParameters(parametersRows);
+        }
 
         await res.json({ status: 'ok' })
     } catch (e) {
