@@ -89,27 +89,26 @@ router.get('/radar/:radar', async function(req, res, next) {
 });
 
 router.get('/radars', async function(req, res, next) {
+    const radars = await utils.getRadars();
     const radarRights = await utils.getRadarRights();
+    const out = [];
 
-    for (const userRadar of radarRights) {
-        userRadar.permissions = [];
+    for (const radarId of radars.map(radar => radar.id)) {
+        const radar = {};
+        radar.id = radarId;
+        radar.permissions = [];
         for (const radarRight of radarRights) {
-            if (radarRight.radar === userRadar.radar) {
-                userRadar.permissions.push({
+            if (radarRight.radar === radarId) {
+                radar.permissions.push({
                     user_id: radarRight.user_id,
                     rights: radarRight.rights.split(','),
                 });
             }
         }
+        out.push(radar);
     }
 
-    await res.json(radarRights.map(function(entry) {
-        return {
-            id: entry.radar,
-            rights: entry.rights.split(','),
-            permissions: entry.permissions,
-        }
-    }));
+    await res.json(out);
 });
 
 router.options('/', async function(req, res, next) {
