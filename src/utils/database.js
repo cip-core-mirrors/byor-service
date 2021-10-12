@@ -54,7 +54,7 @@ async function insertRadar(id, author) {
         [ 'id' ],
         [ [ id ] ],
     );
-    await insertRadarRights(id, author, ['owner', 'edit']);
+    if (author) await insertRadarRights(id, author, ['owner', 'edit']);
 }
 
 async function deleteRadar(radarId) {

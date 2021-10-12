@@ -343,7 +343,7 @@ router.delete('/radar/:radar/permissions/:userId', async function(req, res, next
             return await res.json({message: `Radar "${radar}" does not exist`});
         }
 
-        const userCanEdit = await utils.userCanEditRadar(userId, radar);
+        const userCanEdit = await utils.userCanEditRadar(req.user.mail, radar);
         if (!userCanEdit) {
             res.statusCode = 401;
             return await res.json({message: `You cannot edit radar "${radar}"`});
@@ -488,6 +488,84 @@ router.get('/radar/:radar/blip-links', async function(req, res, next) {
         }
         res.status(404);
         await res.json({message: `Radar not found`});
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
+router.use('/admin', async function(req, res, next) {
+   if (adminUsers.indexOf(req.user.mail) !== -1) {
+       next();
+   } else {
+       res.status(403);
+       await res.json({message: `You are not an admin`});
+   }
+});
+
+router.delete('/admin/radar/:radarId', async function(req, res, next) {
+    const radarId = req.params.radarId;
+
+    await utils.deleteRadar(radarId);
+    await res.json({message: 'ok'});
+});
+
+router.post('/admin/radar', async function(req, res, next) {
+    const { id: radarId } = req.body;
+
+    if (!radarId) {
+        res.statusCode = 404;
+        return await res.json({message: 'Radar ID should not be empty'});
+    }
+
+    if (!iam.isAuthorizedToCreateRadar(req.user)) {
+        res.statusCode = 403;
+        return await res.json({message: 'You are not authorized to create a radar'});
+    }
+
+    const radarFound = await utils.radarExists(radarId);
+    if (radarFound) {
+        res.statusCode = 404;
+        return await res.json({message: `Radar "${radarId}" already exists`});
+    }
+
+    await utils.insertRadar(radarId);
+
+    await res.json({ status: 'ok' });
+});
+
+router.post('/admin/radar/:radar/permissions', async function(req, res, next) {
+    const radar = req.params.radar;
+    const { user_id: userId, rights } = req.body;
+
+    try {
+        const radarFound = await utils.radarExists(radar);
+        if (!radarFound) {
+            res.statusCode = 404;
+            return await res.json({message: `Radar "${radar}" does not exist`});
+        }
+
+        await utils.insertRadarRights(radar, userId, rights.filter(right => possibleRights.indexOf(right) !== -1));
+
+        await res.json({ status: 'ok' })
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
+router.delete('/admin/radar/:radar/permissions/:userId', async function(req, res, next) {
+    const userId = req.params.userId;
+    const radar = req.params.radar;
+
+    try {
+        const radarFound = await utils.radarExists(radar);
+        if (!radarFound) {
+            res.statusCode = 404;
+            return await res.json({message: `Radar "${radar}" does not exist`});
+        }
+
+        await utils.deleteRadarRights(radar, userId);
+
+        await res.json({ status: 'ok' })
     } catch (e) {
         await errorHandling(e, res)
     }
