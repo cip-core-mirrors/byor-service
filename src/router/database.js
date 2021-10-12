@@ -251,6 +251,16 @@ router.get('/radar', async function(req, res, next) {
         }
     }
 
+    const radars = await utils.getRadars();
+    for (const userRadar of userRadars) {
+        for (const radar of radars) {
+            if (radar.id === userRadar.id) {
+                userRadar.state = radar.state;
+                break;
+            }
+        }
+    }
+
     await res.json(userRadars.map(function(entry) {
         return {
             id: entry.radar,
