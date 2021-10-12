@@ -81,7 +81,7 @@ async function upsert(table, columns = [], rows = []) {
 
 async function update(table, values = {}, conditions = []) {
     const sql = `UPDATE ${table} \n` +
-        `SET ${Object.entries(values).map(entry => `${entry[0]} = ${entry[1]}`).join(',\n')} \n` +
+        `SET ${Object.entries(values).map(entry => `${entry[0]} = '${entry[1]}'`).join(',\n')} \n` +
         (conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '') +
         ';'
     if (shouldLog) logQuery(sql)
