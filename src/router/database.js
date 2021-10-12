@@ -543,7 +543,12 @@ router.post('/admin/radar/:radar/permissions', async function(req, res, next) {
             return await res.json({message: `Radar "${radar}" does not exist`});
         }
 
-        await utils.insertRadarRights(radar, userId, rights.filter(right => possibleRights.indexOf(right) !== -1));
+        const rightsToAdd = rights.filter(right => possibleRights.indexOf(right) !== -1);
+        const radarRights = await utils.getRadarRights(radar);
+        if (radarRights.length === 0) {
+            rightsToAdd.push('owner');
+        }
+        await utils.insertRadarRights(radar, userId, rightsToAdd);
 
         await res.json({ status: 'ok' })
     } catch (e) {

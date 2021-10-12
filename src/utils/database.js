@@ -174,10 +174,15 @@ async function deleteBlipLinks(radarId) {
     ]);
 }
 
-async function getRadarRights(userId) {
+async function getUserRadarRights(userId) {
+    const data = await utils.selectFrom('radar_rights', [ 'radar', 'user_id', 'rights' ], [ `user_id = '${userId}'` ]);
+    return data.rows;
+}
+
+async function getRadarRights(radarId) {
     let data;
-    if (userId) {
-        data = await utils.selectFrom('radar_rights', [ 'radar', 'user_id', 'rights' ], [ `user_id = '${userId}'` ]);
+    if (radarId) {
+        data = await utils.selectFrom('radar_rights', [ 'radar', 'user_id', 'rights' ], [ `radar = '${radarId}'` ]);
     } else {
         data = await utils.selectFrom('radar_rights', [ 'radar', 'user_id', 'rights' ]);
     }
@@ -219,7 +224,7 @@ async function radarExists(radarId) {
 }
 
 async function userCanEditRadar(userId, radarId) {
-    const radars = await getRadarRights(userId);
+    const radars = await getUserRadarRights(userId);
     for (const entry of radars) {
         if (entry.radar === radarId) {
             const rights = entry.rights.split(',');
