@@ -96,7 +96,7 @@ router.get('/radars', async function(req, res, next) {
     for (const radar of radars) {
         radar.permissions = [];
         for (const radarRight of radarRights) {
-            if (radarRight.radar === radarId) {
+            if (radarRight.radar === radar.id) {
                 radar.permissions.push({
                     user_id: radarRight.user_id,
                     rights: radarRight.rights.split(','),
