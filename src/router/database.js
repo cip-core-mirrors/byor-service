@@ -252,13 +252,20 @@ router.get('/radar/:radar/parameters', async function(req, res, next) {
     const radar = req.params.radar;
 
     try {
-        const canEditRadar = await utils.userCanEditRadar(userId, radar);
-        if (canEditRadar) {
-            const params = await utils.getRadarParameters(radar);
-            return await res.json(params);
+        const radarFound = await utils.radarExists(radar);
+        if (!radarFound) {
+            res.status(404);
+            return await res.json({message: `Radar "${radar}" does not exist`});
         }
-        res.status(404);
-        await res.json({message: `Radar not found`});
+
+        const canEditRadar = await utils.userCanEditRadar(userId, radar);
+        if (!canEditRadar) {
+            res.status(404);
+            return await res.json({message: `You cannot edit radar "${radar}"`});
+        }
+
+        const params = await utils.getRadarParameters(radar);
+        return await res.json(params);
     } catch (e) {
         await errorHandling(e, res)
     }
@@ -269,13 +276,20 @@ router.get('/radar/:radar/blip-links', async function(req, res, next) {
     const radar = req.params.radar;
 
     try {
-        const canEditRadar = await utils.userCanEditRadar(userId, radar);
-        if (canEditRadar) {
-            const blipLinks = await utils.selectBlipsWithColumnLinks(radar);
-            return await res.json(blipLinks);
+        const radarFound = await utils.radarExists(radar);
+        if (!radarFound) {
+            res.status(404);
+            return await res.json({message: `Radar "${radar}" does not exist`});
         }
-        res.status(404);
-        await res.json({message: `Radar not found`});
+
+        const canEditRadar = await utils.userCanEditRadar(userId, radar);
+        if (!canEditRadar) {
+            res.status(404);
+            return await res.json({message: `You cannot edit radar "${radar}"`});
+        }
+
+        const blipLinks = await utils.selectBlipsWithColumnLinks(radar);
+        return await res.json(blipLinks);
     } catch (e) {
         await errorHandling(e, res)
     }
