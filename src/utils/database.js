@@ -1,5 +1,7 @@
 const utils = require('../database');
 
+const adminUsers = (process.env.ADMIN_USERS || '').split(',');
+
 async function init() {
     const tablesToDrop = (process.env.RESET_TABLES || '').trim().split(',').filter(table => table.length > 0);
     console.log(`[Database] Dropping ${tablesToDrop.length} table${tablesToDrop.length > 1 ? 's' : ''}...`);
@@ -8,6 +10,10 @@ async function init() {
     }
     console.log(`[Database] Dropped ${tablesToDrop.length} table${tablesToDrop.length > 1 ? 's' : ''}`);
     await utils.createTables()
+}
+
+function isAdminUser(userId) {
+    return adminUsers.indexOf(userId) !== -1;
 }
 
 async function getBlips() {
@@ -238,6 +244,8 @@ async function radarExists(radarId) {
 }
 
 async function userCanEditRadar(userId, radarId) {
+    if (isAdminUser(userId)) return true;
+
     const radars = await getUserRadarRights(userId);
     for (const entry of radars) {
         if (entry.radar === radarId) {
@@ -252,6 +260,7 @@ async function userCanEditRadar(userId, radarId) {
 module.exports = {
     init,
     connect: utils.connect,
+    isAdminUser,
 
     getBlips,
     insertBlips,

@@ -5,7 +5,6 @@ const utils = require('../utils/database');
 const iam = require('../utils/iam');
 
 const parametersJson = process.env.DATABASE_PARAMETERS ? JSON.parse(process.env.DATABASE_PARAMETERS) : [];
-const adminUsers = (process.env.ADMIN_USERS || '').split(',');
 const router = express.Router();
 
 const blipsHashCache = {};
@@ -114,7 +113,7 @@ router.get('/radar', async function(req, res, next) {
 router.get('/permissions', async function(req, res, next) {
     await res.json({
         create_radar: iam.isAuthorizedToCreateRadar(req.user),
-        admin_user: adminUsers.indexOf(req.user.mail) !== -1,
+        admin_user: utils.isAdminUser(req.user.mail),
     })
 });
 
@@ -283,7 +282,7 @@ router.get('/radar/:radar/blip-links', async function(req, res, next) {
 });
 
 router.use('/admin', async function(req, res, next) {
-   if (adminUsers.indexOf(req.user.mail) !== -1) {
+   if (utils.isAdminUser(req.user.mail)) {
        next();
    } else {
        res.status(403);
