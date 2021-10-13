@@ -157,7 +157,7 @@ router.post('/radar/:radar/permissions', async function(req, res, next) {
 
         const userCanEdit = await utils.userCanEditRadar(authorId, radar);
         if (!userCanEdit) {
-            res.statusCode = 401;
+            res.statusCode = 403;
             return await res.json({message: `You cannot edit radar "${radar}"`});
         }
 
@@ -182,7 +182,7 @@ router.delete('/radar/:radar/permissions/:userId', async function(req, res, next
 
         const userCanEdit = await utils.userCanEditRadar(req.user.mail, radar);
         if (!userCanEdit) {
-            res.statusCode = 401;
+            res.statusCode = 403;
             return await res.json({message: `You cannot edit radar "${radar}"`});
         }
 
@@ -212,7 +212,7 @@ router.put('/radar/:radar', async function(req, res, next) {
 
         const userCanEdit = await utils.userCanEditRadar(userId, radar);
         if (!userCanEdit) {
-            res.statusCode = 401;
+            res.statusCode = 403;
             return await res.json({message: `You cannot edit radar "${radar}"`});
         }
 
