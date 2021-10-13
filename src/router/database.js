@@ -35,53 +35,7 @@ router.get('/radar/:radar', async function(req, res, next) {
     const radar = req.params.radar;
 
     try {
-        const blips = await utils.selectBlipsWithColumnLinks(radar);
-
-        blips.map(blip => delete blip.version);
-
-        const params = await utils.getRadarParameters(radar);
-        const dict = {};
-        for (const row of blips) {
-            let blip = dict[row.id];
-            if (!blip) {
-                blip = Object.assign({}, row);
-                dict[row.id] = blip;
-                delete blip.columnname;
-                delete blip.columnvalue;
-            }
-            blip[row.columnname] = row.columnvalue;
-        }
-
-        const columns = blips.map(blip => blip.columnname).filter(onlyUnique);
-        const headers = [
-            'name',
-            'value',
-            'id',
-            'hash',
-            'lastUpdate',
-            'sector',
-            'ring',
-        ];
-        headers.push(...columns);
-        const output = [ headers ];
-        for (const row of params) {
-            output.push(Object.values(row))
-        }
-
-        const outputBlips = [];
-        for (const id in dict) {
-            const blip = dict[id];
-            outputBlips.push(Object.values(blip));
-        }
-
-        const idIndex = 2;
-        outputBlips.sort(function(a, b) {
-            if (a[idIndex] < b[idIndex]) return -1;
-            else if (a[idIndex] > b[idIndex]) return 1;
-            return 0;
-        });
-        output.push(...outputBlips);
-
+        const output = await getRadar(radar);
         return await res.json(output);
     } catch (e) {
         await errorHandling(e, res)
@@ -89,24 +43,8 @@ router.get('/radar/:radar', async function(req, res, next) {
 });
 
 router.get('/radars', async function(req, res, next) {
-    const radars = await utils.getRadars();
-    const radarRights = await utils.getRadarRights();
-    const out = [];
-
-    for (const radar of radars) {
-        radar.permissions = [];
-        for (const radarRight of radarRights) {
-            if (radarRight.radar === radar.id) {
-                radar.permissions.push({
-                    user_id: radarRight.user_id,
-                    rights: radarRight.rights.split(','),
-                });
-            }
-        }
-        out.push(radar);
-    }
-
-    await res.json(out);
+    const radars = await getAllRadars();
+    await res.json(radars);
 });
 
 router.options('/', async function(req, res, next) {
@@ -116,70 +54,8 @@ router.options('/', async function(req, res, next) {
 router.put('/', async function(req, res, next) {
     const { blips = [] } = req.body;
 
-    const tempCache = {};
     try {
-        let maxVersion = 0;
-
-        const columnLinks = [];
-        const blipsToInsert = [];
-        for (const blip of blips) {
-            const {
-                id,
-                name,
-                lastUpdate,
-            } = blip;
-            delete blip.hash;
-            delete blip.id;
-            delete blip.name;
-            delete blip.lastUpdate;
-            delete blip.version;
-
-            const columns = Object.entries(blip);
-            blip.hash = crypto.SHA256(
-                `${name}${lastUpdate ? `-${lastUpdate}` : ''}-${columns.map(row => row.join('-')).join('-')}`
-            ).toString();
-            blip.id = id;
-            blip.name = name;
-            blip.lastUpdate = lastUpdate;
-
-            const cachedBlip = blipsHashCache[blip.id] || {};
-            if (cachedBlip.hash !== blip.hash) {
-                blip.version = (cachedBlip.version || 0) + 1;
-                if (blip.version > maxVersion) maxVersion = blip.version;
-
-                blipsToInsert.push(blip);
-
-                columns.forEach(function(row) {
-                    const columnName = row[0];
-                    row.unshift(blip.version);
-                    row.unshift(blip.id);
-                    row.unshift(`${blip.id}-${columnName}`)
-                })
-                columnLinks.push(...columns);
-
-                tempCache[blip.id] = {
-                    hash: blip.hash,
-                    version: blip.version,
-                }
-            }
-        }
-
-        if (blipsToInsert.length > 0) {
-            await utils.insertBlips(blipsToInsert);
-            await utils.insertColumnLinks(columnLinks);
-            Object.assign(blipsHashCache, tempCache)
-        }
-
-        const response = {
-            status: 'ok',
-            data: blipsToInsert,
-            rows: blipsToInsert.length,
-        };
-
-        if (maxVersion > 0) {
-            response.version = maxVersion
-        }
-
+        const response = await insertBlips(blips);
         await res.json(response)
     } catch (e) {
         await errorHandling(e, res)
@@ -231,44 +107,8 @@ router.use(function(req, res, next) {
 
 router.get('/radar', async function(req, res, next) {
     const userId = req.user.mail;
-    const radarRights = await utils.getRadarRights();
-
-    const userRadars = radarRights.filter(function(entry) {
-        return entry.user_id === userId && entry.rights.split(',').indexOf('edit') !== -1;
-    });
-
-    for (const userRadar of userRadars) {
-        userRadar.permissions = [];
-        for (const radarRight of radarRights) {
-            if (radarRight.radar === userRadar.radar) {
-                if (radarRight.rights.split(',').indexOf('edit') !== -1) {
-                    userRadar.permissions.push({
-                        user_id: radarRight.user_id,
-                        rights: radarRight.rights.split(','),
-                    });
-                }
-            }
-        }
-    }
-
-    const radars = await utils.getRadars();
-    for (const userRadar of userRadars) {
-        for (const radar of radars) {
-            if (radar.id === userRadar.radar) {
-                userRadar.state = radar.state;
-                break;
-            }
-        }
-    }
-
-    await res.json(userRadars.map(function(entry) {
-        return {
-            id: entry.radar,
-            state: entry.state,
-            rights: entry.rights.split(','),
-            permissions: entry.permissions,
-        }
-    }));
+    const userRadars = await getUserRadars(userId);
+    await res.json(userRadars);
 });
 
 router.get('/permissions', async function(req, res, next) {
@@ -288,20 +128,10 @@ router.delete('/radar/:radarId', async function(req, res, next) {
 router.post('/radar', async function(req, res, next) {
     const { id: radarId } = req.body;
 
-    if (!radarId) {
-        res.statusCode = 404;
-        return await res.json({message: 'Radar ID should not be empty'});
-    }
-
-    if (!iam.isAuthorizedToCreateRadar(req.user)) {
-        res.statusCode = 403;
-        return await res.json({message: 'You are not authorized to create a radar'});
-    }
-
-    const radarFound = await utils.radarExists(radarId);
-    if (radarFound) {
-        res.statusCode = 404;
-        return await res.json({message: `Radar "${radarId}" already exists`});
+    const response = await canCreateRadar(req.user, radarId);
+    if (!response.ok) {
+        res.statusCode = response.code;
+        return await res.json({ message: response.message });
     }
 
     const userId = req.user.mail;
@@ -392,39 +222,9 @@ router.put('/radar/:radar', async function(req, res, next) {
                 res.statusCode = 404;
                 return await res.json({message: `Unknown radar state "${state}"`});
             }
-            await utils.updateRadarState(radar, state);
         }
 
-        if (links.length > 0) {
-            const linksRows = links.map(function (link) {
-                const blipCache = blipsHashCache[link.blip];
-                return [
-                    `${radar}-${link.blip}`,
-                    radar,
-                    link.sector,
-                    link.ring,
-                    link.blip,
-                    blipCache ? blipCache.version : 0,
-                    link.value,
-                ]
-            });
-            await utils.deleteBlipLinks(radar);
-            await utils.insertBlipLinks(linksRows);
-        }
-
-        if (parameters.length > 0) {
-            const parametersRows = parameters.map(function(parameter) {
-                return [
-                    `${radar}-${parameter.name}`,
-                    radar,
-                    parameter.name,
-                    parameter.value,
-                ]
-            });
-            await utils.deleteRadarParameters(radar);
-            await utils.insertRadarParameters(parametersRows);
-        }
-
+        await editRadar(radar, links, parameters, state);
         await res.json({ status: 'ok' })
     } catch (e) {
         await errorHandling(e, res)
@@ -433,39 +233,8 @@ router.put('/radar/:radar', async function(req, res, next) {
 
 router.get('/blips', async function(req, res, next) {
     try {
-        const blips = await utils.selectBlipsWithColumnLinks();
-
-        const dict = {}
-        for (const row of blips) {
-            const columnName = row.columnname
-            const columnValue = row.columnvalue
-            delete row.columnname
-            delete row.columnvalue
-
-            let blip = dict[row.id_version]
-            if (!blip) {
-                blip = row
-                dict[row.id_version] = blip
-            }
-            blip[columnName] = columnValue
-        }
-
-        const output = {}
-        for (const blip of Object.values(dict)) {
-            let blipVersions = output[blip.id]
-            if (!blipVersions) {
-                blipVersions = []
-                output[blip.id] = blipVersions
-            }
-
-            while (blipVersions.length < blip.version) {
-                blipVersions.push(undefined)
-            }
-
-            blipVersions[blip.version - 1] = blip
-        }
-
-        return await res.json(output);
+        const blips = await getAllBlips();
+        return await res.json(blips);
     } catch (e) {
         await errorHandling(e, res)
     }
@@ -532,20 +301,10 @@ router.delete('/admin/radar/:radarId', async function(req, res, next) {
 router.post('/admin/radar', async function(req, res, next) {
     const { id: radarId } = req.body;
 
-    if (!radarId) {
-        res.statusCode = 404;
-        return await res.json({message: 'Radar ID should not be empty'});
-    }
-
-    if (!iam.isAuthorizedToCreateRadar(req.user)) {
-        res.statusCode = 403;
-        return await res.json({message: 'You are not authorized to create a radar'});
-    }
-
-    const radarFound = await utils.radarExists(radarId);
-    if (radarFound) {
-        res.statusCode = 404;
-        return await res.json({message: `Radar "${radarId}" already exists`});
+    const response = await canCreateRadar(req.user, radarId);
+    if (!response.ok) {
+        res.statusCode = response.code;
+        return await res.json({ message: response.message });
     }
 
     await utils.insertRadar(radarId);
@@ -612,44 +371,289 @@ router.put('/admin/radar/:radar', async function(req, res, next) {
                 res.statusCode = 404;
                 return await res.json({message: `Unknown radar state "${state}"`});
             }
-            await utils.updateRadarState(radar, state);
         }
 
-        if (links.length > 0) {
-            const linksRows = links.map(function (link) {
-                const blipCache = blipsHashCache[link.blip];
-                return [
-                    `${radar}-${link.blip}`,
-                    radar,
-                    link.sector,
-                    link.ring,
-                    link.blip,
-                    blipCache ? blipCache.version : 0,
-                    link.value,
-                ]
-            });
-            await utils.deleteBlipLinks(radar);
-            await utils.insertBlipLinks(linksRows);
-        }
-
-        if (parameters.length > 0) {
-            const parametersRows = parameters.map(function(parameter) {
-                return [
-                    `${radar}-${parameter.name}`,
-                    radar,
-                    parameter.name,
-                    parameter.value,
-                ]
-            });
-            await utils.deleteRadarParameters(radar);
-            await utils.insertRadarParameters(parametersRows);
-        }
-
+        await editRadar(radar, links, parameters, state);
         await res.json({ status: 'ok' })
     } catch (e) {
         await errorHandling(e, res)
     }
 });
+
+async function getRadar(radarId) {
+    const blips = await utils.selectBlipsWithColumnLinks(radarId);
+
+    blips.map(blip => delete blip.version);
+
+    const params = await utils.getRadarParameters(radarId);
+    const dict = {};
+    for (const row of blips) {
+        let blip = dict[row.id];
+        if (!blip) {
+            blip = Object.assign({}, row);
+            dict[row.id] = blip;
+            delete blip.columnname;
+            delete blip.columnvalue;
+        }
+        blip[row.columnname] = row.columnvalue;
+    }
+
+    const columns = blips.map(blip => blip.columnname).filter(onlyUnique);
+    const headers = [
+        'name',
+        'value',
+        'id',
+        'hash',
+        'lastUpdate',
+        'sector',
+        'ring',
+    ];
+    headers.push(...columns);
+    const output = [ headers ];
+    for (const row of params) {
+        output.push(Object.values(row))
+    }
+
+    const outputBlips = [];
+    for (const id in dict) {
+        const blip = dict[id];
+        outputBlips.push(Object.values(blip));
+    }
+
+    const idIndex = 2;
+    outputBlips.sort(function(a, b) {
+        if (a[idIndex] < b[idIndex]) return -1;
+        else if (a[idIndex] > b[idIndex]) return 1;
+        return 0;
+    });
+    output.push(...outputBlips);
+
+    return output;
+}
+
+async function getAllRadars() {
+    const radars = await utils.getRadars();
+    const radarRights = await utils.getRadarRights();
+    const out = [];
+
+    for (const radar of radars) {
+        radar.permissions = [];
+        for (const radarRight of radarRights) {
+            if (radarRight.radar === radar.id) {
+                radar.permissions.push({
+                    user_id: radarRight.user_id,
+                    rights: radarRight.rights.split(','),
+                });
+            }
+        }
+        out.push(radar);
+    }
+
+    return out;
+}
+
+async function insertBlips(blips) {
+    const tempCache = {};
+    let maxVersion = 0;
+
+    const columnLinks = [];
+    const blipsToInsert = [];
+    for (const blip of blips) {
+        const {
+            id,
+            name,
+            lastUpdate,
+        } = blip;
+        delete blip.hash;
+        delete blip.id;
+        delete blip.name;
+        delete blip.lastUpdate;
+        delete blip.version;
+
+        const columns = Object.entries(blip);
+        blip.hash = crypto.SHA256(
+            `${name}${lastUpdate ? `-${lastUpdate}` : ''}-${columns.map(row => row.join('-')).join('-')}`
+        ).toString();
+        blip.id = id;
+        blip.name = name;
+        blip.lastUpdate = lastUpdate;
+
+        const cachedBlip = blipsHashCache[blip.id] || {};
+        if (cachedBlip.hash !== blip.hash) {
+            blip.version = (cachedBlip.version || 0) + 1;
+            if (blip.version > maxVersion) maxVersion = blip.version;
+
+            blipsToInsert.push(blip);
+
+            columns.forEach(function(row) {
+                const columnName = row[0];
+                row.unshift(blip.version);
+                row.unshift(blip.id);
+                row.unshift(`${blip.id}-${columnName}`)
+            })
+            columnLinks.push(...columns);
+
+            tempCache[blip.id] = {
+                hash: blip.hash,
+                version: blip.version,
+            }
+        }
+    }
+
+    if (blipsToInsert.length > 0) {
+        await utils.insertBlips(blipsToInsert);
+        await utils.insertColumnLinks(columnLinks);
+        Object.assign(blipsHashCache, tempCache)
+    }
+
+    const response = {
+        status: 'ok',
+        data: blipsToInsert,
+        rows: blipsToInsert.length,
+    };
+
+    if (maxVersion > 0) {
+        response.version = maxVersion
+    }
+
+    return response;
+}
+
+async function getUserRadars(userId) {
+    const radarRights = await utils.getRadarRights();
+
+    const userRadars = radarRights.filter(function(entry) {
+        return entry.user_id === userId && entry.rights.split(',').indexOf('edit') !== -1;
+    });
+
+    for (const userRadar of userRadars) {
+        userRadar.permissions = [];
+        for (const radarRight of radarRights) {
+            if (radarRight.radar === userRadar.radar) {
+                if (radarRight.rights.split(',').indexOf('edit') !== -1) {
+                    userRadar.permissions.push({
+                        user_id: radarRight.user_id,
+                        rights: radarRight.rights.split(','),
+                    });
+                }
+            }
+        }
+    }
+
+    const radars = await utils.getRadars();
+    for (const userRadar of userRadars) {
+        for (const radar of radars) {
+            if (radar.id === userRadar.radar) {
+                userRadar.state = radar.state;
+                break;
+            }
+        }
+    }
+
+    return userRadars.map(function(entry) {
+        return {
+            id: entry.radar,
+            state: entry.state,
+            rights: entry.rights.split(','),
+            permissions: entry.permissions,
+        }
+    });
+}
+
+async function canCreateRadar(user, radarId) {
+    const response = { ok: false };
+    if (!radarId) {
+        response.message = 'Radar ID should not be empty';
+        response.code = 404;
+        return response;
+    }
+
+    if (!iam.isAuthorizedToCreateRadar(user)) {
+        response.message = 'You are not authorized to create a radar';
+        response.code = 403;
+        return response;
+    }
+
+    const radarFound = await utils.radarExists(radarId);
+    if (radarFound) {
+        response.message = `Radar "${radarId}" already exists`;
+        response.code = 404;
+        return response;
+    }
+
+    response.ok = true;
+    return response;
+}
+
+async function editRadar(radarId, links, parameters, state) {
+    if (links.length > 0) {
+        const linksRows = links.map(function (link) {
+            const blipCache = blipsHashCache[link.blip];
+            return [
+                `${radarId}-${link.blip}`,
+                radarId,
+                link.sector,
+                link.ring,
+                link.blip,
+                blipCache ? blipCache.version : 0,
+                link.value,
+            ]
+        });
+        await utils.deleteBlipLinks(radarId);
+        await utils.insertBlipLinks(linksRows);
+    }
+
+    if (parameters.length > 0) {
+        const parametersRows = parameters.map(function(parameter) {
+            return [
+                `${radarId}-${parameter.name}`,
+                radarId,
+                parameter.name,
+                parameter.value,
+            ]
+        });
+        await utils.deleteRadarParameters(radarId);
+        await utils.insertRadarParameters(parametersRows);
+    }
+
+    await utils.updateRadarState(radarId, state);
+}
+
+async function getAllBlips() {
+    const blips = await utils.selectBlipsWithColumnLinks();
+
+    const dict = {}
+    for (const row of blips) {
+        const columnName = row.columnname
+        const columnValue = row.columnvalue
+        delete row.columnname
+        delete row.columnvalue
+
+        let blip = dict[row.id_version]
+        if (!blip) {
+            blip = row
+            dict[row.id_version] = blip
+        }
+        blip[columnName] = columnValue
+    }
+
+    const output = {}
+    for (const blip of Object.values(dict)) {
+        let blipVersions = output[blip.id]
+        if (!blipVersions) {
+            blipVersions = []
+            output[blip.id] = blipVersions
+        }
+
+        while (blipVersions.length < blip.version) {
+            blipVersions.push(undefined)
+        }
+
+        blipVersions[blip.version - 1] = blip
+    }
+
+    return output;
+}
 
 function onlyUnique(value, index, self) {
     return self.indexOf(value) === index
