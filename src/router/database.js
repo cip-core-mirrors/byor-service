@@ -104,6 +104,17 @@ router.use(function(req, res, next) {
   next();
 });
 
+router.post('/blips', async function(req, res, next) {
+    const { blips = [] } = req.body;
+
+    try {
+        const response = await insertBlips(blips, req.user);
+        await res.json(response)
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
 router.get('/radar', async function(req, res, next) {
     const userId = req.user.mail;
     const userRadars = await getUserRadars(userId);
@@ -233,6 +244,22 @@ router.put('/radar/:radar', async function(req, res, next) {
 router.get('/blips', async function(req, res, next) {
     try {
         const blips = await getAllBlips();
+        return await res.json(blips);
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
+router.get('/blip', async function(req, res, next) {
+    try {
+        const blipRights = await utils.getBlipRights(req.user.mail);
+        const blipRightsArray = blipRights.map(right => right.blip);
+        const blips = await getAllBlips();
+        for (const blipId in blips) {
+            if (blipRightsArray.indexOf(blipId) === -1) {
+                delete blips[blipId];
+            }
+        }
         return await res.json(blips);
     } catch (e) {
         await errorHandling(e, res)
@@ -465,13 +492,14 @@ async function getAllRadars() {
     return out;
 }
 
-async function insertBlips(blips) {
+async function insertBlips(blips, user) {
     const tempCache = {};
     let maxVersion = 0;
 
     const columnLinks = [];
     const blipsToInsert = [];
     for (const blip of blips) {
+        if (user) blip.id = `${user.sub}-${blip.name}`;
         const {
             id,
             name,
@@ -491,7 +519,19 @@ async function insertBlips(blips) {
         blip.name = name;
         blip.lastUpdate = lastUpdate;
 
-        const cachedBlip = blipsHashCache[blip.id] || {};
+        let cachedBlip = blipsHashCache[blip.id];
+        if (!cachedBlip) {
+            if (user) {
+                blip.permissions = [
+                    {
+                        userId: user.mail,
+                        rights: ['owner', 'edit'],
+                    },
+                ];
+            }
+            cachedBlip = {};
+        }
+
         if (cachedBlip.hash !== blip.hash) {
             blip.version = (cachedBlip.version || 0) + 1;
             if (blip.version > maxVersion) maxVersion = blip.version;
@@ -516,6 +556,7 @@ async function insertBlips(blips) {
     if (blipsToInsert.length > 0) {
         await utils.insertBlips(blipsToInsert);
         await utils.insertColumnLinks(columnLinks);
+        await utils.insertBlipsRights(blipsToInsert);
         Object.assign(blipsHashCache, tempCache)
     }
 

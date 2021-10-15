@@ -7,6 +7,13 @@ CREATE TABLE IF NOT EXISTS blips (
     lastUpdate varchar
 );
 
+CREATE TABLE IF NOT EXISTS blip_rights (
+    id varchar unique,
+    blip varchar,
+    user_id varchar,
+    rights varchar,
+);
+
 CREATE TABLE IF NOT EXISTS column_links (
     id varchar unique,
     blip varchar,

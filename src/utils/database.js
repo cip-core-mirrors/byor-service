@@ -52,6 +52,48 @@ async function insertBlips(blips) {
     );
 }
 
+async function getBlipRights(userId) {
+    let data;
+    if (userId) {
+        data = await utils.selectFrom(
+            'blip_rights',
+            [ 'blip', 'rights' ],
+            [ `user_id = '${userId}'` ],
+        );
+    } else {
+        data = await utils.selectFrom(
+            'blip_rights',
+            [ 'blip', 'user_id', 'rights' ],
+        );
+    }
+
+    return data.rows;
+}
+
+async function insertBlipsRights(blips) {
+    blips = blips.filter(blip => blip.permissions);
+
+    const rows = [];
+    for (const blip of blips) {
+        for (const permission of blip.permissions) {
+            rows.push([
+                `${blip.id}-${permission.userId}`,
+                blip.id,
+                permission.userId,
+                permission.rights.join(','),
+            ]);
+        }
+    }
+
+    if (rows.length === 0) return;
+
+    await utils.upsert(
+        'blip_rights',
+        [ 'id', 'blip', 'user_id', 'rights' ],
+        rows,
+    );
+}
+
 async function getRadars() {
     const data = await utils.selectFrom('radars', [ 'id', 'state' ]);
     return data.rows;
@@ -264,6 +306,9 @@ module.exports = {
 
     getBlips,
     insertBlips,
+
+    getBlipRights,
+    insertBlipsRights,
 
     getRadars,
     insertRadar,
