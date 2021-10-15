@@ -496,11 +496,12 @@ async function insertBlips(blips, user) {
     const tempCache = {};
     let maxVersion = 0;
 
+    const now = new Date();
     const columnLinks = [];
     const blipsToInsert = [];
     for (const blip of blips) {
         if (user) blip.id = `${user.sub}-${blip.name}`;
-        const {
+        let {
             id,
             name,
             lastUpdate,
@@ -510,6 +511,15 @@ async function insertBlips(blips, user) {
         delete blip.name;
         delete blip.lastUpdate;
         delete blip.version;
+
+        if (lastUpdate) {
+            lastUpdate = new Date(lastUpdate);
+            if (typeof lastUpdate.getMonth !== 'function' || Number.isNaN(lastUpdate.getMonth())) {
+                lastUpdate = now;
+            }
+        } else {
+            lastUpdate = now;
+        }
 
         const columns = Object.entries(blip);
         blip.hash = crypto.SHA256(
