@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS blip_rights (
     id varchar unique,
     blip varchar,
     user_id varchar,
-    rights varchar,
+    rights varchar
 );
 
 CREATE TABLE IF NOT EXISTS column_links (
