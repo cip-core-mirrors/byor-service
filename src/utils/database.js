@@ -52,6 +52,12 @@ async function insertBlips(blips) {
     );
 }
 
+async function deleteBlip(blipId) {
+    await utils.deleteFrom('blips', [
+        `id = '${blipId}'`,
+    ]);
+}
+
 async function getBlipRights(userId) {
     let data;
     if (userId) {
@@ -92,6 +98,12 @@ async function insertBlipsRights(blips) {
         [ 'id', 'blip', 'user_id', 'rights' ],
         rows,
     );
+}
+
+async function deleteBlipRights(blipId) {
+    await utils.deleteFrom('blip_rights', [
+        `blip = '${blipId}'`,
+    ]);
 }
 
 async function getRadars() {
@@ -304,9 +316,11 @@ module.exports = {
 
     getBlips,
     insertBlips,
+    deleteBlip,
 
     getBlipRights,
     insertBlipsRights,
+    deleteBlipRights,
 
     getRadars,
     insertRadar,

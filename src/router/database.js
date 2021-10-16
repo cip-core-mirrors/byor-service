@@ -115,6 +115,19 @@ router.post('/blips', async function(req, res, next) {
     }
 });
 
+router.delete('/blips/:blipId', async function(req, res, next) {
+    const blipId = req.params.blipId;
+
+    try {
+        await utils.deleteBlip(blipId);
+        await utils.deleteBlipRights(blipId);
+
+        await res.json({ status: 'ok' });
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
 router.get('/radar', async function(req, res, next) {
     const userId = req.user.mail;
     const userRadars = await getUserRadars(userId);
