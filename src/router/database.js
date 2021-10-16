@@ -552,7 +552,7 @@ async function insertBlips(blips, user) {
                 const columnName = row[0];
                 row.unshift(blip.version);
                 row.unshift(blip.id);
-                row.unshift(`${blip.id}-${columnName}`)
+                row.unshift(`${blip.id}-${blip.version}-${columnName}`)
             })
             columnLinks.push(...columns);
 
