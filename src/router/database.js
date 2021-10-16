@@ -116,13 +116,17 @@ router.post('/blips', async function(req, res, next) {
 });
 
 router.delete('/blips/:blipId', async function(req, res, next) {
-    const blipId = req.params.blipId;
+    const userId = req.user.mail;
+    const blipId = `${userId}-${req.params.blipId}`;
 
     try {
-        await utils.deleteBlip(blipId);
-        await utils.deleteBlipRights(blipId);
-
-        await res.json({ status: 'ok' });
+        const response = await utils.deleteBlip(blipId);
+        if (response.rowCount > 0) {
+            await res.json({message: 'ok', rows: response.rowCount});
+        } else {
+            res.statusCode = 404;
+            return await res.json({message: `No blip deleted`});
+        }
     } catch (e) {
         await errorHandling(e, res)
     }
@@ -142,15 +146,14 @@ router.get('/permissions', async function(req, res, next) {
 });
 
 router.delete('/radar/:radarId', async function(req, res, next) {
-    const userId = req.user.mail;
     const radarId = req.params.radarId;
 
-    const response = await utils.deleteRadar(`${userId}-${radarId}`);
+    const response = await utils.deleteRadar(radarId);
     if (response.rowCount > 0) {
-        await res.json({message: 'ok'});
+        await res.json({message: 'ok', rows: response.rowCount});
     } else {
         res.statusCode = 404;
-        return await res.json({message: `No blip deleted`});
+        return await res.json({message: `No radar deleted`});
     }
 });
 
@@ -353,8 +356,13 @@ router.use('/admin', async function(req, res, next) {
 router.delete('/admin/radar/:radarId', async function(req, res, next) {
     const radarId = req.params.radarId;
 
-    await utils.deleteRadar(radarId);
-    await res.json({message: 'ok'});
+    const response = await utils.deleteRadar(radarId);
+    if (response.rowCount > 0) {
+        await res.json({message: 'ok', rows: response.rowCount});
+    } else {
+        res.statusCode = 404;
+        return await res.json({message: `No radar deleted`});
+    }
 });
 
 router.post('/admin/radar', async function(req, res, next) {

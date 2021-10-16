@@ -53,7 +53,8 @@ async function insertBlips(blips) {
 }
 
 async function deleteBlip(blipId) {
-    await utils.deleteFrom('blips', [
+    await utils.deleteBlipRights(blipId);
+    return await utils.deleteFrom('blips', [
         `id = '${blipId}'`,
     ]);
 }
@@ -123,7 +124,7 @@ async function insertRadar(id, author) {
 async function deleteRadar(radarId) {
     await deleteRadarParameters(radarId);
     await deleteRadarRights(radarId);
-    await utils.deleteFrom('radars', [ `id = '${radarId}'` ]);
+    return await utils.deleteFrom('radars', [ `id = '${radarId}'` ]);
 }
 
 async function updateRadarState(id, state = 0) {
