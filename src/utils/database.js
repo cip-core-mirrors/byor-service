@@ -201,7 +201,7 @@ async function selectBlipsWithColumnLinks(radarId) {
 }
 
 async function insertColumnLinks(columnLinks) {
-    await utils.upsert(
+    await utils.insertInto(
         'column_links',
         [
             'id',
