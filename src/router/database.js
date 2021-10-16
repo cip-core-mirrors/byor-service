@@ -142,10 +142,16 @@ router.get('/permissions', async function(req, res, next) {
 });
 
 router.delete('/radar/:radarId', async function(req, res, next) {
+    const userId = req.user.mail;
     const radarId = req.params.radarId;
 
-    await utils.deleteRadar(radarId);
-    await res.json({message: 'ok'});
+    const response = await utils.deleteRadar(`${userId}-${radarId}`);
+    if (response.rowCount > 0) {
+        await res.json({message: 'ok'});
+    } else {
+        res.statusCode = 404;
+        return await res.json({message: `No blip deleted`});
+    }
 });
 
 router.post('/radar', async function(req, res, next) {
