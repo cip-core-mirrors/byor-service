@@ -53,7 +53,7 @@ async function insertBlips(blips) {
 }
 
 async function deleteBlip(blipId) {
-    await utils.deleteBlipRights(blipId);
+    await deleteBlipRights(blipId);
     return await utils.deleteFrom('blips', [
         `id = '${blipId}'`,
     ]);
