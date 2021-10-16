@@ -4,39 +4,35 @@ async function test() {
     try {
         await utils.connect()
 
-        console.log(await utils.selectFrom('blips', [
-            'id_version',
-            'id',
-            'hash',
-            'name',
-            'version',
-            'lastUpdate',
-        ]))
-        console.log(await utils.selectFrom('column_links', [
-            'id',
-            'blip',
-            'blip_version',
-            'name',
-            'value',
-        ]))
-        console.log(await utils.selectFrom('blip_links', [
-            'id',
-            'radar',
-            'sector',
-            'ring',
-            'blip',
-            'blip_version',
-            'value',
-        ]))
-        console.log(await utils.selectFrom('radars', [
-            'id',
-        ]))
-        console.log(await utils.selectFrom('radar_parameters', [
-            'id',
-            'radar',
-            'name',
-            'value',
-        ]))
+        let data;
+        data = await utils.selectFrom('blips', [
+            '*',
+        ]);
+        console.log(data.rows);
+        data = await utils.selectFrom('blip_rights', [
+            '*',
+        ]);
+        console.log(data.rows);
+        data = await utils.selectFrom('column_links', [
+            '*',
+        ]);
+        console.log(data.rows);
+        data = await utils.selectFrom('blip_links', [
+            '*',
+        ]);
+        console.log(data.rows);
+        data = await utils.selectFrom('radars', [
+            '*',
+        ]);
+        console.log(data.rows);
+        data = await utils.selectFrom('radar_rights', [
+            '*',
+        ]);
+        console.log(data.rows);
+        data = await utils.selectFrom('radar_parameters', [
+            '*',
+        ]);
+        console.log(data.rows);
     } catch (e) {
         console.error(e)
     } finally {
