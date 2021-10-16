@@ -165,15 +165,15 @@ async function selectBlipsWithColumnLinks(radarId) {
                 'blips.id AS id',
                 'blips.version AS version',
                 'blips.hash AS hash',
-                'blips.lastUpdate AS lastupdate',
+                'blips.lastupdate AS lastupdate',
                 'blip_links.sector AS sector',
                 'blip_links.ring AS ring',
                 'column_links.name AS columnname',
                 'column_links.value AS columnvalue',
             ],
             [
-                `blip_links ON blips.id = blip_links.blip`,
-                `column_links ON blips.id = column_links.blip`,
+                `blip_links ON blips.id_version = blip_links.blip`,
+                `column_links ON blips.id_version = column_links.blip`,
             ],
             [
                 `blip_links.radar = '${radarId}'`,
@@ -187,12 +187,12 @@ async function selectBlipsWithColumnLinks(radarId) {
                 'blips.id AS id',
                 'blips.id_version as id_version',
                 'blips.version AS version',
-                'blips.lastUpdate AS lastupdate',
+                'blips.lastupdate AS lastupdate',
                 'column_links.name AS columnname',
                 'column_links.value AS columnvalue',
             ],
             [
-                `column_links ON blips.id = column_links.blip`,
+                `column_links ON blips.id_version = column_links.blip`,
             ],
         );
     }
@@ -206,7 +206,6 @@ async function insertColumnLinks(columnLinks) {
         [
             'id',
             'blip',
-            'blip_version',
             'name',
             'value',
         ],
@@ -223,7 +222,6 @@ async function insertBlipLinks(blipLinks) {
             'sector',
             'ring',
             'blip',
-            'blip_version',
             'value',
         ],
         blipLinks,

@@ -17,7 +17,6 @@ CREATE TABLE IF NOT EXISTS blip_rights (
 CREATE TABLE IF NOT EXISTS column_links (
     id varchar unique,
     blip varchar,
-    blip_version integer,
     name varchar,
     value varchar
 );
@@ -28,7 +27,6 @@ CREATE TABLE IF NOT EXISTS blip_links (
     sector varchar,
     ring varchar,
     blip varchar,
-    blip_version integer,
     value integer
 );
 
