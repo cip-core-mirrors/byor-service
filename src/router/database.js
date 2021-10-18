@@ -61,6 +61,26 @@ router.put('/', async function(req, res, next) {
     }
 });
 
+router.put('/radar/:radar', async function(req, res, next) {
+    const radar = req.params.radar;
+    const { links = [], parameters = [] } = req.body;
+
+    try {
+        const radarFound = await utils.radarExists(radar);
+        if (radarFound) {
+            res.statusCode = 404;
+            return await res.json({message: `Radar "${radar}" already exists`});
+        }
+
+        await utils.insertRadar(radar);
+        await editRadar(radar, links, parameters);
+
+        await res.json({ status: 'ok' })
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
 router.use(async function(req, res, next) {
     const headers = req.headers;
     try {
