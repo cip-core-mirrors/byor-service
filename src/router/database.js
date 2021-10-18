@@ -286,6 +286,22 @@ router.put('/radar/:radar', async function(req, res, next) {
 router.get('/blips', async function(req, res, next) {
     try {
         const blips = await getAllBlips();
+        const rights = await utils.getBlipRights();
+        for (const entry of Object.entries(blips)) {
+            const blipId = entry[0];
+            for (const right of rights) {
+                if (right.blip === blipId) {
+                    const blipVersions = entry[1];
+                    for (const blip of blipVersions) {
+                        if (!blip.permissions) blip.permissions = [];
+                        blip.permissions.push({
+                            userId: right.user_id,
+                            rights: right.rights.split(','),
+                        });
+                    }
+                }
+            }
+        }
         return await res.json(blips);
     } catch (e) {
         await errorHandling(e, res)
