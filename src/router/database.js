@@ -50,7 +50,7 @@ router.options('/', async function(req, res, next) {
     await res.send(200)
 });
 
-router.put('/', async function(req, res, next) {
+router.put('/anonymous', async function(req, res, next) {
     const { blips = [] } = req.body;
 
     try {
@@ -61,7 +61,7 @@ router.put('/', async function(req, res, next) {
     }
 });
 
-router.put('/radar/:radar', async function(req, res, next) {
+router.put('/anonymous/radar/:radar', async function(req, res, next) {
     const radar = req.params.radar;
     const { links = [], parameters = [] } = req.body;
 
