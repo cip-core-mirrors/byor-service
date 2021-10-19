@@ -486,6 +486,22 @@ router.put('/admin/radar/:radar', async function(req, res, next) {
     }
 });
 
+router.put('/admin/blips/permissions', async function(req, res, next) {
+    const { blips } = req.body;
+
+    try {
+        for (const blip of blips) {
+            const oldId = blip.oldId;
+            await utils.deleteBlipRights(oldId);
+        }
+        await utils.insertBlipsRights(blips);
+
+        await res.json({ status: 'ok' })
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
 async function getRadar(radarId) {
     const blips = await utils.selectBlipsWithColumnLinks(radarId);
     const blipsVersion = parseInt(Math.max(...blips.map(blip => blip.version))) || 0;
