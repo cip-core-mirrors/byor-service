@@ -34,7 +34,10 @@ router.get('/radar/:radar', async function(req, res, next) {
     const radar = req.params.radar;
 
     try {
-        const output = await getRadar(radar);
+        const { output, blipsVersion } = await getRadar(radar);
+        res.header('blips-version', blipsVersion);
+        res.set('access-control-expose-headers', 'blips-version');
+
         return await res.json(output);
     } catch (e) {
         await errorHandling(e, res)
@@ -485,6 +488,7 @@ router.put('/admin/radar/:radar', async function(req, res, next) {
 
 async function getRadar(radarId) {
     const blips = await utils.selectBlipsWithColumnLinks(radarId);
+    const blipsVersion = Math.max(...blips.rows.map(blip => blip.version));
 
     blips.map(blip => delete blip.version);
 
@@ -531,7 +535,7 @@ async function getRadar(radarId) {
     });
     output.push(...outputBlips);
 
-    return output;
+    return {output, blipsVersion};
 }
 
 async function getAllRadars() {
