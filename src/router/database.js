@@ -491,8 +491,7 @@ router.put('/admin/blips/permissions', async function(req, res, next) {
 
     try {
         for (const blip of blips) {
-            const oldId = blip.oldId;
-            await utils.deleteBlipRights(oldId);
+            await utils.deleteBlipRights(blip.id);
         }
         await utils.insertBlipsRights(blips);
 
