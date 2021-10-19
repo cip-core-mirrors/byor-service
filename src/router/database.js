@@ -488,7 +488,7 @@ router.put('/admin/radar/:radar', async function(req, res, next) {
 
 async function getRadar(radarId) {
     const blips = await utils.selectBlipsWithColumnLinks(radarId);
-    const blipsVersion = Math.max(...blips.map(blip => blip.version));
+    const blipsVersion = parseInt(Math.max(...blips.map(blip => blip.version))) || 0;
 
     blips.map(blip => delete blip.version);
 
@@ -727,7 +727,7 @@ async function editRadar(radarId, links, parameters, state) {
                 link.sector,
                 link.ring,
                 `${link.blip}-${version}`,
-                link.value,
+                link.value || 0,
             ]
         });
         await utils.deleteBlipLinks(radarId);
