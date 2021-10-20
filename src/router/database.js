@@ -54,10 +54,10 @@ router.options('/', async function(req, res, next) {
 });
 
 router.put('/anonymous', async function(req, res, next) {
-    const { blips = [] } = req.body;
+    const { blips = [], defaultBlipEditors = [] } = req.body;
 
     try {
-        const response = await insertBlips(blips);
+        const response = await insertBlips(blips, defaultBlipEditors);
         await res.json(response)
     } catch (e) {
         await errorHandling(e, res)
@@ -131,7 +131,7 @@ router.post('/blips', async function(req, res, next) {
     const { blips = [] } = req.body;
 
     try {
-        const response = await insertBlips(blips, req.user);
+        const response = await insertBlips(blips, [req.user.mail]);
         await res.json(response)
     } catch (e) {
         await errorHandling(e, res)
@@ -574,15 +574,29 @@ async function getAllRadars() {
     return out;
 }
 
-async function insertBlips(blips, user) {
+async function insertBlips(blips, users) {
     const tempCache = {};
     let maxVersion = 0;
 
     const now = new Date();
     const columnLinks = [];
     const blipsToInsert = [];
+    const blipsRights = [];
+    const owner = users ? users[0] : undefined;
     for (const blip of blips) {
-        if (user) blip.id = `${user.sub}-${blip.name}`;
+        if (owner) {
+            blip.id = `${owner}-${blip.name}`;
+            blipsRights.push({
+                blip: blip.id,
+                userId: owner,
+                rights: ['owner', 'edit'],
+            });
+            users.slice(1).map(user => blipsRights.push({
+                blip: blip.id,
+                userId: user,
+                rights: ['edit'],
+            }));
+        }
         let {
             id,
             name,
@@ -611,19 +625,7 @@ async function insertBlips(blips, user) {
         blip.name = name;
         blip.lastUpdate = lastUpdate;
 
-        let cachedBlip = blipsHashCache[blip.id];
-        if (!cachedBlip) {
-            if (user) {
-                blip.permissions = [
-                    {
-                        userId: user.mail,
-                        rights: ['owner', 'edit'],
-                    },
-                ];
-            }
-            cachedBlip = {};
-        }
-
+        const cachedBlip = blipsHashCache[blip.id] || {};
         if (cachedBlip.hash !== blip.hash) {
             blip.version = (cachedBlip.version || 0) + 1;
             if (blip.version > maxVersion) maxVersion = blip.version;
@@ -648,8 +650,10 @@ async function insertBlips(blips, user) {
     if (blipsToInsert.length > 0) {
         await utils.insertBlips(blipsToInsert);
         await utils.insertColumnLinks(columnLinks);
-        await utils.insertBlipsRights(blipsToInsert);
         Object.assign(blipsHashCache, tempCache)
+    }
+    if (blipsRights.length > 0) {
+        await utils.insertBlipsRights(blipsRights);
     }
 
     const response = {

@@ -77,19 +77,15 @@ async function getBlipRights(userId) {
     return data.rows;
 }
 
-async function insertBlipsRights(blips) {
-    blips = blips.filter(blip => blip.permissions);
-
+async function insertBlipsRights(blipsPermissions) {
     const rows = [];
-    for (const blip of blips) {
-        for (const permission of blip.permissions) {
-            rows.push([
-                `${blip.id}-${permission.userId}`,
-                blip.id,
-                permission.userId,
-                permission.rights.join(','),
-            ]);
-        }
+    for (const blipPermissions of blipsPermissions) {
+        rows.push([
+            `${blipPermissions.blip}-${blipPermissions.userId}`,
+            blipPermissions.blip,
+            blipPermissions.userId,
+            blipPermissions.rights.join(','),
+        ]);
     }
 
     if (rows.length === 0) return;
