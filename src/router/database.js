@@ -5,6 +5,7 @@ const utils = require('../utils/database');
 const iam = require('../utils/iam');
 
 const parametersJson = process.env.DATABASE_PARAMETERS ? JSON.parse(process.env.DATABASE_PARAMETERS) : [];
+const themesParametersJson = process.env.THEMES_PARAMETERS ? JSON.parse(process.env.THEMES_PARAMETERS) : [];
 const router = express.Router();
 
 const blipsHashCache = {};
@@ -425,6 +426,14 @@ router.get('/blip', async function(req, res, next) {
 router.get('/parameters', async function(req, res, next) {
     try {
         return await res.json(parametersJson);
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
+router.get('/parameters/themes', async function(req, res, next) {
+    try {
+        return await res.json(themesParametersJson);
     } catch (e) {
         await errorHandling(e, res)
     }
