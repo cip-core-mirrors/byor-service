@@ -167,7 +167,7 @@ async function insertTheme(theme) {
                 'user_id',
                 'rights',
             ],
-            parameters,
+            rights,
         );
     }
 }
