@@ -49,6 +49,17 @@ router.get('/radars', async function(req, res, next) {
     await res.json(radars);
 });
 
+router.get('/themes/:themeId', async function(req, res, next) {
+    const themeId = req.params.themeId;
+
+    try {
+        const theme = await utils.getThemeParameters(themeId);
+        return await res.json(theme);
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
 router.options('/', async function(req, res, next) {
     await res.send(200)
 });
@@ -281,6 +292,90 @@ router.put('/radar/:radar', async function(req, res, next) {
 
         await editRadar(radar, links, parameters, state);
         await res.json({ status: 'ok' })
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
+router.get('/themes', async function(req, res, next) {
+    try {
+        const themes = await utils.getThemes();
+        return await res.json(themes);
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
+router.post('/themes', async function(req, res, next) {
+    const theme = req.body;
+    const userId = req.user.mail;
+
+    try {
+        const themes = await utils.getThemes();
+        if (themeExists(themes, theme.id)) {
+            res.status(404);
+            return await res.json({message: `Theme "${theme.id}" already exists`});
+        }
+        delete theme.permissions;
+        theme.permissions = [{
+           userId: userId,
+           rights: ['owner', 'edit'],
+        }];
+        await utils.insertTheme(theme);
+
+        return await res.json({message: 'ok'});
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
+router.put('/themes', async function(req, res, next) {
+    const theme = req.body;
+    const userId = req.user.mail;
+
+    try {
+        const themes = await utils.getThemes();
+        if (!themeExists(themes, theme.id)) {
+            res.status(404);
+            return await res.json({message: `Theme "${theme.id}" does not exist`});
+        }
+
+        const rights = getThemeRights(themes, theme.id, userId);
+        if (rights.indexOf('edit') === -1) {
+            res.status(403);
+            return await res.json({message: `You cannot edit this theme`});
+        }
+        if (rights.indexOf('owner') === -1) {
+            delete theme.permissions;
+        }
+
+        await utils.insertTheme(theme);
+
+        return await res.json({message: 'ok'});
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
+router.delete('/themes/:themeId', async function(req, res, next) {
+    const themeId = req.params.themeId;
+    const userId = req.user.mail;
+
+    try {
+        const themes = await utils.getThemes();
+        if (!themeExists(themes, themeId)) {
+            res.status(404);
+            return await res.json({message: `Theme "${themeId}" does not exist`});
+        }
+
+        const rights = getThemeRights(themes, theme.id, userId);
+        if (rights.indexOf('owner') === -1) {
+            res.status(403);
+            return await res.json({message: `You cannot delete this theme`});
+        }
+        await utils.deleteTheme(themeId);
+
+        return await res.json({message: 'ok'});
     } catch (e) {
         await errorHandling(e, res)
     }
@@ -803,6 +898,24 @@ async function getAllBlips() {
     }
 
     return output;
+}
+
+function themeExists(themes, themeId) {
+    for (const row of themes) {
+        if (row.id === themeId) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function getThemeRights(themes, themeId, userId) {
+    for (const row of themes) {
+        if (row.id === themeId && row.user_id === userId) {
+            return row.rights.split(',');
+        }
+    }
 }
 
 function onlyUnique(value, index, self) {

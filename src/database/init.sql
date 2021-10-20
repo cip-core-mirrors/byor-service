@@ -48,3 +48,21 @@ CREATE TABLE IF NOT EXISTS radar_parameters (
     name varchar,
     value varchar
 );
+
+CREATE TABLE IF NOT EXISTS themes (
+    id varchar unique
+);
+
+CREATE TABLE IF NOT EXISTS theme_parameters (
+    id varchar unique,
+    theme varchar,
+    name varchar,
+    value varchar
+);
+
+CREATE TABLE IF NOT EXISTS theme_rights (
+    id varchar unique,
+    theme varchar,
+    user_id varchar,
+    rights varchar
+);

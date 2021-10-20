@@ -103,6 +103,97 @@ async function deleteBlipRights(blipId) {
     ]);
 }
 
+async function getThemes() {
+    const data = await utils.selectFromInnerJoin(
+        'table',
+        [
+            'themes.id AS id',
+            'theme_rights.user_id AS user_id',
+            'theme_rights.rights AS rights',
+        ],
+        [
+            `theme_rights ON themes.id = theme_rights.theme`,
+        ],
+    );
+    return data.rows;
+}
+
+async function insertTheme(theme) {
+    await utils.upsert(
+        'themes',
+        [ 'id' ],
+        [[ theme.id ]],
+    );
+
+    const parameters = theme.parameters.map(function(parameter) {
+        return [
+            `${theme.id}-${parameter.name}`,
+            theme.id,
+            parameter.name,
+            parameter.value,
+        ];
+    });
+
+    if (parameters.length > 0) {
+        await utils.upsert(
+            'theme_parameters',
+            [
+                'id',
+                'theme',
+                'name',
+                'value',
+            ],
+            parameters,
+        );
+    }
+
+    const rights = theme.permissions.map(function(permission) {
+        return [
+            `${theme.id}-${permission.userId}`,
+            theme.id,
+            permission.userId,
+            permission.rights.join(','),
+        ];
+    });
+
+    if (rights.length > 0) {
+        await utils.upsert(
+            'theme_rights',
+            [
+                'id',
+                'theme',
+                'user_id',
+                'rights',
+            ],
+            parameters,
+        );
+    }
+}
+
+async function deleteTheme(themeId) {
+    await utils.deleteFrom('themes', [ `id = '${themeId}'` ]);
+    await utils.deleteFrom('theme_parameters', [ `theme = '${themeId}'` ]);
+    await utils.deleteFrom('theme_rights', [ `theme = '${themeId}'` ]);
+}
+
+async function getThemeParameters(themeId) {
+    const data = await utils.selectFromInnerJoin(
+        'themes',
+        [
+            'themes.id AS id',
+            'theme_parameters.name AS name',
+            'theme_parameters.value AS value',
+        ],
+        [
+            `theme_parameters ON themes.id = theme_parameters.theme`,
+        ],
+        [
+            `themes.id = '${themeId}'`,
+        ],
+    );
+    return data.rows;
+}
+
 async function getRadars() {
     const data = await utils.selectFrom('radars', [ 'id', 'state' ]);
     return data.rows;
@@ -318,6 +409,11 @@ module.exports = {
     getBlipRights,
     insertBlipsRights,
     deleteBlipRights,
+
+    getThemes,
+    insertTheme,
+    deleteTheme,
+    getThemeParameters,
 
     getRadars,
     insertRadar,
