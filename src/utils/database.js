@@ -125,6 +125,7 @@ async function insertTheme(theme) {
         [[ theme.id ]],
     );
 
+    theme.parameters = theme.parameters || [];
     const parameters = theme.parameters.map(function(parameter) {
         return [
             `${theme.id}-${parameter.name}`,
@@ -147,6 +148,7 @@ async function insertTheme(theme) {
         );
     }
 
+    theme.permissions = theme.permissions || [];
     const rights = theme.permissions.map(function(permission) {
         return [
             `${theme.id}-${permission.userId}`,
