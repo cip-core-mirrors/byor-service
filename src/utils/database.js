@@ -136,6 +136,10 @@ async function insertTheme(theme) {
     });
 
     if (parameters.length > 0) {
+        await utils.deleteFrom(
+            'theme_parameters',
+            [ `theme = '${theme.id}'` ],
+        );
         await utils.upsert(
             'theme_parameters',
             [
