@@ -105,7 +105,7 @@ async function deleteBlipRights(blipId) {
 
 async function getThemes() {
     const data = await utils.selectFromInnerJoin(
-        'table',
+        'themes',
         [
             'themes.id AS id',
             'theme_rights.user_id AS user_id',
@@ -130,7 +130,7 @@ async function insertTheme(theme) {
             `${theme.id}-${parameter.name}`,
             theme.id,
             parameter.name,
-            parameter.value,
+            parameter.value || parameter.defaultValue,
         ];
     });
 
