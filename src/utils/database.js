@@ -131,7 +131,7 @@ async function insertTheme(theme) {
             `${theme.id}-${parameter.name}`,
             theme.id,
             parameter.name,
-            parameter.value || parameter.defaultValue,
+            parameter.value || parameter.default,
         ];
     });
 
