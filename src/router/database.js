@@ -369,7 +369,7 @@ router.delete('/themes/:themeId', async function(req, res, next) {
             return await res.json({message: `Theme "${themeId}" does not exist`});
         }
 
-        const rights = getThemeRights(themes, theme.id, userId);
+        const rights = getThemeRights(themes, themeId, userId);
         if (rights.indexOf('owner') === -1) {
             res.status(403);
             return await res.json({message: `You cannot delete this theme`});
