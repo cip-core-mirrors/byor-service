@@ -753,9 +753,9 @@ async function insertBlips(blips, users) {
 
             columns.forEach(function(row) {
                 const columnName = row[0];
-                const id = `${blip.id}-${blip.version}`;
-                row.unshift(id);
-                row.unshift(`${id}-${columnName}`)
+                const blipId = `${blip.id}-${blip.version}`;
+                row.unshift(blipId);
+                row.unshift(`${blipId}-${columnName}`)
             })
             columnLinks.push(...columns);
 
@@ -859,12 +859,13 @@ async function editRadar(radarId, links, parameters, state) {
         const linksRows = links.map(function (link) {
             const blipCache = blipsHashCache[link.blip];
             const version = blipCache ? blipCache.version : 0;
+            const blipIdVersion = `${link.blip}-${version}`;
             return [
-                `${radarId}-${link.blip}`,
+                `${radarId}-${blipIdVersion}`,
                 radarId,
                 link.sector,
                 link.ring,
-                `${link.blip}-${version}`,
+                blipIdVersion,
                 link.value || 0,
             ]
         });

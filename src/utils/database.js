@@ -54,9 +54,14 @@ async function insertBlips(blips) {
 
 async function deleteBlip(blipId) {
     await deleteBlipRights(blipId);
-    return await utils.deleteFrom('blips', [
-        `id = '${blipId}'`,
-    ]);
+    await utils.deleteFrom(
+        'column_links',
+        [ `blip = '${blipId}'` ],
+    );
+    return await utils.deleteFrom(
+        'blips',
+        [ `id = '${blipId}'` ],
+    );
 }
 
 async function getBlipRights(userId) {
