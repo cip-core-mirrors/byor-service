@@ -925,6 +925,8 @@ function getThemeRights(themes, themeId, userId) {
             return row.rights.split(',');
         }
     }
+
+    return [];
 }
 
 function onlyUnique(value, index, self) {
