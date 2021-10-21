@@ -152,9 +152,24 @@ router.post('/blips', async function(req, res, next) {
 
 router.delete('/blips/:blipId', async function(req, res, next) {
     const userId = req.user.mail;
-    const blipId = `${userId}-${req.params.blipId}`;
+    const blipId = req.params.blipId;
 
     try {
+        // TODO : check if userId is owner of blip before deletion
+        let hasRight = false;
+        const rights = await utils.getBlipRights(userId);
+        for (const right of rights) {
+            if (right.blip === blipId) {
+                hasRight = right.rights.split(',').indexOf('owner') !== -1;
+                break;
+            }
+        }
+
+        if (!hasRight) {
+            res.statusCode = 403;
+            return await res.json({message: `You cannot delete blip "${blipId}"`});
+        }
+
         const response = await utils.deleteBlip(blipId);
         if (response.rowCount > 0) {
             await res.json({message: 'ok', rows: response.rowCount});
