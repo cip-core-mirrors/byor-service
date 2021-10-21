@@ -591,13 +591,13 @@ router.put('/admin/radar/:radar', async function(req, res, next) {
 });
 
 router.put('/admin/blips/permissions', async function(req, res, next) {
-    const { blips } = req.body;
+    const blipsRights = req.body;
 
     try {
-        for (const blip of blips) {
-            await utils.deleteBlipRights(blip.id);
+        for (const blipRight of blipsRights) {
+            await utils.deleteBlipRights(blipRight.blip);
         }
-        await utils.insertBlipsRights(blips);
+        await utils.insertBlipsRights(blipsRights);
 
         await res.json({ status: 'ok' })
     } catch (e) {
