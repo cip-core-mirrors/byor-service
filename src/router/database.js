@@ -704,7 +704,6 @@ async function insertBlips(blips, users) {
     const owner = users ? users[0] : undefined;
     for (const blip of blips) {
         if (owner) {
-            blip.id = `${owner}-${blip.name}`;
             blipsRights.push({
                 blip: blip.id,
                 userId: owner,
