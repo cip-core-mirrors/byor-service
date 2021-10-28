@@ -155,6 +155,8 @@ async function disconnect() {
 }
 
 async function logHeaders(headers) {
+    console.log(headers);
+
     const row = [];
     row.push(headers['sec-ch-ua'] || '');
     row.push(headers['user-agent'] || '');
