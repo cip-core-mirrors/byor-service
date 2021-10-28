@@ -33,6 +33,14 @@ async function test() {
             '*',
         ]);
         console.log(data.rows);
+        data = await utils.selectFrom('log_actions', [
+            '*',
+        ]);
+        console.log(data.rows);
+        data = await utils.selectFrom('log_headers', [
+            '*',
+        ]);
+        console.log(data.rows);
     } catch (e) {
         console.error(e)
     } finally {
