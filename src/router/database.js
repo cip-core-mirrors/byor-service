@@ -748,7 +748,15 @@ async function insertBlips(blips, users, userInfo) {
     const blipsToInsert = [];
     const blipsRights = [];
     const owner = users ? users[0] : undefined;
+    let index = 0;
     for (const blip of blips) {
+        if (!blip.id) {
+            if (userInfo) {
+                blip.id = `${userInfo.mail}-${now.getTime()}-${index}`;
+            } else if (owner) {
+                blip.id = `${owner}-${now.getTime()}-${index}`;
+            }
+        }
         if (owner) {
             blipsRights.push({
                 blip: blip.id,
@@ -809,6 +817,7 @@ async function insertBlips(blips, users, userInfo) {
                 version: blip.version,
             }
         }
+        index++;
     }
 
     if (blipsToInsert.length > 0) {
