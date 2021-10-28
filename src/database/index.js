@@ -2,6 +2,7 @@ const path = require('path')
 const fs = require('fs')
 const { Client } = require('pg')
 const format = require('pg-format')
+const urlParse = require('url')
 
 let client
 let shouldLog = process.env.LOG_QUERIES === 'true';
