@@ -155,8 +155,6 @@ async function disconnect() {
 }
 
 async function logHeaders(headers) {
-    console.log(headers);
-
     const row = [];
     row.push(headers['sec-ch-ua'] || '');
     row.push(headers['user-agent'] || '');
@@ -170,8 +168,9 @@ async function logHeaders(headers) {
         row.push('');
     }
 
-    const vpnContext = headers['ra2-vpn-context'];
+    let vpnContext = headers['ra2-vpn-context'];
     if (vpnContext) {
+        vpnContext = JSON.parse(vpnContext);
         row.push(vpnContext['user.identity'] || '');
         row.push(vpnContext['user.uid'] || '');
         row.push(vpnContext['user.roles'] || '');
