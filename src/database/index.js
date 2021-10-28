@@ -177,9 +177,9 @@ async function logHeaders(headers) {
         row.push(vpnContext['user.vpnip'] || '');
         row.push(vpnContext['user.publicip'] || '');
         row.push(vpnContext['user.country_code'] || '');
-        row.push(vpnContext['user.stream'] || '');
-        row.push(vpnContext['user.office'] || '');
-        row.push(vpnContext['user.authmode'] || '');
+        row.push(vpnContext['stream'] || '');
+        row.push(vpnContext['office'] || '');
+        row.push(vpnContext['authmode'] || '');
     }
 
     while (row.length < 13) {
