@@ -86,7 +86,7 @@ async function upsert(table, columns = [], rows = [], userInfo) {
     const sql = `${format(sql1, rows)} \n${sql3}`
     if (shouldLog) logQuery(sql)
 
-    if (userInfo) insertToLogTable({ type: 'INSERT/UPDATE',
+    if (userInfo) logAction({ type: 'INSERT/UPDATE',
         table: table,
         query: sql,
     }, userInfo);
@@ -101,7 +101,7 @@ async function update(table, values = {}, conditions = [], userInfo) {
         ';'
     if (shouldLog) logQuery(sql)
 
-    if (userInfo) insertToLogTable({ type: 'UPDATE',
+    if (userInfo) logAction({ type: 'UPDATE',
         table: table,
         query: sql,
     }, userInfo);
@@ -115,7 +115,7 @@ async function deleteFrom(table, conditions = [], userInfo) {
         ';'
     if (shouldLog) logQuery(sql)
 
-    if (userInfo) insertToLogTable({ type: 'DELETE',
+    if (userInfo) logAction({ type: 'DELETE',
         table: table,
         query: sql,
     }, userInfo);
