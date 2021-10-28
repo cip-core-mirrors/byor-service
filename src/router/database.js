@@ -169,12 +169,12 @@ router.put('/blips/:blipId', async function(req, res, next) {
             }
         }
 
-        if (userRights.indexOf('edit') !== -1) {
+        if (userRights.indexOf('edit') === -1) {
             res.statusCode = 403;
             return await res.json({message: `You cannot edit blip "${blipId}"`});
         }
 
-        if (editors && userRights.indexOf('owner') !== -1) {
+        if (editors && userRights.indexOf('owner') === -1) {
             res.statusCode = 403;
             return await res.json({message: `You cannot edit permissions for blip "${blipId}"`});
         }
