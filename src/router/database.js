@@ -152,6 +152,40 @@ router.post('/blips', async function(req, res, next) {
     }
 });
 
+router.put('/blips/:blipId', async function(req, res, next) {
+    const userId = req.user.mail;
+    const blipId = req.params.blipId;
+    const { blip = {}, editors } = req.body;
+
+    blip.id = blipId;
+
+    try {
+        let userRights = [];
+        const rights = await utils.getBlipRights(userId);
+        for (const right of rights) {
+            if (right.blip === blipId) {
+                userRights = right.rights.split(',');
+                break;
+            }
+        }
+
+        if (userRights.indexOf('edit') !== -1) {
+            res.statusCode = 403;
+            return await res.json({message: `You cannot edit blip "${blipId}"`});
+        }
+
+        if (editors && userRights.indexOf('owner') !== -1) {
+            res.statusCode = 403;
+            return await res.json({message: `You cannot edit permissions for blip "${blipId}"`});
+        }
+
+        const response = await insertBlips([blip], editors, req.user);
+        await res.json(response)
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
 router.delete('/blips/:blipId', async function(req, res, next) {
     const userId = req.user.mail;
     const blipId = req.params.blipId;
