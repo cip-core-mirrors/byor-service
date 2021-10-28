@@ -1,4 +1,3 @@
-const urlParse = require('url');
 const utils = require('../database');
 
 const adminUsers = (process.env.ADMIN_USERS || '').split(',');

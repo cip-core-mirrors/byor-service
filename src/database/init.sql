@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS log_headers (
     sec_ch_ua varchar,
     user_agent varchar,
     referer varchar,
+    radar varchar,
     user_identity varchar,
     user_uid varchar,
     user_roles varchar,
