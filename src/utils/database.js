@@ -1,3 +1,4 @@
+const urlParse = require('url');
 const utils = require('../database');
 
 const adminUsers = (process.env.ADMIN_USERS || '').split(',');
@@ -28,7 +29,7 @@ async function getBlips() {
     return data.rows;
 }
 
-async function insertBlips(blips) {
+async function insertBlips(blips, userInfo) {
     await utils.upsert(
         'blips',
         [
@@ -49,18 +50,21 @@ async function insertBlips(blips) {
                 blip.lastUpdate,
             ]
         }),
+        userInfo,
     );
 }
 
-async function deleteBlip(blipId) {
-    await deleteBlipRights(blipId);
+async function deleteBlip(blipId, userInfo) {
+    await deleteBlipRights(blipId, userInfo);
     await utils.deleteFrom(
         'column_links',
         [ `blip = '${blipId}'` ],
+        userInfo,
     );
     return await utils.deleteFrom(
         'blips',
         [ `id = '${blipId}'` ],
+        userInfo,
     );
 }
 
@@ -82,7 +86,7 @@ async function getBlipRights(userId) {
     return data.rows;
 }
 
-async function insertBlipsRights(blipsPermissions) {
+async function insertBlipsRights(blipsPermissions, userInfo) {
     const rows = [];
     for (const blipPermissions of blipsPermissions) {
         rows.push([
@@ -99,13 +103,14 @@ async function insertBlipsRights(blipsPermissions) {
         'blip_rights',
         [ 'id', 'blip', 'user_id', 'rights' ],
         rows,
+        userInfo,
     );
 }
 
-async function deleteBlipRights(blipId) {
+async function deleteBlipRights(blipId, userInfo) {
     await utils.deleteFrom('blip_rights', [
         `blip = '${blipId}'`,
-    ]);
+    ], userInfo);
 }
 
 async function getThemes() {
@@ -123,11 +128,12 @@ async function getThemes() {
     return data.rows;
 }
 
-async function insertTheme(theme) {
+async function insertTheme(theme, userInfo) {
     await utils.upsert(
         'themes',
         [ 'id' ],
         [[ theme.id ]],
+        userInfo,
     );
 
     theme.parameters = theme.parameters || [];
@@ -144,6 +150,7 @@ async function insertTheme(theme) {
         await utils.deleteFrom(
             'theme_parameters',
             [ `theme = '${theme.id}'` ],
+            userInfo,
         );
         await utils.upsert(
             'theme_parameters',
@@ -154,6 +161,7 @@ async function insertTheme(theme) {
                 'value',
             ],
             parameters,
+            userInfo,
         );
     }
 
@@ -177,14 +185,15 @@ async function insertTheme(theme) {
                 'rights',
             ],
             rights,
+            userInfo,
         );
     }
 }
 
-async function deleteTheme(themeId) {
-    await utils.deleteFrom('themes', [ `id = '${themeId}'` ]);
-    await utils.deleteFrom('theme_parameters', [ `theme = '${themeId}'` ]);
-    await utils.deleteFrom('theme_rights', [ `theme = '${themeId}'` ]);
+async function deleteTheme(themeId, userInfo) {
+    await utils.deleteFrom('themes', [ `id = '${themeId}'` ], userInfo);
+    await utils.deleteFrom('theme_parameters', [ `theme = '${themeId}'` ], userInfo);
+    await utils.deleteFrom('theme_rights', [ `theme = '${themeId}'` ], userInfo);
 }
 
 async function getThemeParameters(themeId) {
@@ -210,22 +219,25 @@ async function getRadars() {
     return data.rows;
 }
 
-async function insertRadar(id, author) {
+async function insertRadar(id, userInfo) {
     await utils.upsert(
         'radars',
         [ 'id', 'state' ],
         [[ id, 0 ]], // default state
+        userInfo,
     );
-    if (author) await insertRadarRights(id, author, ['owner', 'edit']);
+    if (userInfo && userInfo.mail) {
+        await insertRadarRights(id, userInfo.mail, ['owner', 'edit'], userInfo);
+    }
 }
 
-async function deleteRadar(radarId) {
-    await deleteRadarParameters(radarId);
-    await deleteRadarRights(radarId);
-    return await utils.deleteFrom('radars', [ `id = '${radarId}'` ]);
+async function deleteRadar(radarId, userInfo) {
+    await deleteRadarParameters(radarId, userInfo);
+    await deleteRadarRights(radarId, userInfo);
+    return await utils.deleteFrom('radars', [ `id = '${radarId}'` ], userInfo);
 }
 
-async function updateRadarState(id, state = 0) {
+async function updateRadarState(id, state, userInfo) {
     await utils.update(
         'radars',
         {
@@ -233,6 +245,7 @@ async function updateRadarState(id, state = 0) {
             state: state,
         },
         [ `id = '${id}'` ],
+        userInfo,
     );
 }
 
@@ -246,7 +259,7 @@ async function getRadarParameters(radarId) {
     return data.rows;
 }
 
-async function insertRadarParameters(radarParameters) {
+async function insertRadarParameters(radarParameters, userInfo) {
     await utils.insertInto(
         'radar_parameters',
         [
@@ -256,13 +269,14 @@ async function insertRadarParameters(radarParameters) {
             'value',
         ],
         radarParameters,
+        userInfo,
     )
 }
 
-async function deleteRadarParameters(radarId) {
+async function deleteRadarParameters(radarId, userInfo) {
     await utils.deleteFrom('radar_parameters', [
         `radar = '${radarId}'`,
-    ]);
+    ], userInfo);
 }
 
 async function selectBlipsWithColumnLinks(radarId) {
@@ -311,7 +325,7 @@ async function selectBlipsWithColumnLinks(radarId) {
     return data.rows;
 }
 
-async function insertColumnLinks(columnLinks) {
+async function insertColumnLinks(columnLinks, userInfo) {
     await utils.insertInto(
         'column_links',
         [
@@ -321,10 +335,11 @@ async function insertColumnLinks(columnLinks) {
             'value',
         ],
         columnLinks,
+        userInfo,
     );
 }
 
-async function insertBlipLinks(blipLinks) {
+async function insertBlipLinks(blipLinks, userInfo) {
     await utils.insertInto(
         'blip_links',
         [
@@ -336,13 +351,14 @@ async function insertBlipLinks(blipLinks) {
             'value',
         ],
         blipLinks,
+        userInfo,
     )
 }
 
-async function deleteBlipLinks(radarId) {
+async function deleteBlipLinks(radarId, userInfo) {
     await utils.deleteFrom('blip_links', [
         `radar = '${radarId}'`,
-    ]);
+    ], userInfo);
 }
 
 async function getUserRadarRights(userId) {
@@ -360,7 +376,7 @@ async function getRadarRights(radarId) {
     return data.rows;
 }
 
-async function insertRadarRights(radarId, userId, rights) {
+async function insertRadarRights(radarId, userId, rights, userInfo) {
     await utils.upsert(
         'radar_rights',
         [
@@ -370,16 +386,16 @@ async function insertRadarRights(radarId, userId, rights) {
             'rights',
         ],
         [ [ `${radarId}-${userId}` , radarId, userId, rights.join(',') ] ],
+        userInfo,
     );
 }
 
-async function deleteRadarRights(radarId, userId) {
-    let data;
+async function deleteRadarRights(radarId, userId, userInfo) {
+    const conditions = [ `radar = '${radarId}'` ];
     if (userId) {
-        data = await utils.deleteFrom('radar_rights', [ `radar = '${radarId}'`, `user_id = '${userId}'` ]);
-    } else {
-        data = await utils.deleteFrom('radar_rights', [ `radar = '${radarId}'` ]);
+        conditions.push(`user_id = '${userId}'`);
     }
+    const data = await utils.deleteFrom('radar_rights', conditions, userInfo);
     return data.rows;
 }
 
@@ -388,6 +404,20 @@ async function radarExists(radarId) {
     for (const entry of radars) {
         if (entry.id === radarId) {
             return true;
+        }
+    }
+
+    return false;
+}
+
+async function userRadarOwner(userId, radarId) {
+    if (isAdminUser(userId)) return true;
+
+    const radars = await getUserRadarRights(userId);
+    for (const entry of radars) {
+        if (entry.radar === radarId) {
+            const rights = entry.rights.split(',');
+            return rights.indexOf('owner') !== -1;
         }
     }
 
@@ -446,5 +476,8 @@ module.exports = {
     deleteRadarRights,
 
     radarExists,
+    userRadarOwner,
     userCanEditRadar,
+
+    logHeaders: utils.logHeaders,
 };

@@ -34,6 +34,8 @@ utils.init().then(async function() {
 router.get('/radar/:radar', async function(req, res, next) {
     const radar = req.params.radar;
 
+    utils.logHeaders(req.headers);
+
     try {
         const { output, blipsVersion } = await getRadar(radar);
         res.header('blips-version', blipsVersion);
@@ -88,7 +90,7 @@ router.put('/anonymous/radar/:radar', async function(req, res, next) {
         }
 
         await utils.insertRadar(radar);
-        await editRadar(radar, links, parameters);
+        await editRadar(radar, links, parameters, 0);
 
         await res.json({ status: 'ok' })
     } catch (e) {
@@ -143,7 +145,7 @@ router.post('/blips', async function(req, res, next) {
     const { blips = [] } = req.body;
 
     try {
-        const response = await insertBlips(blips, [req.user.mail]);
+        const response = await insertBlips(blips, [req.user.mail], req.user);
         await res.json(response)
     } catch (e) {
         await errorHandling(e, res)
@@ -155,7 +157,6 @@ router.delete('/blips/:blipId', async function(req, res, next) {
     const blipId = req.params.blipId;
 
     try {
-        // TODO : check if userId is owner of blip before deletion
         let hasRight = false;
         const rights = await utils.getBlipRights(userId);
         for (const right of rights) {
@@ -170,7 +171,7 @@ router.delete('/blips/:blipId', async function(req, res, next) {
             return await res.json({message: `You cannot delete blip "${blipId}"`});
         }
 
-        const response = await utils.deleteBlip(blipId);
+        const response = await utils.deleteBlip(blipId, req.user);
         if (response.rowCount > 0) {
             await res.json({message: 'ok', rows: response.rowCount});
         } else {
@@ -198,7 +199,19 @@ router.get('/permissions', async function(req, res, next) {
 router.delete('/radar/:radarId', async function(req, res, next) {
     const radarId = req.params.radarId;
 
-    const response = await utils.deleteRadar(radarId);
+    const radarFound = await utils.radarExists(radarId);
+    if (!radarFound) {
+        res.statusCode = 404;
+        return await res.json({message: `Radar "${radarId}" does not exist`});
+    }
+
+    const isOwner = await utils.userRadarOwner(req.user.mail, radarId);
+    if (!isOwner) {
+        res.statusCode = 403;
+        return await res.json({message: `You cannot delete radar "${radarId}"`});
+    }
+
+    const response = await utils.deleteRadar(radarId, req.user);
     if (response.rowCount > 0) {
         await res.json({message: 'ok', rows: response.rowCount});
     } else {
@@ -216,8 +229,7 @@ router.post('/radar', async function(req, res, next) {
         return await res.json({ message: response.message });
     }
 
-    const userId = req.user.mail;
-    await utils.insertRadar(radarId, userId);
+    await utils.insertRadar(radarId, req.user);
 
     await res.json({ status: 'ok' });
 });
@@ -244,7 +256,7 @@ router.post('/radar/:radar/permissions', async function(req, res, next) {
             return await res.json({message: `You cannot edit radar "${radar}"`});
         }
 
-        await utils.insertRadarRights(radar, userId, rights.filter(right => possibleRights.indexOf(right) !== -1));
+        await utils.insertRadarRights(radar, userId, rights.filter(right => possibleRights.indexOf(right) !== -1), req.user);
 
         await res.json({ status: 'ok' })
     } catch (e) {
@@ -269,7 +281,7 @@ router.delete('/radar/:radar/permissions/:userId', async function(req, res, next
             return await res.json({message: `You cannot edit radar "${radar}"`});
         }
 
-        await utils.deleteRadarRights(radar, userId);
+        await utils.deleteRadarRights(radar, userId, req.user);
 
         await res.json({ status: 'ok' })
     } catch (e) {
@@ -306,7 +318,7 @@ router.put('/radar/:radar', async function(req, res, next) {
             }
         }
 
-        await editRadar(radar, links, parameters, state);
+        await editRadar(radar, links, parameters, state, req.user);
         await res.json({ status: 'ok' })
     } catch (e) {
         await errorHandling(e, res)
@@ -337,7 +349,7 @@ router.post('/themes', async function(req, res, next) {
            userId: userId,
            rights: ['owner', 'edit'],
         }];
-        await utils.insertTheme(theme);
+        await utils.insertTheme(theme, req.user);
 
         return await res.json({message: 'ok'});
     } catch (e) {
@@ -365,7 +377,7 @@ router.put('/themes', async function(req, res, next) {
             delete theme.permissions;
         }
 
-        await utils.insertTheme(theme);
+        await utils.insertTheme(theme, req.user);
 
         return await res.json({message: 'ok'});
     } catch (e) {
@@ -389,7 +401,7 @@ router.delete('/themes/:themeId', async function(req, res, next) {
             res.status(403);
             return await res.json({message: `You cannot delete this theme`});
         }
-        await utils.deleteTheme(themeId);
+        await utils.deleteTheme(themeId, req.user);
 
         return await res.json({message: 'ok'});
     } catch (e) {
@@ -514,7 +526,7 @@ router.use('/admin', async function(req, res, next) {
 router.delete('/admin/radar/:radarId', async function(req, res, next) {
     const radarId = req.params.radarId;
 
-    const response = await utils.deleteRadar(radarId);
+    const response = await utils.deleteRadar(radarId, req.user);
     if (response.rowCount > 0) {
         await res.json({message: 'ok', rows: response.rowCount});
     } else {
@@ -532,7 +544,7 @@ router.post('/admin/radar', async function(req, res, next) {
         return await res.json({ message: response.message });
     }
 
-    await utils.insertRadar(radarId);
+    await utils.insertRadar(radarId, req.user);
 
     await res.json({ status: 'ok' });
 });
@@ -553,7 +565,7 @@ router.post('/admin/radar/:radar/permissions', async function(req, res, next) {
         if (radarRights.length === 0) {
             rightsToAdd.push('owner');
         }
-        await utils.insertRadarRights(radar, userId, rightsToAdd);
+        await utils.insertRadarRights(radar, userId, rightsToAdd, req.user);
 
         await res.json({ status: 'ok' })
     } catch (e) {
@@ -572,7 +584,7 @@ router.delete('/admin/radar/:radar/permissions/:userId', async function(req, res
             return await res.json({message: `Radar "${radar}" does not exist`});
         }
 
-        await utils.deleteRadarRights(radar, userId);
+        await utils.deleteRadarRights(radar, userId, req.user);
 
         await res.json({ status: 'ok' })
     } catch (e) {
@@ -598,7 +610,7 @@ router.put('/admin/radar/:radar', async function(req, res, next) {
             }
         }
 
-        await editRadar(radar, links, parameters, state);
+        await editRadar(radar, links, parameters, state, req.user);
         await res.json({ status: 'ok' })
     } catch (e) {
         await errorHandling(e, res)
@@ -610,9 +622,9 @@ router.put('/admin/blips/permissions', async function(req, res, next) {
 
     try {
         for (const blipRight of blipsRights) {
-            await utils.deleteBlipRights(blipRight.blip);
+            await utils.deleteBlipRights(blipRight.blip, req.user);
         }
-        await utils.insertBlipsRights(blipsRights);
+        await utils.insertBlipsRights(blipsRights, req.user);
 
         await res.json({ status: 'ok' })
     } catch (e) {
@@ -693,7 +705,7 @@ async function getAllRadars() {
     return out;
 }
 
-async function insertBlips(blips, users) {
+async function insertBlips(blips, users, userInfo) {
     const tempCache = {};
     let maxVersion = 0;
 
@@ -766,12 +778,12 @@ async function insertBlips(blips, users) {
     }
 
     if (blipsToInsert.length > 0) {
-        await utils.insertBlips(blipsToInsert);
-        await utils.insertColumnLinks(columnLinks);
+        await utils.insertBlips(blipsToInsert, userInfo);
+        await utils.insertColumnLinks(columnLinks, userInfo);
         Object.assign(blipsHashCache, tempCache)
     }
     if (blipsRights.length > 0) {
-        await utils.insertBlipsRights(blipsRights);
+        await utils.insertBlipsRights(blipsRights, userInfo);
     }
 
     const response = {
@@ -853,7 +865,7 @@ async function canCreateRadar(user, radarId) {
     return response;
 }
 
-async function editRadar(radarId, links, parameters, state) {
+async function editRadar(radarId, links, parameters, state, userInfo) {
     if (links.length > 0) {
         const linksRows = links.map(function (link) {
             const blipCache = blipsHashCache[link.blip];
@@ -868,8 +880,8 @@ async function editRadar(radarId, links, parameters, state) {
                 link.value || 0,
             ]
         });
-        await utils.deleteBlipLinks(radarId);
-        await utils.insertBlipLinks(linksRows);
+        await utils.deleteBlipLinks(radarId, userInfo);
+        await utils.insertBlipLinks(linksRows, userInfo);
     }
 
     if (parameters.length > 0) {
@@ -881,11 +893,11 @@ async function editRadar(radarId, links, parameters, state) {
                 parameter.value,
             ]
         });
-        await utils.deleteRadarParameters(radarId);
-        await utils.insertRadarParameters(parametersRows);
+        await utils.deleteRadarParameters(radarId, userInfo);
+        await utils.insertRadarParameters(parametersRows, userInfo);
     }
 
-    await utils.updateRadarState(radarId, state);
+    if (state !== undefined) await utils.updateRadarState(radarId, state, userInfo);
 }
 
 async function getAllBlips() {

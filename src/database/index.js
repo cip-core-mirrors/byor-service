@@ -54,14 +54,23 @@ async function selectFromInnerJoin(table, columns, innerJoins = [], where = []) 
     if (client) return await client.query(sql)
 }
 
-async function insertInto(table, columns = [], rows = []) {
+async function insertInto(table, columns = [], rows = [], userInfo) {
     const sql1 = `INSERT INTO ${table} (${columns.join(', ')}) VALUES %L`
     const sql = format(sql1, rows)
-    if (shouldLog) logQuery(sql)
+
+    if (table !== 'log_actions' && table !== 'log_headers') {
+        if (shouldLog) logQuery(sql)
+        if (userInfo) logAction({
+            type: 'INSERT',
+            table: table,
+            query: sql,
+        }, userInfo);
+    }
+
     if (client) return await client.query(sql)
 }
 
-async function upsert(table, columns = [], rows = []) {
+async function upsert(table, columns = [], rows = [], userInfo) {
     const idColumn = columns[0]
     const sql1 = `INSERT INTO ${table} (${columns.join(', ')}) VALUES %L \n`
     let sql3 = `ON CONFLICT (${idColumn}) \n`
@@ -76,23 +85,40 @@ async function upsert(table, columns = [], rows = []) {
     const sql = `${format(sql1, rows)} \n${sql3}`
     if (shouldLog) logQuery(sql)
 
+    if (userInfo) insertToLogTable({ type: 'INSERT/UPDATE',
+        table: table,
+        query: sql,
+    }, userInfo);
+
     if (client) return await client.query(sql)
 }
 
-async function update(table, values = {}, conditions = []) {
+async function update(table, values = {}, conditions = [], userInfo) {
     const sql = `UPDATE ${table} \n` +
         `SET ${Object.entries(values).map(entry => `${entry[0]} = '${entry[1]}'`).join(',\n')} \n` +
         (conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '') +
         ';'
     if (shouldLog) logQuery(sql)
+
+    if (userInfo) insertToLogTable({ type: 'UPDATE',
+        table: table,
+        query: sql,
+    }, userInfo);
+
     if (client) return await client.query(sql)
 }
 
-async function deleteFrom(table, conditions = []) {
+async function deleteFrom(table, conditions = [], userInfo) {
     const sql = `DELETE FROM ${table} \n` +
         (conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '') +
         ';'
     if (shouldLog) logQuery(sql)
+
+    if (userInfo) insertToLogTable({ type: 'DELETE',
+        table: table,
+        query: sql,
+    }, userInfo);
+
     if (client) return await client.query(sql)
 }
 
@@ -127,6 +153,101 @@ async function disconnect() {
     await client.end()
 }
 
+async function logHeaders(headers) {
+    const row = [ 'current_timestamp' ];
+    row.push(headers['sec-ch-ua'] || '');
+    row.push(headers['user-agent'] || '');
+    const referer = headers['referer'];
+    if (referer) {
+        row.push(referer);
+        const query = urlParse.parse(referer, true).query;
+        row.push(query.sheetId || '');
+    } else {
+        row.push('');
+        row.push('');
+    }
+
+    const vpnContext = headers['ra2-vpn-context'];
+    if (vpnContext) {
+        row.push(vpnContext['user.identity'] || '');
+        row.push(vpnContext['user.uid'] || '');
+        row.push(vpnContext['user.roles'] || '');
+        row.push(vpnContext['user.vpnip'] || '');
+        row.push(vpnContext['user.publicip'] || '');
+        row.push(vpnContext['user.country_code'] || '');
+        row.push(vpnContext['user.stream'] || '');
+        row.push(vpnContext['user.office'] || '');
+        row.push(vpnContext['user.authmode'] || '');
+    }
+
+    while (row.length < 14) {
+        row.push('');
+    }
+    await insertInto(
+        'log_headers',
+        [
+            'created_time',
+            'sec_ch_ua',
+            'user_agent',
+            'referer',
+            'radar', // parsed in referer query string
+            'user_identity',
+            'user_uid',
+            'user_roles',
+            'user_vpn_ip',
+            'user_public_ip',
+            'user_country_code',
+            'user_stream',
+            'user_office',
+            'user_authmode',
+        ],
+        [ row ],
+    )
+}
+
+async function logAction(action, userInfo = {}) {
+    const row = [ 'current_timestamp' ];
+
+    row.push(action.type);
+    row.push(action.table);
+    row.push(action.query);
+
+    row.push(userInfo.mail || '');
+    row.push(userInfo.igg || '');
+    row.push(userInfo.first_name || '');
+    row.push(userInfo.last_name || '');
+    row.push(userInfo.login_ad || '');
+    row.push(userInfo.sesame_id || '');
+    const authorizations = userInfo.user_authorization ? userInfo.user_authorization.map(function(authorization) {
+        return authorization.permissions.map(function(permission) {
+            return `${authorization.resource}|${authorization.resource_id}|${permission.name}`;
+        }).join(',');
+    }) : '';
+    row.push(authorizations);
+    row.push(userInfo.rc_local_sigle || '');
+    row.push(userInfo.auth_level || '');
+
+    await insertInto(
+        'log_actions',
+        [
+            'created_time',
+            'action_type',
+            'action_table',
+            'action_query',
+            'mail',
+            'igg',
+            'first_name',
+            'last_name',
+            'login_ad',
+            'sesame_id',
+            'authorizations',
+            'rc_local_sigle',
+            'auth_level',
+        ],
+        [ row ],
+    );
+}
+
 module.exports = {
     connect,
     disconnect,
@@ -138,4 +259,5 @@ module.exports = {
     upsert,
     update,
     deleteFrom,
+    logHeaders,
 }

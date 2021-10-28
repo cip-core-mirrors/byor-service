@@ -1,3 +1,35 @@
+CREATE TABLE IF NOT EXISTS log_headers (
+    created_time timestamp,
+    sec_ch_ua varchar,
+    user_agent varchar,
+    referer varchar,
+    user_identity varchar,
+    user_uid varchar,
+    user_roles varchar,
+    user_vpn_ip varchar,
+    user_public_ip varchar,
+    user_country_code varchar,
+    user_stream varchar,
+    user_office varchar,
+    user_authmode varchar
+);
+
+CREATE TABLE IF NOT EXISTS log_actions (
+    created_time timestamp,
+    action_type varchar,
+    action_table varchar,
+    action_query varchar,
+    mail varchar,
+    igg varchar,
+    first_name varchar,
+    last_name varchar,
+    login_ad varchar,
+    sesame_id varchar,
+    authorizations varchar,
+    rc_local_sigle varchar,
+    auth_level varchar
+);
+
 CREATE TABLE IF NOT EXISTS blips (
     id_version varchar unique,
     id varchar,
