@@ -155,7 +155,7 @@ async function disconnect() {
 }
 
 async function logHeaders(headers) {
-    const row = [ 'current_timestamp' ];
+    const row = [];
     row.push(headers['sec-ch-ua'] || '');
     row.push(headers['user-agent'] || '');
     const referer = headers['referer'];
@@ -181,13 +181,12 @@ async function logHeaders(headers) {
         row.push(vpnContext['user.authmode'] || '');
     }
 
-    while (row.length < 14) {
+    while (row.length < 13) {
         row.push('');
     }
     await insertInto(
         'log_headers',
         [
-            'created_time',
             'sec_ch_ua',
             'user_agent',
             'referer',
@@ -207,7 +206,7 @@ async function logHeaders(headers) {
 }
 
 async function logAction(action, userInfo = {}) {
-    const row = [ 'current_timestamp' ];
+    const row = [];
 
     row.push(action.type);
     row.push(action.table);
@@ -231,7 +230,6 @@ async function logAction(action, userInfo = {}) {
     await insertInto(
         'log_actions',
         [
-            'created_time',
             'action_type',
             'action_table',
             'action_query',

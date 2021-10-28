@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS log_headers (
-    created_time timestamp,
+    created_at timestamptz DEFAULT now(),
     sec_ch_ua varchar,
     user_agent varchar,
     referer varchar,
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS log_headers (
 );
 
 CREATE TABLE IF NOT EXISTS log_actions (
-    created_time timestamp,
+    created_at timestamptz DEFAULT now(),
     action_type varchar,
     action_table varchar,
     action_query varchar,
