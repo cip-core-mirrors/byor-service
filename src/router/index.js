@@ -4,6 +4,9 @@ const router = express.Router();
 
 router.use(function(req, res, next) {
     console.log(`${new Date().toISOString()}: [${req.method}] ${req.originalUrl} ${JSON.stringify(req.body)}`);
+    console.log(req.headers);
+    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    console.log(ip);
     next();
 });
 
