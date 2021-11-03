@@ -4,7 +4,15 @@ const cors = require('cors');
 
 require('dotenv').config(); // load environment variables from .env file
 
+const loadEnv = require('./utils/loadEnv');
+
 async function init() {
+    try {
+        await loadEnv.loadEnv();
+    } catch(e) {
+        console.error(e);
+    }
+
     const app = express();
     app.use(cors())
 
