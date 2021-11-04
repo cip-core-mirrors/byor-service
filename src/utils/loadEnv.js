@@ -24,11 +24,16 @@ async function loadEnv() {
         const response = await axios.get(url, config);
         const data = response.data.data.data;
         for (const key in data) {
-            process.env[key] = data[key];
+            if (process.env[key]) {
+                console.log(`Skipped key "${key}"`);
+            } else {
+                process.env[key] = data[key];
+                console.log(`Set key "${key}"`);
+            }
         }
         console.log("Loading secret OK");
     }
-    
+
     console.log("Loaded environment variables from Vault");
 }
 
