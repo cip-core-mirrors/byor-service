@@ -127,13 +127,15 @@ async function getThemes() {
     return data.rows;
 }
 
-async function insertTheme(theme, userInfo) {
-    await utils.upsert(
-        'themes',
-        [ 'id' ],
-        [[ theme.id ]],
-        userInfo,
-    );
+async function insertTheme(theme, userInfo, isCreate) {
+    if (isCreate) {
+        await utils.upsert(
+            'themes',
+            [ 'id' ],
+            [[ theme.id ]],
+            userInfo,
+        );
+    }
 
     theme.parameters = theme.parameters || [];
     const parameters = theme.parameters.map(function(parameter) {
@@ -175,6 +177,11 @@ async function insertTheme(theme, userInfo) {
     });
 
     if (rights.length > 0) {
+        await utils.deleteFrom(
+            'theme_rights',
+            [ `theme = '${theme.id}'` ],
+            userInfo,
+        );
         await utils.upsert(
             'theme_rights',
             [

@@ -384,7 +384,7 @@ router.post('/themes', async function(req, res, next) {
            userId: userId,
            rights: ['owner', 'edit'],
         }];
-        await utils.insertTheme(theme, req.user);
+        await utils.insertTheme(theme, req.user, true);
 
         return await res.json({message: 'ok'});
     } catch (e) {
@@ -412,7 +412,7 @@ router.put('/themes', async function(req, res, next) {
             delete theme.permissions;
         }
 
-        await utils.insertTheme(theme, req.user);
+        await utils.insertTheme(theme, req.user, false);
 
         return await res.json({message: 'ok'});
     } catch (e) {
