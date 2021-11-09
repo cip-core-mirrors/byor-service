@@ -55,23 +55,28 @@ async function selectFromInnerJoin(table, columns, innerJoins = [], where = []) 
     if (client) return await client.query(sql)
 }
 
-async function insertInto(table, columns = [], rows = [], userInfo) {
+async function insertInto(table, columns = [], rows = [], userInfo, shouldQuery = true) {
     const sql1 = `INSERT INTO ${table} (${columns.join(', ')}) VALUES %L`
     const sql = format(sql1, rows)
 
-    if (table !== 'log_actions' && table !== 'log_headers') {
-        if (shouldLog) logQuery(sql)
-        if (userInfo) logAction({
-            type: 'INSERT',
-            table: table,
-            query: sql,
-        }, userInfo);
-    }
+    const log = {
+        type: 'INSERT',
+        table: table,
+        query: sql,
+    };
+    if (shouldQuery) {
+        if (table !== 'log_actions' && table !== 'log_headers') {
+            if (shouldLog) logQuery(sql)
+            if (userInfo) logAction(log, userInfo);
+        }
 
-    if (client) return await client.query(sql)
+        if (client) return await client.query(sql)
+    } else {
+        return log;
+    }
 }
 
-async function upsert(table, columns = [], rows = [], userInfo) {
+async function upsert(table, columns = [], rows = [], userInfo, shouldQuery = true) {
     const idColumn = columns[0]
     const sql1 = `INSERT INTO ${table} (${columns.join(', ')}) VALUES %L \n`
     let sql3 = `ON CONFLICT (${idColumn}) \n`
@@ -84,43 +89,75 @@ async function upsert(table, columns = [], rows = [], userInfo) {
     sql3 += ';'
 
     const sql = `${format(sql1, rows)} \n${sql3}`
-    if (shouldLog) logQuery(sql)
 
-    if (userInfo) logAction({ type: 'INSERT/UPDATE',
+    const log = { type: 'INSERT/UPDATE',
         table: table,
         query: sql,
-    }, userInfo);
+    };
+    if (shouldQuery) {
+        if (shouldLog) logQuery(sql)
 
-    if (client) return await client.query(sql)
+        if (userInfo) logAction(log, userInfo);
+
+        if (client) return await client.query(sql)
+    } else {
+        return log;
+    }
 }
 
-async function update(table, values = {}, conditions = [], userInfo) {
+async function update(table, values = {}, conditions = [], userInfo, shouldQuery = true) {
     const sql = `UPDATE ${table} \n` +
         `SET ${Object.entries(values).map(entry => `${entry[0]} = '${entry[1]}'`).join(',\n')} \n` +
         (conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '') +
         ';'
-    if (shouldLog) logQuery(sql)
 
-    if (userInfo) logAction({ type: 'UPDATE',
+    const log = { type: 'UPDATE',
         table: table,
         query: sql,
-    }, userInfo);
+    };
+    if (shouldQuery) {
+        if (shouldLog) logQuery(sql)
 
-    if (client) return await client.query(sql)
+        if (userInfo) logAction(log, userInfo);
+
+        if (client) return await client.query(sql)
+    } else {
+        return log;
+    }
 }
 
-async function deleteFrom(table, conditions = [], userInfo) {
+async function deleteFrom(table, conditions = [], userInfo, shouldQuery = true) {
     const sql = `DELETE FROM ${table} \n` +
         (conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '') +
         ';'
-    if (shouldLog) logQuery(sql)
 
-    if (userInfo) logAction({ type: 'DELETE',
+    const log = { type: 'DELETE',
         table: table,
         query: sql,
-    }, userInfo);
+    };
 
-    if (client) return await client.query(sql)
+    if (shouldQuery) {
+        if (shouldLog) logQuery(sql)
+
+        if (userInfo) logAction(log, userInfo);
+
+        if (client) return await client.query(sql)
+    } else {
+        return log;
+    }
+}
+
+async function transaction(logs, userInfo) {
+    const sql = 'BEGIN TRANSACTION;\n' +
+        logs.map(log => log.query).join('\n') +
+        'END TRANSACTION;';
+
+    if (client) await client.query(sql);
+
+    for (const log of logs) {
+        if (shouldLog) logQuery(log.query);
+        if (userInfo) logAction(log, userInfo);
+    }
 }
 
 async function connect() {
@@ -259,5 +296,6 @@ module.exports = {
     upsert,
     update,
     deleteFrom,
+    transaction,
     logHeaders,
 }

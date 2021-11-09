@@ -85,7 +85,7 @@ async function getBlipRights(userId) {
     return data.rows;
 }
 
-async function insertBlipsRights(blipsPermissions, userInfo) {
+async function insertBlipsRights(blipsPermissions, userInfo, shouldQuery = true) {
     const rows = [];
     for (const blipPermissions of blipsPermissions) {
         rows.push([
@@ -103,13 +103,14 @@ async function insertBlipsRights(blipsPermissions, userInfo) {
         [ 'id', 'blip', 'user_id', 'rights' ],
         rows,
         userInfo,
+        shouldQuery,
     );
 }
 
-async function deleteBlipRights(blipId, userInfo) {
+async function deleteBlipRights(blipId, userInfo, shouldQuery = true) {
     await utils.deleteFrom('blip_rights', [
         `blip = '${blipId}'`,
-    ], userInfo);
+    ], userInfo, shouldQuery);
 }
 
 async function getThemes() {
@@ -239,7 +240,8 @@ async function insertRadar(id, userInfo) {
 
 async function deleteRadar(radarId, userInfo) {
     await deleteRadarParameters(radarId, userInfo);
-    await deleteRadarRights(radarId, userInfo);
+    await deleteBlipLinks(radarId, userInfo);
+    await deleteRadarRights(radarId, undefined, userInfo);
     return await utils.deleteFrom('radars', [ `id = '${radarId}'` ], userInfo);
 }
 
@@ -265,7 +267,7 @@ async function getRadarParameters(radarId) {
     return data.rows;
 }
 
-async function insertRadarParameters(radarParameters, userInfo) {
+async function insertRadarParameters(radarParameters, userInfo, shouldQuery = true) {
     await utils.insertInto(
         'radar_parameters',
         [
@@ -276,13 +278,14 @@ async function insertRadarParameters(radarParameters, userInfo) {
         ],
         radarParameters,
         userInfo,
+        shouldQuery,
     )
 }
 
-async function deleteRadarParameters(radarId, userInfo) {
+async function deleteRadarParameters(radarId, userInfo, shouldQuery = true) {
     await utils.deleteFrom('radar_parameters', [
         `radar = '${radarId}'`,
-    ], userInfo);
+    ], userInfo, shouldQuery);
 }
 
 async function selectBlipsWithColumnLinks(radarId) {
@@ -345,8 +348,8 @@ async function insertColumnLinks(columnLinks, userInfo) {
     );
 }
 
-async function insertBlipLinks(blipLinks, userInfo) {
-    await utils.insertInto(
+async function insertBlipLinks(blipLinks, userInfo, shouldQuery = true) {
+    return await utils.insertInto(
         'blip_links',
         [
             'id',
@@ -358,13 +361,14 @@ async function insertBlipLinks(blipLinks, userInfo) {
         ],
         blipLinks,
         userInfo,
+        shouldQuery,
     )
 }
 
-async function deleteBlipLinks(radarId, userInfo) {
-    await utils.deleteFrom('blip_links', [
+async function deleteBlipLinks(radarId, userInfo, shouldQuery = true) {
+    return await utils.deleteFrom('blip_links', [
         `radar = '${radarId}'`,
-    ], userInfo);
+    ], userInfo, shouldQuery);
 }
 
 async function getUserRadarRights(userId) {
@@ -485,5 +489,6 @@ module.exports = {
     userRadarOwner,
     userCanEditRadar,
 
+    transaction: utils.transaction,
     logHeaders: utils.logHeaders,
 };

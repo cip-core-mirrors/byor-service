@@ -656,10 +656,12 @@ router.put('/admin/blips/permissions', async function(req, res, next) {
     const blipsRights = req.body;
 
     try {
+        const queries = [];
         for (const blipRight of blipsRights) {
-            await utils.deleteBlipRights(blipRight.blip, req.user);
+            queries.push(await utils.deleteBlipRights(blipRight.blip, req.user, false));
         }
-        await utils.insertBlipsRights(blipsRights, req.user);
+        queries.push(await utils.insertBlipsRights(blipsRights, req.user, false));
+        await utils.transaction(queries, req.user);
 
         await res.json({ status: 'ok' })
     } catch (e) {
@@ -924,8 +926,10 @@ async function editRadar(radarId, links, parameters, state, userInfo) {
                 link.value || 0,
             ]
         });
-        await utils.deleteBlipLinks(radarId, userInfo);
-        await utils.insertBlipLinks(linksRows, userInfo);
+        const queries = [];
+        queries.push(await utils.deleteBlipLinks(radarId, userInfo, false));
+        queries.push(await utils.insertBlipLinks(linksRows, userInfo, false));
+        await utils.transaction(queries, userInfo);
     }
 
     if (parameters.length > 0) {
@@ -937,8 +941,10 @@ async function editRadar(radarId, links, parameters, state, userInfo) {
                 parameter.value,
             ]
         });
-        await utils.deleteRadarParameters(radarId, userInfo);
-        await utils.insertRadarParameters(parametersRows, userInfo);
+        const queries = [];
+        queries.push(await utils.deleteRadarParameters(radarId, userInfo, false));
+        queries.push(await utils.insertRadarParameters(parametersRows, userInfo, false));
+        await utils.transaction(queries, userInfo);
     }
 
     if (state !== undefined) await utils.updateRadarState(radarId, state, userInfo);
