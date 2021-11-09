@@ -911,6 +911,8 @@ async function canCreateRadar(user, radarId) {
 }
 
 async function editRadar(radarId, links, parameters, state, userInfo) {
+    const queries = [];
+
     if (links.length > 0) {
         const linksRows = links.map(function (link) {
             const blipCache = blipsHashCache[link.blip];
@@ -925,10 +927,8 @@ async function editRadar(radarId, links, parameters, state, userInfo) {
                 link.value || 0,
             ]
         });
-        const queries = [];
         queries.push(await utils.deleteBlipLinks(radarId, userInfo, false));
         queries.push(await utils.insertBlipLinks(linksRows, userInfo, false));
-        await utils.transaction(queries, userInfo);
     }
 
     if (parameters.length > 0) {
@@ -940,13 +940,14 @@ async function editRadar(radarId, links, parameters, state, userInfo) {
                 parameter.value,
             ]
         });
-        const queries = [];
         queries.push(await utils.deleteRadarParameters(radarId, userInfo, false));
         queries.push(await utils.insertRadarParameters(parametersRows, userInfo, false));
-        await utils.transaction(queries, userInfo);
     }
 
-    if (state !== undefined) await utils.updateRadarState(radarId, state, userInfo);
+    if (state !== undefined) queries.push(await utils.updateRadarState(radarId, state, userInfo, false));
+
+    await utils.transaction(queries, userInfo);
+
 }
 
 async function getAllBlips() {
@@ -1011,7 +1012,7 @@ function onlyUnique(value, index, self) {
 
 const shouldLog = process.env.LOG_QUERIES === 'true';
 async function errorHandling(e, res) {
-    if (shouldLog) console.error(e);
+    console.error(e);
     const response = e.response;
     if (e.response && e.response.data) {
         const error = e.response.data.error;

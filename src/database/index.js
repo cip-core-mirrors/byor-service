@@ -155,8 +155,8 @@ async function transaction(logs, userInfo) {
     if (shouldLog) logQuery(sql);
     if (client) await client.query(sql);
 
-    for (const log of logs) {
-        if (userInfo) logAction(log, userInfo);
+    if (userInfo) {
+        for (const log of logs) logAction(log, userInfo);
     }
 }
 

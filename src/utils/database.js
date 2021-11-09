@@ -245,7 +245,7 @@ async function deleteRadar(radarId, userInfo) {
     return await utils.deleteFrom('radars', [ `id = '${radarId}'` ], userInfo);
 }
 
-async function updateRadarState(id, state, userInfo) {
+async function updateRadarState(id, state, userInfo, shouldQuery = true) {
     await utils.update(
         'radars',
         {
@@ -254,6 +254,7 @@ async function updateRadarState(id, state, userInfo) {
         },
         [ `id = '${id}'` ],
         userInfo,
+        shouldQuery,
     );
 }
 
