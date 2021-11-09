@@ -34,7 +34,6 @@ utils.init().then(async function() {
 router.get('/radar/:radar', async function(req, res, next) {
     const radar = req.params.radar;
 
-    console.log(req.headers);
     utils.logHeaders(req.headers);
 
     try {

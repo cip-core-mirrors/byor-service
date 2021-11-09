@@ -56,7 +56,7 @@ async function selectFromInnerJoin(table, columns, innerJoins = [], where = []) 
 }
 
 async function insertInto(table, columns = [], rows = [], userInfo, shouldQuery = true) {
-    const sql1 = `INSERT INTO ${table} (${columns.join(', ')}) VALUES %L`
+    const sql1 = `INSERT INTO ${table} (${columns.join(', ')}) VALUES %L;`
     const sql = format(sql1, rows)
 
     const log = {
@@ -150,14 +150,12 @@ async function deleteFrom(table, conditions = [], userInfo, shouldQuery = true) 
 async function transaction(logs, userInfo) {
     const sql = 'BEGIN TRANSACTION;\n' +
         logs.map(log => log.query).join('\n') +
-        'END TRANSACTION;';
+        '\nEND TRANSACTION;';
 
-    console.log(sql);
-
+    if (shouldLog) logQuery(sql);
     if (client) await client.query(sql);
 
     for (const log of logs) {
-        if (shouldLog) logQuery(log.query);
         if (userInfo) logAction(log, userInfo);
     }
 }
