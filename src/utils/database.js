@@ -98,7 +98,7 @@ async function insertBlipsRights(blipsPermissions, userInfo, shouldQuery = true)
 
     if (rows.length === 0) return;
 
-    await utils.upsert(
+    return await utils.upsert(
         'blip_rights',
         [ 'id', 'blip', 'user_id', 'rights' ],
         rows,
@@ -108,7 +108,7 @@ async function insertBlipsRights(blipsPermissions, userInfo, shouldQuery = true)
 }
 
 async function deleteBlipRights(blipId, userInfo, shouldQuery = true) {
-    await utils.deleteFrom('blip_rights', [
+    return await utils.deleteFrom('blip_rights', [
         `blip = '${blipId}'`,
     ], userInfo, shouldQuery);
 }
@@ -246,7 +246,7 @@ async function deleteRadar(radarId, userInfo) {
 }
 
 async function updateRadarState(id, state, userInfo, shouldQuery = true) {
-    await utils.update(
+    return await utils.update(
         'radars',
         {
             id: id,
@@ -269,7 +269,7 @@ async function getRadarParameters(radarId) {
 }
 
 async function insertRadarParameters(radarParameters, userInfo, shouldQuery = true) {
-    await utils.insertInto(
+    return await utils.insertInto(
         'radar_parameters',
         [
             'id',
@@ -284,7 +284,7 @@ async function insertRadarParameters(radarParameters, userInfo, shouldQuery = tr
 }
 
 async function deleteRadarParameters(radarId, userInfo, shouldQuery = true) {
-    await utils.deleteFrom('radar_parameters', [
+    return await utils.deleteFrom('radar_parameters', [
         `radar = '${radarId}'`,
     ], userInfo, shouldQuery);
 }
