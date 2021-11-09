@@ -152,6 +152,8 @@ async function transaction(logs, userInfo) {
         logs.map(log => log.query).join('\n') +
         'END TRANSACTION;';
 
+    console.log(sql);
+
     if (client) await client.query(sql);
 
     for (const log of logs) {
