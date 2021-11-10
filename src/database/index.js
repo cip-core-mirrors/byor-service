@@ -155,6 +155,7 @@ async function deleteFrom(table, conditions = [], userInfo, shouldQuery = true) 
 }
 
 async function transaction(logs, userInfo) {
+    const id = new Date().getTime();
     const sql = 'BEGIN TRANSACTION;\n' +
         logs.map(log => log.query).join('\n') +
         '\nEND TRANSACTION;';
@@ -170,7 +171,7 @@ async function transaction(logs, userInfo) {
     }
 
     if (userInfo) {
-        logActions(logs, userInfo);
+        logActions(logs, userInfo, id);
     }
 }
 
@@ -257,26 +258,26 @@ async function logHeaders(headers) {
     )
 }
 
-async function logActions(actions, userInfo) {
-    const id = new Date().getTime();
-
+async function logActions(actions, userInfo, id) {
     const queries = [];
-    queries.push({
+    queries.push(await logAction({
         type: 'TRANSACTION',
-        table: '',
-        id,
-        query: 'BEGIN TRANSACTION',
-    });
+        table: 'log_actions',
+        id: id,
+        query: 'BEGIN TRANSACTION;',
+    }, userInfo, false));
+
     for (const action of actions) {
         action.id = id;
         queries.push(await logAction(action, userInfo, false));
     }
-    queries.push({
+
+    queries.push(await logAction({
         type: 'TRANSACTION',
-        table: '',
-        id,
-        query: 'END TRANSACTION',
-    });
+        table: 'log_actions',
+        id: id,
+        query: 'END TRANSACTION;',
+    }, userInfo, false));
 
     await transaction(queries, undefined);
 }
