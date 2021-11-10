@@ -78,25 +78,28 @@ async function insertInto(table, columns = [], rows = [], userInfo, shouldQuery 
 }
 
 async function upsert(table, columns = [], rows = [], userInfo, shouldQuery = true) {
+    const log = {
+        table: table,
+        id: new Date().getTime(),
+    };
+
     const idColumn = columns[0]
     const sql1 = `INSERT INTO ${table} (${columns.join(', ')}) VALUES %L \n`
     let sql3 = `ON CONFLICT (${idColumn}) \n`
     if (columns.length > 1) {
         sql3 += 'DO UPDATE SET \n' +
             columns.slice(1).map(column => `${column} = ${table}.${column}`).join(', ')
+        log.type = 'INSERT/UPDATE';
     } else {
         sql3 += 'DO NOTHING'
+        log.type = 'INSERT';
     }
     sql3 += ';'
 
     const sql = `${format(sql1, rows)} \n${sql3}`
 
-    const log = {
-        type: 'INSERT/UPDATE',
-        table: table,
-        id: new Date().getTime(),
-        query: sql,
-    };
+    log.query = sql;
+
     if (shouldQuery) {
         if (shouldLog) logQuery(sql)
 
