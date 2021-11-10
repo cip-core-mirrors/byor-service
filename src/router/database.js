@@ -245,13 +245,8 @@ router.delete('/radar/:radarId', async function(req, res, next) {
         return await res.json({message: `You cannot delete radar "${radarId}"`});
     }
 
-    const response = await utils.deleteRadar(radarId, req.user);
-    if (response.rowCount > 0) {
-        await res.json({message: 'ok', rows: response.rowCount});
-    } else {
-        res.statusCode = 404;
-        return await res.json({message: `No radar deleted`});
-    }
+    await utils.deleteRadar(radarId, req.user);
+    await res.json({message: 'ok'});
 });
 
 router.post('/radar', async function(req, res, next) {
@@ -560,13 +555,8 @@ router.use('/admin', async function(req, res, next) {
 router.delete('/admin/radar/:radarId', async function(req, res, next) {
     const radarId = req.params.radarId;
 
-    const response = await utils.deleteRadar(radarId, req.user);
-    if (response.rowCount > 0) {
-        await res.json({message: 'ok', rows: response.rowCount});
-    } else {
-        res.statusCode = 404;
-        return await res.json({message: `No radar deleted`});
-    }
+    await utils.deleteRadar(radarId, req.user);
+    await res.json({message: 'ok'});
 });
 
 router.post('/admin/radar', async function(req, res, next) {

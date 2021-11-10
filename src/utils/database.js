@@ -129,13 +129,16 @@ async function getThemes() {
 }
 
 async function insertTheme(theme, userInfo, isCreate) {
+    const queries = [];
+
     if (isCreate) {
-        await utils.upsert(
+        queries.push(await utils.upsert(
             'themes',
             [ 'id' ],
             [[ theme.id ]],
             userInfo,
-        );
+            false,
+        ));
     }
 
     theme.parameters = theme.parameters || [];
@@ -149,12 +152,13 @@ async function insertTheme(theme, userInfo, isCreate) {
     });
 
     if (parameters.length > 0) {
-        await utils.deleteFrom(
+        queries.push(await utils.deleteFrom(
             'theme_parameters',
             [ `theme = '${theme.id}'` ],
             userInfo,
-        );
-        await utils.upsert(
+            false,
+        ));
+        queries.push(await utils.upsert(
             'theme_parameters',
             [
                 'id',
@@ -164,7 +168,8 @@ async function insertTheme(theme, userInfo, isCreate) {
             ],
             parameters,
             userInfo,
-        );
+            false,
+        ));
     }
 
     theme.permissions = theme.permissions || [];
@@ -178,12 +183,13 @@ async function insertTheme(theme, userInfo, isCreate) {
     });
 
     if (rights.length > 0) {
-        await utils.deleteFrom(
+        queries.push(await utils.deleteFrom(
             'theme_rights',
             [ `theme = '${theme.id}'` ],
             userInfo,
-        );
-        await utils.upsert(
+            false,
+        ));
+        queries.push(await utils.upsert(
             'theme_rights',
             [
                 'id',
@@ -193,14 +199,20 @@ async function insertTheme(theme, userInfo, isCreate) {
             ],
             rights,
             userInfo,
-        );
+            false,
+        ));
     }
+
+    await utils.transaction(queries, userInfo);
 }
 
 async function deleteTheme(themeId, userInfo) {
-    await utils.deleteFrom('themes', [ `id = '${themeId}'` ], userInfo);
-    await utils.deleteFrom('theme_parameters', [ `theme = '${themeId}'` ], userInfo);
-    await utils.deleteFrom('theme_rights', [ `theme = '${themeId}'` ], userInfo);
+    const queries = [];
+    queries.push(await utils.deleteFrom('themes', [ `id = '${themeId}'` ], userInfo));
+    queries.push(await utils.deleteFrom('theme_parameters', [ `theme = '${themeId}'` ], userInfo));
+    queries.push(await utils.deleteFrom('theme_rights', [ `theme = '${themeId}'` ], userInfo));
+
+    await utils.transaction(queries, userInfo);
 }
 
 async function getThemeParameters(themeId) {
@@ -227,22 +239,30 @@ async function getRadars() {
 }
 
 async function insertRadar(id, userInfo) {
-    await utils.upsert(
+    const queries = [];
+    queries.push(await utils.upsert(
         'radars',
         [ 'id', 'state' ],
         [[ id, 0 ]], // default state
         userInfo,
-    );
+    ));
+
     if (userInfo && userInfo.mail) {
-        await insertRadarRights(id, userInfo.mail, ['owner', 'edit'], userInfo);
+        queries.push(await insertRadarRights(id, userInfo.mail, ['owner', 'edit'], userInfo));
     }
+
+    await utils.transaction(queries, userInfo);
 }
 
 async function deleteRadar(radarId, userInfo) {
-    await deleteRadarParameters(radarId, userInfo);
-    await deleteBlipLinks(radarId, userInfo);
-    await deleteRadarRights(radarId, undefined, userInfo);
-    return await utils.deleteFrom('radars', [ `id = '${radarId}'` ], userInfo);
+    const queries = [];
+
+    queries.push(await deleteRadarParameters(radarId, userInfo));
+    queries.push(await deleteBlipLinks(radarId, userInfo));
+    queries.push(await deleteRadarRights(radarId, undefined, userInfo));
+    queries.push(await utils.deleteFrom('radars', [ `id = '${radarId}'` ], userInfo));
+
+    await utils.transaction(queries, userInfo);
 }
 
 async function updateRadarState(id, state, userInfo, shouldQuery = true) {
