@@ -158,6 +158,7 @@ async function transaction(logs, userInfo) {
             await client.query(sql);
         } catch (e) {
             await client.query('END TRANSACTION;');
+            throw e;
         }
     }
 
