@@ -27,13 +27,13 @@ async function createTables() {
     const sql = fs.readFileSync(path.join(__dirname, filePath), { encoding: 'utf8' })
     console.log('[Database] Creating tables...')
     if (shouldLog) logQuery(sql)
-    if (client) return await client.query(sql);
+    if (client) return await client.query('END TRANSACTION;\n' + sql);
 }
 
 async function dropTable(table) {
     const sql = `DROP TABLE IF EXISTS ${table};`;
     if (shouldLog) logQuery(sql)
-    if (client) return await client.query(sql)
+    if (client) return await client.query('END TRANSACTION;\n' + sql)
 }
 
 async function selectFrom(table, columns, where = []) {
@@ -42,7 +42,7 @@ async function selectFrom(table, columns, where = []) {
         (where.length > 0 ? `WHERE ${where.join(' AND \n')}` : '') +
         ';'
     if (shouldLog) logQuery(sql)
-    if (client) return await client.query(sql)
+    if (client) return await client.query('END TRANSACTION;\n' + sql)
 }
 
 async function selectFromInnerJoin(table, columns, innerJoins = [], where = []) {
@@ -52,7 +52,7 @@ async function selectFromInnerJoin(table, columns, innerJoins = [], where = []) 
         (where.length > 0 ? `WHERE ${where.join(' AND \n')}` : '') +
         ';'
     if (shouldLog) logQuery(sql)
-    if (client) return await client.query(sql)
+    if (client) return await client.query('END TRANSACTION;\n' + sql)
 }
 
 async function insertInto(table, columns = [], rows = [], userInfo, shouldQuery = true) {
@@ -70,7 +70,7 @@ async function insertInto(table, columns = [], rows = [], userInfo, shouldQuery 
             if (userInfo) logAction(log, userInfo);
         }
 
-        if (client) return await client.query(sql)
+        if (client) return await client.query('END TRANSACTION;\n' + sql)
     } else {
         return log;
     }
@@ -99,7 +99,7 @@ async function upsert(table, columns = [], rows = [], userInfo, shouldQuery = tr
 
         if (userInfo) logAction(log, userInfo);
 
-        if (client) return await client.query(sql)
+        if (client) return await client.query('END TRANSACTION;\n' + sql)
     } else {
         return log;
     }
@@ -120,7 +120,7 @@ async function update(table, values = {}, conditions = [], userInfo, shouldQuery
 
         if (userInfo) logAction(log, userInfo);
 
-        if (client) return await client.query(sql)
+        if (client) return await client.query('END TRANSACTION;\n' + sql)
     } else {
         return log;
     }
@@ -141,7 +141,7 @@ async function deleteFrom(table, conditions = [], userInfo, shouldQuery = true) 
 
         if (userInfo) logAction(log, userInfo);
 
-        if (client) return await client.query(sql)
+        if (client) return await client.query('END TRANSACTION;\n' + sql)
     } else {
         return log;
     }
@@ -153,7 +153,7 @@ async function transaction(logs, userInfo) {
         '\nEND TRANSACTION;';
 
     if (shouldLog) logQuery(sql);
-    if (client) await client.query(sql);
+    if (client) await client.query('END TRANSACTION;\n' + sql);
 
     if (userInfo) {
         for (const log of logs) logAction(log, userInfo);
