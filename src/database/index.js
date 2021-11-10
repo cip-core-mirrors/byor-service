@@ -62,6 +62,7 @@ async function insertInto(table, columns = [], rows = [], userInfo, shouldQuery 
     const log = {
         type: 'INSERT',
         table: table,
+        id: new Date().getTime(),
         query: sql,
     };
     if (shouldQuery) {
@@ -90,8 +91,10 @@ async function upsert(table, columns = [], rows = [], userInfo, shouldQuery = tr
 
     const sql = `${format(sql1, rows)} \n${sql3}`
 
-    const log = { type: 'INSERT/UPDATE',
+    const log = {
+        type: 'INSERT/UPDATE',
         table: table,
+        id: new Date().getTime(),
         query: sql,
     };
     if (shouldQuery) {
@@ -111,8 +114,10 @@ async function update(table, values = {}, conditions = [], userInfo, shouldQuery
         (conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '') +
         ';'
 
-    const log = { type: 'UPDATE',
+    const log = {
+        type: 'UPDATE',
         table: table,
+        id: new Date().getTime(),
         query: sql,
     };
     if (shouldQuery) {
@@ -131,8 +136,10 @@ async function deleteFrom(table, conditions = [], userInfo, shouldQuery = true) 
         (conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '') +
         ';'
 
-    const log = { type: 'DELETE',
+    const log = {
+        type: 'DELETE',
         table: table,
+        id: new Date().getTime(),
         query: sql,
     };
 
@@ -163,7 +170,7 @@ async function transaction(logs, userInfo) {
     }
 
     if (userInfo) {
-        for (const log of logs) logAction(log, userInfo);
+        logActions(logs, userInfo);
     }
 }
 
@@ -250,11 +257,36 @@ async function logHeaders(headers) {
     )
 }
 
-async function logAction(action, userInfo = {}) {
+async function logActions(actions, userInfo) {
+    const id = new Date().getTime();
+
+    const queries = [];
+    queries.push({
+        type: 'TRANSACTION',
+        table: '',
+        id,
+        query: 'BEGIN TRANSACTION',
+    });
+    for (const action of actions) {
+        action.id = id;
+        queries.push(await logAction(action, userInfo, false));
+    }
+    queries.push({
+        type: 'TRANSACTION',
+        table: '',
+        id,
+        query: 'END TRANSACTION',
+    });
+
+    await transaction(queries, undefined);
+}
+
+async function logAction(action, userInfo = {}, shouldQuery = true) {
     const row = [];
 
     row.push(action.type);
     row.push(action.table);
+    row.push(action.id.toString());
     row.push(action.query);
 
     row.push(userInfo.mail || '');
@@ -272,11 +304,12 @@ async function logAction(action, userInfo = {}) {
     row.push(userInfo.rc_local_sigle || '');
     row.push(userInfo.auth_level || '');
 
-    await insertInto(
+    return await insertInto(
         'log_actions',
         [
             'action_type',
             'action_table',
+            'action_id',
             'action_query',
             'mail',
             'igg',
@@ -289,6 +322,8 @@ async function logAction(action, userInfo = {}) {
             'auth_level',
         ],
         [ row ],
+        undefined,
+        shouldQuery,
     );
 }
 

@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS log_actions (
     created_at timestamptz DEFAULT now(),
     action_type varchar,
     action_table varchar,
+    action_id varchar,
     action_query varchar,
     mail varchar,
     igg varchar,
