@@ -60,7 +60,7 @@ async function deleteBlip(blipId, userInfo) {
     queries.push(await utils.upsert(
         'themes',
         [ 'id' ],
-        [[ theme.id ]],
+        [[ blipId ]],
         userInfo,
         false,
     ));
