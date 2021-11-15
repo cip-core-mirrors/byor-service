@@ -29,7 +29,7 @@ async function getBlips() {
 }
 
 async function insertBlips(blips, userInfo, shouldQuery = true) {
-    await utils.upsert(
+    return await utils.upsert(
         'blips',
         [
             'id_version',
@@ -414,7 +414,7 @@ async function selectBlipsWithColumnLinks(radarId) {
 }
 
 async function insertColumnLinks(columnLinks, userInfo, shouldQuery = true) {
-    await utils.insertInto(
+    return await utils.insertInto(
         'column_links',
         [
             'id',
