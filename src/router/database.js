@@ -205,13 +205,9 @@ router.delete('/blips/:blipId', async function(req, res, next) {
             return await res.json({message: `You cannot delete blip "${blipId}"`});
         }
 
-        const response = await utils.deleteBlip(blipId, req.user);
-        if (response.rowCount > 0) {
-            await res.json({message: 'ok', rows: response.rowCount});
-        } else {
-            res.statusCode = 404;
-            return await res.json({message: `No blip deleted`});
-        }
+        await utils.deleteBlip(blipId, req.user);
+
+        await res.json({message: 'ok'});
     } catch (e) {
         await errorHandling(e, res)
     }
@@ -812,13 +808,20 @@ async function insertBlips(blips, users, userInfo) {
         index++;
     }
 
+    const queries = [];
     if (blipsToInsert.length > 0) {
-        await utils.insertBlips(blipsToInsert, userInfo);
-        await utils.insertColumnLinks(columnLinks, userInfo);
-        Object.assign(blipsHashCache, tempCache)
+        queries.push(await utils.insertBlips(blipsToInsert, userInfo, false));
+        queries.push(await utils.insertColumnLinks(columnLinks, userInfo, false));
     }
     if (blipsRights.length > 0) {
-        await utils.insertBlipsRights(blipsRights, userInfo);
+        queries.push(await utils.insertBlipsRights(blipsRights, userInfo, false));
+    }
+
+    if (queries.length > 0) {
+        await utils.transaction(queries);
+        if (blipsToInsert.length > 0) {
+            Object.assign(blipsHashCache, tempCache);
+        }
     }
 
     const response = {
