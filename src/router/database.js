@@ -221,6 +221,26 @@ router.get('/radar', async function(req, res, next) {
     await res.json(userRadars);
 });
 
+router.get('/radar/:radarId', async function(req, res, next) {
+    const userId = req.user.mail;
+    const radar = req.params.radarId;
+
+    const radarFound = await utils.radarExists(radar);
+    if (!radarFound) {
+        res.statusCode = 404;
+        return await res.json({message: `Radar "${radar}" does not exist`});
+    }
+
+    const userCanEdit = await utils.userCanEditRadar(userId, radar);
+    if (!userCanEdit) {
+        res.statusCode = 403;
+        return await res.json({message: `You cannot edit radar "${radar}"`});
+    }
+
+    const radarVersions = await utils.getRadarVersions(radar);
+    await res.json(radarVersions);
+});
+
 router.get('/permissions', async function(req, res, next) {
     await res.json({
         create_radar: iam.isAuthorizedToCreateRadar(req.user),
