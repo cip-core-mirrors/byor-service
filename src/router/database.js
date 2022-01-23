@@ -519,7 +519,7 @@ router.get('/parameters/themes', async function(req, res, next) {
 router.get('/radar/:radar/:version/parameters', async function(req, res, next) {
     const userId = req.user.mail;
     const radar = req.params.radar;
-    const version = req.params.version;
+    const version = parseInt(req.params.version);
 
     try {
         const radarFound = await utils.radarExists(radar);
@@ -544,7 +544,7 @@ router.get('/radar/:radar/:version/parameters', async function(req, res, next) {
 router.get('/radar/:radar/:version/blip-links', async function(req, res, next) {
     const userId = req.user.mail;
     const radar = req.params.radar;
-    const version = req.params.version;
+    const version = parseInt(req.params.version);
 
     try {
         const radarFound = await utils.radarExists(radar);
