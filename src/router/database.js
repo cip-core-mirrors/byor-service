@@ -971,7 +971,7 @@ async function editRadar(radarId, links, parameters, state, userInfo) {
         queries.push(await utils.insertRadarParameters(parametersRows, userInfo, false));
     }
 
-    if (queries.length > 0) await utils.addRadarVersion(radarId, radarNewVersion, userInfo, false);
+    if (queries.length > 0) queries.push(await utils.addRadarVersion(radarId, radarNewVersion, userInfo, false));
 
     if (state !== undefined) queries.push(await utils.updateRadarState(radarId, state, userInfo, false));
 
