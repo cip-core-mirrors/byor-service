@@ -434,7 +434,7 @@ async function selectBlipsWithColumnLinks(radarId, radarVersion) {
             ],
             [
                 `blip_links.radar = '${radarId}'`,
-                `blip_links.radar_version = ${radarVersion}`,
+                `(blip_links.radar_version = ${radarVersion}${radarVersion === 0 ? ` OR blip_links.radar_version IS NULL` : ''})`,
             ],
         );
     } else {
