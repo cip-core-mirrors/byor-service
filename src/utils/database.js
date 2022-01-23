@@ -383,7 +383,7 @@ async function getRadarParameters(radarId, radarVersion) {
         [ 'name', 'value' ],
         [
             `radar = '${radarId}'`,
-            `radar_version = ${radarVersion}` + (radarVersion === 0 ? ` OR radar_version IS NULL` : ''),
+            `(radar_version = ${radarVersion}${radarVersion === 0 ? ` OR radar_version IS NULL` : ''})`,
         ],
     );
 
