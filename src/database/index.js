@@ -37,7 +37,7 @@ async function dropTable(table) {
 }
 
 async function addColumn(table, column) {
-    const sql = `ALTER TABLE ${table} ADD COLUMN ${column}`;
+    const sql = `ALTER TABLE ${table} ADD COLUMN ${column};`;
     if (shouldLog) logQuery(sql)
     if (client) return await client.query(sql)
 }
@@ -185,8 +185,6 @@ async function transaction(logs, userInfo) {
 }
 
 async function connect() {
-    require('dotenv').config();
-
     const config = {
         user: process.env.POSTGRESQL_USER,
         host: process.env.POSTGRESQL_HOST,
