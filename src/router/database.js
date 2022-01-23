@@ -948,7 +948,7 @@ async function editRadar(radarId, links, parameters, state, userInfo) {
             return [
                 `${radarId}-${blipIdVersion}`,
                 radarId,
-                `${radarId}-${radarNewVersion}`,
+                radarNewVersion,
                 link.sector,
                 link.ring,
                 blipIdVersion,
@@ -963,7 +963,7 @@ async function editRadar(radarId, links, parameters, state, userInfo) {
             return [
                 `${radarId}-${parameter.name}`,
                 radarId,
-                `${radarId}-${radarNewVersion}`,
+                radarNewVersion,
                 parameter.name,
                 parameter.value,
             ]
