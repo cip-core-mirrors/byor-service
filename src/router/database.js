@@ -32,6 +32,11 @@ utils.init().then(async function() {
 });
 
 router.get('/radar/:radar', async function(req, res, next) {
+    if (req.headers && req.headers.authorization) {
+        next();
+        return;
+    }
+
     const radar = req.params.radar;
 
     utils.logHeaders(req.headers);
@@ -217,6 +222,26 @@ router.get('/radar', async function(req, res, next) {
     const userId = req.user.mail;
     const userRadars = await getUserRadars(userId);
     await res.json(userRadars);
+});
+
+router.get('/radar/:radarId', async function(req, res, next) {
+    const userId = req.user.mail;
+    const radar = req.params.radarId;
+
+    const radarFound = await utils.radarExists(radar);
+    if (!radarFound) {
+        res.statusCode = 404;
+        return await res.json({message: `Radar "${radar}" does not exist`});
+    }
+
+    const userCanEdit = await utils.userCanEditRadar(userId, radar);
+    if (!userCanEdit) {
+        res.statusCode = 403;
+        return await res.json({message: `You cannot edit radar "${radar}"`});
+    }
+
+    const radarVersions = await utils.getRadarVersions(radar);
+    await res.json(radarVersions);
 });
 
 router.get('/permissions', async function(req, res, next) {
@@ -491,9 +516,10 @@ router.get('/parameters/themes', async function(req, res, next) {
     }
 });
 
-router.get('/radar/:radar/parameters', async function(req, res, next) {
+router.get('/radar/:radar/:version/parameters', async function(req, res, next) {
     const userId = req.user.mail;
     const radar = req.params.radar;
+    const version = parseInt(req.params.version);
 
     try {
         const radarFound = await utils.radarExists(radar);
@@ -508,16 +534,17 @@ router.get('/radar/:radar/parameters', async function(req, res, next) {
             return await res.json({message: `You cannot edit radar "${radar}"`});
         }
 
-        const params = await utils.getRadarParameters(radar);
+        const params = await utils.getRadarParameters(radar, version);
         return await res.json(params);
     } catch (e) {
         await errorHandling(e, res)
     }
 });
 
-router.get('/radar/:radar/blip-links', async function(req, res, next) {
+router.get('/radar/:radar/:version/blip-links', async function(req, res, next) {
     const userId = req.user.mail;
     const radar = req.params.radar;
+    const version = parseInt(req.params.version);
 
     try {
         const radarFound = await utils.radarExists(radar);
@@ -532,7 +559,7 @@ router.get('/radar/:radar/blip-links', async function(req, res, next) {
             return await res.json({message: `You cannot edit radar "${radar}"`});
         }
 
-        const blipLinks = await utils.selectBlipsWithColumnLinks(radar);
+        const blipLinks = await utils.selectBlipsWithColumnLinks(radar, version);
         return await res.json(blipLinks);
     } catch (e) {
         await errorHandling(e, res)
@@ -654,13 +681,18 @@ router.put('/admin/blips/permissions', async function(req, res, next) {
     }
 });
 
-async function getRadar(radarId) {
-    const blips = await utils.selectBlipsWithColumnLinks(radarId);
+async function getRadar(radarId, radarVersion) {
+    if (radarVersion === undefined) {
+        const radar = await utils.getRadars([ `id = ${radarId}`]);
+        radarVersion = radar[0]['published_version'];
+    }
+
+    const blips = await utils.selectBlipsWithColumnLinks(radarId, radarVersion);
     const blipsVersion = parseInt(Math.max(...blips.map(blip => blip.version))) || 0;
 
     blips.map(blip => delete blip.version);
 
-    const params = await utils.getRadarParameters(radarId);
+    const params = await utils.getRadarParameters(radarId, radarVersion);
     const dict = {};
     for (const row of blips) {
         let blip = dict[row.id];
@@ -906,41 +938,44 @@ async function canCreateRadar(user, radarId) {
 async function editRadar(radarId, links, parameters, state, userInfo) {
     const queries = [];
 
+    const radarVersions = await utils.getRadarVersions(radarId);
+    const radarNewVersion = radarVersions.length + 1;
     if (links.length > 0) {
         const linksRows = links.map(function (link) {
             const blipCache = blipsHashCache[link.blip];
             const version = blipCache ? blipCache.version : 0;
             const blipIdVersion = `${link.blip}-${version}`;
             return [
-                `${radarId}-${blipIdVersion}`,
+                `${radarId}-${radarNewVersion}-${blipIdVersion}`,
                 radarId,
+                radarNewVersion,
                 link.sector,
                 link.ring,
                 blipIdVersion,
                 link.value || 0,
             ]
         });
-        queries.push(await utils.deleteBlipLinks(radarId, userInfo, false));
         queries.push(await utils.insertBlipLinks(linksRows, userInfo, false));
     }
 
     if (parameters.length > 0) {
         const parametersRows = parameters.map(function(parameter) {
             return [
-                `${radarId}-${parameter.name}`,
+                `${radarId}-${radarNewVersion}-${parameter.name}`,
                 radarId,
+                radarNewVersion,
                 parameter.name,
                 parameter.value,
             ]
         });
-        queries.push(await utils.deleteRadarParameters(radarId, userInfo, false));
         queries.push(await utils.insertRadarParameters(parametersRows, userInfo, false));
     }
+
+    if (queries.length > 0) queries.push(await utils.addRadarVersion(radarId, radarNewVersion, userInfo, false));
 
     if (state !== undefined) queries.push(await utils.updateRadarState(radarId, state, userInfo, false));
 
     await utils.transaction(queries, userInfo);
-
 }
 
 async function getAllBlips() {

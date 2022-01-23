@@ -36,6 +36,12 @@ async function dropTable(table) {
     if (client) return await client.query(sql)
 }
 
+async function addColumn(table, column) {
+    const sql = `ALTER TABLE ${table} ADD COLUMN ${column};`;
+    if (shouldLog) logQuery(sql)
+    if (client) return await client.query(sql)
+}
+
 async function selectFrom(table, columns, where = []) {
     const sql = `SELECT ${columns.join(', ')} \n` +
         `FROM ${table} \n` +
@@ -336,6 +342,7 @@ module.exports = {
     disconnect,
     createTables,
     dropTable,
+    addColumn,
     selectFrom,
     selectFromInnerJoin,
     insertInto,

@@ -2,6 +2,8 @@ const axios = require('axios');
 const https = require('https');
 
 async function loadEnv() {
+    require('dotenv').config(); // load environment variables from .env file
+
     const baseUrl = process.env.VAULT_URL;
     if (!baseUrl) return;
 
