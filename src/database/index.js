@@ -185,6 +185,8 @@ async function transaction(logs, userInfo) {
 }
 
 async function connect() {
+    require('dotenv').config();
+
     const config = {
         user: process.env.POSTGRESQL_USER,
         host: process.env.POSTGRESQL_HOST,
