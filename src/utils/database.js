@@ -266,17 +266,33 @@ async function getThemeParameters(themeId) {
     return data.rows;
 }
 
-async function getRadars() {
-    const data = await utils.selectFrom('radars', [ 'id', 'state' ]);
+async function getRadars(conditions = []) {
+    const data = await utils.selectFrom('radars', [ 'id', 'published_version', 'state' ], conditions);
     return data.rows;
 }
 
 async function insertRadar(id, userInfo) {
     const queries = [];
+
+    const defaultState = 0;
     queries.push(await utils.upsert(
         'radars',
-        [ 'id', 'state' ],
-        [[ id, 0 ]], // default state
+        [ 'id', 'state' ], // published_version omitted in order to keep it empty
+        [[ id, defaultState ]],
+        userInfo,
+        false,
+    ));
+
+    const defaultVersion = 0;
+    queries.push(await utils.insertInto(
+        'radar_versions',
+        [
+            [
+                `${id}-${defaultVersion}`,
+                id,
+                defaultVersion,
+            ],
+        ],
         userInfo,
         false,
     ));
@@ -313,6 +329,11 @@ async function deleteRadar(radarId, userInfo) {
         userInfo,
         false,
     ));
+    queries.push(await deleteRadarVersions(
+        radarId,
+        userInfo,
+        false,
+    ));
     queries.push(await utils.deleteFrom(
         'radars',
         [ `id = '${radarId}'` ],
@@ -327,7 +348,6 @@ async function updateRadarState(id, state, userInfo, shouldQuery = true) {
     return await utils.update(
         'radars',
         {
-            id: id,
             state: state,
         },
         [ `id = '${id}'` ],
@@ -336,11 +356,35 @@ async function updateRadarState(id, state, userInfo, shouldQuery = true) {
     );
 }
 
-async function getRadarParameters(radarId) {
+async function addRadarVersion(radarId, version, userInfo, shouldQuery = true) {
+    return await utils.insertInto(
+        'radar_versions',
+        [
+            [ `${radarId}-${version}`, radarId, version ],
+        ],
+        userInfo,
+        shouldQuery,
+    );
+}
+
+async function getRadarVersions(radarId) {
+    const data = await utils.selectFrom(
+        'radar_versions',
+        [ 'id', 'radar', 'version' ],
+        [ `radar = '${radarId}'` ],
+    );
+
+    return data.rows;
+}
+
+async function getRadarParameters(radarId, radarVersion) {
     const data = await utils.selectFrom(
         'radar_parameters',
         [ 'name', 'value' ],
-        [ `radar = '${radarId}'` ],
+        [
+            `radar = '${radarId}'`,
+            `radar_version = ${radarVersion}`,
+        ],
     );
 
     return data.rows;
@@ -367,7 +411,7 @@ async function deleteRadarParameters(radarId, userInfo, shouldQuery = true) {
     ], userInfo, shouldQuery);
 }
 
-async function selectBlipsWithColumnLinks(radarId) {
+async function selectBlipsWithColumnLinks(radarId, radarVersion) {
     let data;
     if (radarId) {
         data = await utils.selectFromInnerJoin(
@@ -390,6 +434,7 @@ async function selectBlipsWithColumnLinks(radarId) {
             ],
             [
                 `blip_links.radar = '${radarId}'`,
+                `blip_links.radar_version = ${radarVersion}`,
             ],
         );
     } else {
@@ -489,8 +534,15 @@ async function deleteRadarRights(radarId, userId, userInfo, shouldQuery = true) 
     return await utils.deleteFrom('radar_rights', conditions, userInfo, shouldQuery);
 }
 
+async function deleteRadarVersions(radarId, userInfo, shouldQuery = true) {
+    const conditions = [ `radar = '${radarId}'` ];
+    return await utils.deleteFrom('radar_versions', conditions, userInfo, shouldQuery);
+}
+
 async function radarExists(radarId) {
-    const radars = await getRadars();
+    const radars = await getRadars([
+        `id = '${radarId}'`,
+    ]);
     for (const entry of radars) {
         if (entry.id === radarId) {
             return true;
@@ -550,6 +602,9 @@ module.exports = {
     insertRadar,
     deleteRadar,
     updateRadarState,
+
+    addRadarVersion,
+    getRadarVersions,
 
     getRadarParameters,
     insertRadarParameters,

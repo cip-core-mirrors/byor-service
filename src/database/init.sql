@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS column_links (
 CREATE TABLE IF NOT EXISTS blip_links (
     id varchar unique,
     radar varchar,
+    radar_version integer,
     sector varchar,
     ring varchar,
     blip varchar,
@@ -66,7 +67,14 @@ CREATE TABLE IF NOT EXISTS blip_links (
 
 CREATE TABLE IF NOT EXISTS radars (
     id varchar unique,
+    published_version integer,
     state integer
+);
+
+CREATE TABLE IF NOT EXISTS radar_versions (
+    id varchar unique,
+    radar varchar,
+    version integer
 );
 
 CREATE TABLE IF NOT EXISTS radar_rights (
@@ -79,6 +87,7 @@ CREATE TABLE IF NOT EXISTS radar_rights (
 CREATE TABLE IF NOT EXISTS radar_parameters (
     id varchar unique,
     radar varchar,
+    radar_version integer,
     name varchar,
     value varchar
 );
