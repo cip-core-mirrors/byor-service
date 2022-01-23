@@ -397,6 +397,7 @@ async function insertRadarParameters(radarParameters, userInfo, shouldQuery = tr
         [
             'id',
             'radar',
+            'radar_version',
             'name',
             'value',
         ],
@@ -480,6 +481,7 @@ async function insertBlipLinks(blipLinks, userInfo, shouldQuery = true) {
         [
             'id',
             'radar',
+            'radar_version',
             'sector',
             'ring',
             'blip',
