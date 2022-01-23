@@ -32,7 +32,10 @@ utils.init().then(async function() {
 });
 
 router.get('/radar/:radar', async function(req, res, next) {
-    if (req.headers && req.headers.authorization) next();
+    if (req.headers && req.headers.authorization) {
+        next();
+        return;
+    }
 
     const radar = req.params.radar;
 
