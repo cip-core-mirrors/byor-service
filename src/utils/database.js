@@ -359,7 +359,7 @@ async function updateRadarState(id, state, userInfo, shouldQuery = true) {
 async function addRadarVersion(radarId, version, userInfo, shouldQuery = true) {
     return await utils.insertInto(
         'radar_versions',
-        [ 'id', 'radar', 'versions' ],
+        [ 'id', 'radar', 'version' ],
         [
             [ `${radarId}-${version}`, radarId, version ],
         ],
