@@ -946,7 +946,7 @@ async function editRadar(radarId, links, parameters, state, userInfo) {
             const version = blipCache ? blipCache.version : 0;
             const blipIdVersion = `${link.blip}-${version}`;
             return [
-                `${radarId}-${blipIdVersion}`,
+                `${radarId}-${radarNewVersion}-${blipIdVersion}`,
                 radarId,
                 radarNewVersion,
                 link.sector,
@@ -961,7 +961,7 @@ async function editRadar(radarId, links, parameters, state, userInfo) {
     if (parameters.length > 0) {
         const parametersRows = parameters.map(function(parameter) {
             return [
-                `${radarId}-${parameter.name}`,
+                `${radarId}-${radarNewVersion}-${parameter.name}`,
                 radarId,
                 radarNewVersion,
                 parameter.name,
