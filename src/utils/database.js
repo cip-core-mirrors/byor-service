@@ -267,7 +267,7 @@ async function getThemeParameters(themeId) {
 }
 
 async function getRadars(conditions = []) {
-    const data = await utils.selectFrom('radars', [ 'id', 'published_version', 'state' ], conditions);
+    const data = await utils.selectFrom('radars', [ 'id', 'state' ], conditions);
     return data.rows;
 }
 
@@ -357,12 +357,15 @@ async function updateRadarState(id, state, userInfo, shouldQuery = true) {
 }
 
 async function addRadarVersion(radarId, radarVersion, fork, forkVersion, userInfo = {}, shouldQuery = true) {
+    let radarVersionId = `${radarId}-${radarVersion}`;
+    if (fork !== undefined) radarVersionId += `-${fork}-${forkVersion}`;
+
     return await utils.insertInto(
         'radar_versions',
         [ 'id', 'radar', 'version', 'fork', 'fork_version', 'user' ],
         [
             [
-                `${radarId}-${radarVersion}-${fork}-${forkVersion}`,
+                radarVersionId,
                 radarId,
                 radarVersion,
                 fork,

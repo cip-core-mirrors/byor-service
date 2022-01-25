@@ -95,7 +95,7 @@ router.put('/anonymous/radar/:radar', async function(req, res, next) {
         }
 
         await utils.insertRadar(radar);
-        await editRadar(radar, links, parameters, 0);
+        await editRadar(radar, links, parameters, 0, true, 0, undefined, 0, req.user);
 
         await res.json({ status: 'ok' })
     } catch (e) {
@@ -670,14 +670,45 @@ router.delete('/admin/radar/:radar/permissions/:userId', async function(req, res
 });
 
 router.put('/admin/radar/:radar', async function(req, res, next) {
+    const userId = req.user.mail;
     const radar = req.params.radar;
-    const { state, links = [], parameters = [] } = req.body;
+    const { state, links = [], parameters = [], commit = true } = req.body;
+    let { version, fork } = req.body;
+    if (version !== undefined) version = parseInt(version);
+    if (fork !== undefined) fork = parseInt(fork);
 
     try {
         const radarFound = await utils.radarExists(radar);
         if (!radarFound) {
             res.statusCode = 404;
             return await res.json({message: `Radar "${radar}" does not exist`});
+        }
+
+        const forkVersions = await getRadarForkVersions(radar);
+        if (version !== undefined && forkVersions[version] === undefined) {
+            res.statusCode = 404;
+            return await res.json({message: `Version ${version} does not exist in radar "${radar}"`});
+        }
+        if (version === undefined) version = Object.keys(forkVersions).length;
+
+        let forks = forkVersions[version];
+        const isUserOwner = await utils.userRadarOwner(userId, radar);
+        if (fork === undefined && isUserOwner) {
+            if (!commit) {
+                res.statusCode = 404;
+                return await res.json({message: `You have to commit when you are creating a new radar version`});
+            }
+            version = version + 1;
+            forks = [];
+        } else if (fork === undefined) {
+            if (!commit) {
+                res.statusCode = 404;
+                return await res.json({message: `You have to commit when you are creating a new fork version`});
+            }
+            fork = forks.length + 1; // increment fork version
+        } else if (forks.indexOf(fork) === -1) {
+            res.statusCode = 404;
+            return await res.json({message: `Fork version ${fork} does not exist in version ${version} for radar "${radar}"`});
         }
 
         if (state !== undefined) {
@@ -687,7 +718,7 @@ router.put('/admin/radar/:radar', async function(req, res, next) {
             }
         }
 
-        await editRadar(radar, links, parameters, state, req.user);
+        await editRadar(radar, links, parameters, state, commit, version, fork, forks.length, req.user);
         await res.json({ status: 'ok' })
     } catch (e) {
         await errorHandling(e, res)
@@ -713,7 +744,8 @@ router.put('/admin/blips/permissions', async function(req, res, next) {
 
 async function getRadar(radarId, radarVersion) {
     if (radarVersion === undefined) {
-        const radar = await utils.getRadars([ `id = ${radarId}`]);
+        const forkVersions = await getRadarForkVersions(radarId);
+        const lastRadarVersion = Math.max(...Object.keys(forkVersions).map(parseInt));
         radarVersion = radar[0]['published_version'];
     }
 
@@ -985,8 +1017,10 @@ async function getRadarForkVersions(radarId) {
 async function editRadar(radarId, links, parameters, state, isCommit, radarVersion, fork, forkVersion, userInfo) {
     const queries = [];
 
-    const versionNumber = forkVersion + (isCommit ? 1 : 0); // increment version if it is a commit
-    const radarVersionId = `${radarId}-${radarVersion}-${fork}-${versionNumber}`;
+    const versionNumber = fork !== undefined ? (forkVersion + (isCommit ? 1 : 0)) : undefined; // increment version if it is a commit
+    let radarVersionId = `${radarId}-${radarVersion}`;
+    if (fork !== undefined) radarVersionId += `-${fork}-${versionNumber}`;
+
     if (links.length > 0) {
         const linksRows = links.map(function (link) {
             const blipCache = blipsHashCache[link.blip];
