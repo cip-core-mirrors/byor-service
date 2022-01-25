@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS radar_versions (
     version integer,
     fork integer,
     fork_version integer,
-    user varchar
+    user_id varchar
 );
 
 /*
