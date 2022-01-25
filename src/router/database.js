@@ -582,6 +582,10 @@ router.get('/radar/:radar/:version/blip-links', async function(req, res, next) {
     const radar = req.params.radar;
     const version = parseInt(req.params.version);
 
+    let { fork, forkVersion } = req.query;
+    if (fork !== undefined) fork = parseInt(fork);
+    if (forkVersion !== undefined) forkVersion = parseInt(forkVersion);
+
     try {
         const radarFound = await utils.radarExists(radar);
         if (!radarFound) {
@@ -595,7 +599,9 @@ router.get('/radar/:radar/:version/blip-links', async function(req, res, next) {
             return await res.json({message: `You cannot edit radar "${radar}"`});
         }
 
-        const blipLinks = await utils.selectBlipsWithColumnLinks(radar, version);
+        let radarVersionId = `${radar}-${version}`;
+        if (fork !== undefined && forkVersion !== undefined) radarVersionId += `-${fork}-${forkVersion}`;
+        const blipLinks = await utils.selectBlipsWithColumnLinks(radar, radarVersionId);
         return await res.json(blipLinks);
     } catch (e) {
         await errorHandling(e, res)
