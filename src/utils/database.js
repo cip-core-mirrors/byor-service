@@ -287,10 +287,21 @@ async function insertRadar(id, userInfo) {
     queries.push(await utils.insertInto(
         'radar_versions',
         [
+            'id',
+            'radar',
+            'version',
+            'fork',
+            'fork_version',
+            'user_id',
+        ],
+        [
             [
                 `${id}-${defaultVersion}`,
                 id,
                 defaultVersion,
+                null,
+                null,
+                userInfo.mail,
             ],
         ],
         userInfo,
