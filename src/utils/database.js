@@ -356,23 +356,36 @@ async function updateRadarState(id, state, userInfo, shouldQuery = true) {
     );
 }
 
-async function addRadarVersion(radarId, version, userInfo, shouldQuery = true) {
+async function addRadarVersion(radarId, radarVersion, fork, forkVersion, userInfo = {}, shouldQuery = true) {
     return await utils.insertInto(
         'radar_versions',
-        [ 'id', 'radar', 'version' ],
+        [ 'id', 'radar', 'version', 'fork', 'fork_version', 'user' ],
         [
-            [ `${radarId}-${version}`, radarId, version ],
+            [
+                `${radarId}-${radarVersion}-${fork}-${forkVersion}`,
+                radarId,
+                radarVersion,
+                fork,
+                forkVersion,
+                userInfo.mail,
+            ],
         ],
         userInfo,
         shouldQuery,
     );
 }
 
-async function getRadarVersions(radarId) {
+async function getRadarVersions(radarId, version, fork, user) {
+    const conditions = [];
+    conditions.push(`radar = '${radarId}'`);
+    if (version) conditions.push(`version = ${version}`);
+    if (fork) conditions.push(`fork = ${fork}`);
+    if (user) conditions.push(`user = '${user}'`);
+
     const data = await utils.selectFrom(
         'radar_versions',
-        [ 'id', 'radar', 'version' ],
-        [ `radar = '${radarId}'` ],
+        [ 'id', 'radar', 'version', 'fork', 'fork_version', 'user' ],
+        conditions,
     );
 
     return data.rows;
