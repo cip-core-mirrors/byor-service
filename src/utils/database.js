@@ -373,7 +373,7 @@ async function addRadarVersion(radarId, radarVersion, fork, forkVersion, userInf
 
     return await utils.insertInto(
         'radar_versions',
-        [ 'id', 'radar', 'version', 'fork', 'fork_version', 'user' ],
+        [ 'id', 'radar', 'version', 'fork', 'fork_version', 'user_id' ],
         [
             [
                 radarVersionId,
@@ -394,11 +394,11 @@ async function getRadarVersions(radarId, version, fork, user) {
     conditions.push(`radar = '${radarId}'`);
     if (version) conditions.push(`version = ${version}`);
     if (fork) conditions.push(`fork = ${fork}`);
-    if (user) conditions.push(`user = '${user}'`);
+    if (user) conditions.push(`user_id = '${user}'`);
 
     const data = await utils.selectFrom(
         'radar_versions',
-        [ 'id', 'radar', 'version', 'fork', 'fork_version', 'user' ],
+        [ 'id', 'radar', 'version', 'fork', 'fork_version', 'user_id' ],
         conditions,
     );
 
