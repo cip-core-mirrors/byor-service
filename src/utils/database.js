@@ -408,7 +408,7 @@ async function getRadarVersions(radarId, version, fork, user) {
 async function getRadarParameters(radarId, radarVersionId) {
     const conditions = [];
     conditions.push(`radar = '${radarId}'`);
-    conditions.push(`radar_version = '${radarVersionId}`);
+    conditions.push(`radar_version = '${radarVersionId}'`);
 
     const data = await utils.selectFrom(
         'radar_parameters',
