@@ -568,7 +568,9 @@ router.get('/radar/:radar/:version/parameters', async function(req, res, next) {
             return await res.json({message: `You cannot edit radar "${radar}"`});
         }
 
-        const params = await utils.getRadarParameters(radar, version, fork, forkVersion);
+        let radarVersionId = `${radar}-${version}`;
+        if (fork !== undefined && forkVersion !== undefined) radarVersionId += `-${fork}-${forkVersion}`;
+        const params = await utils.getRadarParameters(radar, radarVersionId);
         return await res.json(params);
     } catch (e) {
         await errorHandling(e, res)
