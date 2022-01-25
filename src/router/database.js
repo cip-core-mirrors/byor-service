@@ -364,14 +364,14 @@ router.put('/radar/:radar', async function(req, res, next) {
             return await res.json({message: `You cannot edit radar "${radar}"`});
         }
 
-        const forkVersions = await getRadarForkVersions(radar);
-        if (version !== undefined && forkVersions[version] === undefined) {
+        const radarVersions = await getRadarForkVersions(radar);
+        if (version !== undefined && radarVersions[version] === undefined) {
             res.statusCode = 404;
             return await res.json({message: `Version ${version} does not exist in radar "${radar}"`});
         }
         if (version === undefined) version = Object.keys(forkVersions).length;
 
-        let forks = forkVersions[version];
+        let forks = radarVersions[version] || {};
         const isUserOwner = await utils.userRadarOwner(userId, radar);
         if (fork === undefined && isUserOwner) {
             if (!commit) {
@@ -379,16 +379,16 @@ router.put('/radar/:radar', async function(req, res, next) {
                 return await res.json({message: `You have to commit when you are creating a new radar version`});
             }
             version = version + 1;
-            forks = [];
+            forks = {};
         } else if (fork === undefined) {
             if (!commit) {
                 res.statusCode = 404;
-                return await res.json({message: `You have to commit when you are creating a new fork version`});
+                return await res.json({message: `You have to commit when you are creating a new fork`});
             }
-            fork = forks.length + 1; // increment fork version
-        } else if (forks.indexOf(fork) === -1) {
+            fork = Math.max(...Object.keys(forks).map(parseInt)) + 1; // increment fork version
+        } else if (forks[fork] === undefined) {
             res.statusCode = 404;
-            return await res.json({message: `Fork version ${fork} does not exist in version ${version} for radar "${radar}"`});
+            return await res.json({message: `Fork ${fork} does not exist in version ${version} for radar "${radar}"`});
         }
 
         if (state !== undefined) {
@@ -398,7 +398,7 @@ router.put('/radar/:radar', async function(req, res, next) {
             }
         }
 
-        await editRadar(radar, links, parameters, state, commit, version, fork, forks.length, req.user);
+        await editRadar(radar, links, parameters, state, commit, version, fork, forks[fork], req.user);
         await res.json({ status: 'ok' })
     } catch (e) {
         await errorHandling(e, res)
@@ -551,6 +551,10 @@ router.get('/radar/:radar/:version/parameters', async function(req, res, next) {
     const radar = req.params.radar;
     const version = parseInt(req.params.version);
 
+    let { fork, forkVersion } = req.query;
+    if (fork !== undefined) fork = parseInt(fork);
+    if (forkVersion !== undefined) forkVersion = parseInt(forkVersion);
+
     try {
         const radarFound = await utils.radarExists(radar);
         if (!radarFound) {
@@ -564,7 +568,7 @@ router.get('/radar/:radar/:version/parameters', async function(req, res, next) {
             return await res.json({message: `You cannot edit radar "${radar}"`});
         }
 
-        const params = await utils.getRadarParameters(radar, version);
+        const params = await utils.getRadarParameters(radar, version, fork, forkVersion);
         return await res.json(params);
     } catch (e) {
         await errorHandling(e, res)
@@ -684,14 +688,14 @@ router.put('/admin/radar/:radar', async function(req, res, next) {
             return await res.json({message: `Radar "${radar}" does not exist`});
         }
 
-        const forkVersions = await getRadarForkVersions(radar);
-        if (version !== undefined && forkVersions[version] === undefined) {
+        const radarVersions = await getRadarForkVersions(radar);
+        if (version !== undefined && radarVersions[version] === undefined) {
             res.statusCode = 404;
             return await res.json({message: `Version ${version} does not exist in radar "${radar}"`});
         }
         if (version === undefined) version = Object.keys(forkVersions).length;
 
-        let forks = forkVersions[version];
+        let forks = radarVersions[version] || {};
         const isUserOwner = await utils.userRadarOwner(userId, radar);
         if (fork === undefined && isUserOwner) {
             if (!commit) {
@@ -699,16 +703,16 @@ router.put('/admin/radar/:radar', async function(req, res, next) {
                 return await res.json({message: `You have to commit when you are creating a new radar version`});
             }
             version = version + 1;
-            forks = [];
+            forks = {};
         } else if (fork === undefined) {
             if (!commit) {
                 res.statusCode = 404;
-                return await res.json({message: `You have to commit when you are creating a new fork version`});
+                return await res.json({message: `You have to commit when you are creating a new fork`});
             }
-            fork = forks.length + 1; // increment fork version
-        } else if (forks.indexOf(fork) === -1) {
+            fork = Math.max(...Object.keys(forks).map(parseInt)) + 1; // increment fork version
+        } else if (forks[fork] === undefined) {
             res.statusCode = 404;
-            return await res.json({message: `Fork version ${fork} does not exist in version ${version} for radar "${radar}"`});
+            return await res.json({message: `Fork ${fork} does not exist in version ${version} for radar "${radar}"`});
         }
 
         if (state !== undefined) {
@@ -718,7 +722,7 @@ router.put('/admin/radar/:radar', async function(req, res, next) {
             }
         }
 
-        await editRadar(radar, links, parameters, state, commit, version, fork, forks.length, req.user);
+        await editRadar(radar, links, parameters, state, commit, version, fork, forks[fork], req.user);
         await res.json({ status: 'ok' })
     } catch (e) {
         await errorHandling(e, res)
@@ -742,11 +746,15 @@ router.put('/admin/blips/permissions', async function(req, res, next) {
     }
 });
 
-async function getRadar(radarId, radarVersion) {
+async function getRadar(radarId, radarVersion, fork, forkVersion) {
     if (radarVersion === undefined) {
-        const forkVersions = await getRadarForkVersions(radarId);
-        const lastRadarVersion = Math.max(...Object.keys(forkVersions).map(parseInt));
-        radarVersion = radar[0]['published_version'];
+        const radarVersionsMap = await getRadarForkVersions(radarId);
+        const lastRadarVersion = Math.max(...Object.keys(radarVersionsMap).map(parseInt));
+        radarVersion = `${radarId}-${lastRadarVersion}`;
+    }
+
+    if (fork !== undefined) {
+        radarVersion += `-${fork}-${forkVersion}`;
     }
 
     const blips = await utils.selectBlipsWithColumnLinks(radarId, radarVersion);
@@ -1004,11 +1012,18 @@ async function getRadarForkVersions(radarId) {
     for (const row of radarVersions) {
         let version = output[row.version];
         if (!version) {
-            version = [];
+            version = {};
             output[row.version] = version;
         }
 
-        if (row.fork_version) version.push(row.fork_version);
+        if (row.fork && row.fork_version) {
+            let forkVersions = version[row.fork];
+            if (!forkVersions) {
+                forkVersions = [];
+                version[row.fork] = forkVersions;
+            }
+            forkVersions.push(row.fork_version);
+        }
     }
 
     return output;
