@@ -372,6 +372,7 @@ router.put('/radar/:radar', async function(req, res, next) {
 
         let forks;
         const isUserOwner = await utils.userRadarOwner(userId, radar);
+        // Create new radar version
         if (version === undefined && isUserOwner) {
             if (!commit) {
                 res.statusCode = 404;
@@ -381,6 +382,7 @@ router.put('/radar/:radar', async function(req, res, next) {
             forks = {};
         } else {
             forks = radarVersions[version] || {};
+            // Create new fork
             if (fork === undefined) {
                 if (!commit) {
                     res.statusCode = 404;
@@ -388,10 +390,12 @@ router.put('/radar/:radar', async function(req, res, next) {
                 }
                 fork = Object.keys(forks).length + 1; // increment fork version
             } else if (forks[fork] === undefined) {
+                // Create new fork version
                 res.statusCode = 404;
                 return await res.json({message: `Fork ${fork} does not exist in version ${version} for radar "${radar}"`});
             }
         }
+        const forkVersion = forks[fork] ? forks[fork].length : 0;
 
         if (state !== undefined) {
             if (possiblesStates.indexOf(parseInt(state)) === -1) {
@@ -400,7 +404,7 @@ router.put('/radar/:radar', async function(req, res, next) {
             }
         }
 
-        await editRadar(radar, links, parameters, state, commit, version, fork, forks[fork], req.user);
+        await editRadar(radar, links, parameters, state, commit, version, fork, forkVersion, req.user);
         await res.json({ status: 'ok' })
     } catch (e) {
         await errorHandling(e, res)
@@ -706,6 +710,7 @@ router.put('/admin/radar/:radar', async function(req, res, next) {
 
         let forks;
         const isUserOwner = await utils.userRadarOwner(userId, radar);
+        // Create new radar version
         if (version === undefined && isUserOwner) {
             if (!commit) {
                 res.statusCode = 404;
@@ -715,6 +720,7 @@ router.put('/admin/radar/:radar', async function(req, res, next) {
             forks = {};
         } else {
             forks = radarVersions[version] || {};
+            // Create new fork
             if (fork === undefined) {
                 if (!commit) {
                     res.statusCode = 404;
@@ -722,10 +728,12 @@ router.put('/admin/radar/:radar', async function(req, res, next) {
                 }
                 fork = Object.keys(forks).length + 1; // increment fork version
             } else if (forks[fork] === undefined) {
+                // Create new fork version
                 res.statusCode = 404;
                 return await res.json({message: `Fork ${fork} does not exist in version ${version} for radar "${radar}"`});
             }
         }
+        const forkVersion = forks[fork] ? forks[fork].length : 0;
 
         if (state !== undefined) {
             if (possiblesStates.indexOf(parseInt(state)) === -1) {
@@ -734,7 +742,7 @@ router.put('/admin/radar/:radar', async function(req, res, next) {
             }
         }
 
-        await editRadar(radar, links, parameters, state, commit, version, fork, forks[fork], req.user);
+        await editRadar(radar, links, parameters, state, commit, version, fork, forkVersion, req.user);
         await res.json({ status: 'ok' })
     } catch (e) {
         await errorHandling(e, res)
