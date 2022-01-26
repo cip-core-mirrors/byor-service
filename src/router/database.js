@@ -377,7 +377,7 @@ router.put('/radar/:radar', async function(req, res, next) {
                 res.statusCode = 404;
                 return await res.json({message: `You have to commit when you are creating a new radar version`});
             }
-            version = Object.keys(radarVersions).length + 1;
+            version = Object.keys(radarVersions).length + 1; // increment radar version
             forks = {};
         } else {
             forks = radarVersions[version] || {};
@@ -386,7 +386,7 @@ router.put('/radar/:radar', async function(req, res, next) {
                     res.statusCode = 404;
                     return await res.json({message: `You have to commit when you are creating a new fork`});
                 }
-                fork = Math.max(...Object.keys(forks).map(parseInt)) + 1; // increment fork version
+                fork = Object.keys(forks).length + 1; // increment fork version
             } else if (forks[fork] === undefined) {
                 res.statusCode = 404;
                 return await res.json({message: `Fork ${fork} does not exist in version ${version} for radar "${radar}"`});
@@ -711,7 +711,7 @@ router.put('/admin/radar/:radar', async function(req, res, next) {
                 res.statusCode = 404;
                 return await res.json({message: `You have to commit when you are creating a new radar version`});
             }
-            version = Object.keys(radarVersions).length + 1;
+            version = Object.keys(radarVersions).length + 1; // increment radar version
             forks = {};
         } else {
             forks = radarVersions[version] || {};
@@ -720,7 +720,7 @@ router.put('/admin/radar/:radar', async function(req, res, next) {
                     res.statusCode = 404;
                     return await res.json({message: `You have to commit when you are creating a new fork`});
                 }
-                fork = Math.max(...Object.keys(forks).map(parseInt)) + 1; // increment fork version
+                fork = Object.keys(forks).length + 1; // increment fork version
             } else if (forks[fork] === undefined) {
                 res.statusCode = 404;
                 return await res.json({message: `Fork ${fork} does not exist in version ${version} for radar "${radar}"`});
