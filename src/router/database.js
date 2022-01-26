@@ -369,26 +369,28 @@ router.put('/radar/:radar', async function(req, res, next) {
             res.statusCode = 404;
             return await res.json({message: `Version ${version} does not exist in radar "${radar}"`});
         }
-        if (version === undefined) version = Object.keys(forkVersions).length;
 
-        let forks = radarVersions[version] || {};
+        let forks;
         const isUserOwner = await utils.userRadarOwner(userId, radar);
-        if (fork === undefined && isUserOwner) {
+        if (version === undefined && isUserOwner) {
             if (!commit) {
                 res.statusCode = 404;
                 return await res.json({message: `You have to commit when you are creating a new radar version`});
             }
-            version = version + 1;
+            version = Object.keys(radarVersions).length + 1;
             forks = {};
-        } else if (fork === undefined) {
-            if (!commit) {
+        } else {
+            forks = radarVersions[version] || {};
+            if (fork === undefined) {
+                if (!commit) {
+                    res.statusCode = 404;
+                    return await res.json({message: `You have to commit when you are creating a new fork`});
+                }
+                fork = Math.max(...Object.keys(forks).map(parseInt)) + 1; // increment fork version
+            } else if (forks[fork] === undefined) {
                 res.statusCode = 404;
-                return await res.json({message: `You have to commit when you are creating a new fork`});
+                return await res.json({message: `Fork ${fork} does not exist in version ${version} for radar "${radar}"`});
             }
-            fork = Math.max(...Object.keys(forks).map(parseInt)) + 1; // increment fork version
-        } else if (forks[fork] === undefined) {
-            res.statusCode = 404;
-            return await res.json({message: `Fork ${fork} does not exist in version ${version} for radar "${radar}"`});
         }
 
         if (state !== undefined) {
@@ -701,26 +703,28 @@ router.put('/admin/radar/:radar', async function(req, res, next) {
             res.statusCode = 404;
             return await res.json({message: `Version ${version} does not exist in radar "${radar}"`});
         }
-        if (version === undefined) version = Object.keys(forkVersions).length;
 
-        let forks = radarVersions[version] || {};
+        let forks;
         const isUserOwner = await utils.userRadarOwner(userId, radar);
-        if (fork === undefined && isUserOwner) {
+        if (version === undefined && isUserOwner) {
             if (!commit) {
                 res.statusCode = 404;
                 return await res.json({message: `You have to commit when you are creating a new radar version`});
             }
-            version = version + 1;
+            version = Object.keys(radarVersions).length + 1;
             forks = {};
-        } else if (fork === undefined) {
-            if (!commit) {
+        } else {
+            forks = radarVersions[version] || {};
+            if (fork === undefined) {
+                if (!commit) {
+                    res.statusCode = 404;
+                    return await res.json({message: `You have to commit when you are creating a new fork`});
+                }
+                fork = Math.max(...Object.keys(forks).map(parseInt)) + 1; // increment fork version
+            } else if (forks[fork] === undefined) {
                 res.statusCode = 404;
-                return await res.json({message: `You have to commit when you are creating a new fork`});
+                return await res.json({message: `Fork ${fork} does not exist in version ${version} for radar "${radar}"`});
             }
-            fork = Math.max(...Object.keys(forks).map(parseInt)) + 1; // increment fork version
-        } else if (forks[fork] === undefined) {
-            res.statusCode = 404;
-            return await res.json({message: `Fork ${fork} does not exist in version ${version} for radar "${radar}"`});
         }
 
         if (state !== undefined) {
