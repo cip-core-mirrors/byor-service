@@ -726,9 +726,8 @@ router.put('/admin/radar/:radar', async function(req, res, next) {
                     res.statusCode = 404;
                     return await res.json({message: `You have to commit when you are creating a new fork`});
                 }
-                fork = Object.keys(forks).length + 1; // increment fork version
+                fork = Object.keys(forks).length + 1; // increment fork
             } else if (forks[fork] === undefined) {
-                // Create new fork version
                 res.statusCode = 404;
                 return await res.json({message: `Fork ${fork} does not exist in version ${version} for radar "${radar}"`});
             }
@@ -1072,7 +1071,7 @@ async function editRadar(radarId, links, parameters, state, isCommit, radarVersi
             ]
         });
 
-        if (!isCommit) queries.push(await utils.deleteBlipLinks(linksRows, userInfo, false));
+        if (!isCommit) queries.push(await utils.deleteBlipLinks(radarVersionId, userInfo, false));
         queries.push(await utils.insertBlipLinks(linksRows, userInfo, false));
     }
 
@@ -1087,7 +1086,7 @@ async function editRadar(radarId, links, parameters, state, isCommit, radarVersi
             ]
         });
 
-        if (!isCommit) queries.push(await utils.deleteRadarParameters(parametersRows, userInfo, false));
+        if (!isCommit) queries.push(await utils.deleteRadarParameters(radarVersionId, userInfo, false));
         queries.push(await utils.insertRadarParameters(parametersRows, userInfo, false));
     }
 

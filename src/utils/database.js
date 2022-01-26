@@ -435,9 +435,9 @@ async function insertRadarParameters(radarParameters, userInfo, shouldQuery = tr
     )
 }
 
-async function deleteRadarParameters(radarId, userInfo, shouldQuery = true) {
+async function deleteRadarParameters(radarVersionId, userInfo, shouldQuery = true) {
     return await utils.deleteFrom('radar_parameters', [
-        `radar = '${radarId}'`,
+        `radar_version = '${radarVersionId}'`,
     ], userInfo, shouldQuery);
 }
 
@@ -521,9 +521,9 @@ async function insertBlipLinks(blipLinks, userInfo, shouldQuery = true) {
     )
 }
 
-async function deleteBlipLinks(radarId, userInfo, shouldQuery = true) {
+async function deleteBlipLinks(radarVersionId, userInfo, shouldQuery = true) {
     return await utils.deleteFrom('blip_links', [
-        `radar = '${radarId}'`,
+        `radar_version = '${radarVersionId}'`,
     ], userInfo, shouldQuery);
 }
 
