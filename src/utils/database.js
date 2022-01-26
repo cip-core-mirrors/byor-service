@@ -277,7 +277,7 @@ async function insertRadar(id, userInfo) {
     const defaultState = 0;
     queries.push(await utils.upsert(
         'radars',
-        [ 'id', 'state' ], // published_version omitted in order to keep it empty
+        [ 'id', 'state' ],
         [[ id, defaultState ]],
         userInfo,
         false,
@@ -326,11 +326,13 @@ async function deleteRadar(radarId, userInfo) {
 
     queries.push(await deleteRadarParameters(
         radarId,
+        undefined,
         userInfo,
         false,
     ));
     queries.push(await deleteBlipLinks(
         radarId,
+        undefined,
         userInfo,
         false,
     ));
@@ -435,10 +437,12 @@ async function insertRadarParameters(radarParameters, userInfo, shouldQuery = tr
     )
 }
 
-async function deleteRadarParameters(radarVersionId, userInfo, shouldQuery = true) {
-    return await utils.deleteFrom('radar_parameters', [
-        `radar_version = '${radarVersionId}'`,
-    ], userInfo, shouldQuery);
+async function deleteRadarParameters(radarId, radarVersionId, userInfo, shouldQuery = true) {
+    const conditions = [];
+    if (radarId !== undefined) conditions.push(`radar = '${radarVersionId}'`);
+    if (radarVersionId !== undefined) conditions.push(`radar_version = '${radarVersionId}'`);
+
+    return await utils.deleteFrom('radar_parameters', conditions, userInfo, shouldQuery);
 }
 
 async function selectBlipsWithColumnLinks(radarId, radarVersion) {
@@ -521,10 +525,12 @@ async function insertBlipLinks(blipLinks, userInfo, shouldQuery = true) {
     )
 }
 
-async function deleteBlipLinks(radarVersionId, userInfo, shouldQuery = true) {
-    return await utils.deleteFrom('blip_links', [
-        `radar_version = '${radarVersionId}'`,
-    ], userInfo, shouldQuery);
+async function deleteBlipLinks(radarId, radarVersionId, userInfo, shouldQuery = true) {
+    const conditions = [];
+    if (radarId !== undefined) conditions.push(`radar = '${radarVersionId}'`);
+    if (radarVersionId !== undefined) conditions.push(`radar_version = '${radarVersionId}'`);
+
+    return await utils.deleteFrom('blip_links', conditions, userInfo, shouldQuery);
 }
 
 async function getUserRadarRights(userId) {

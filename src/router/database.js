@@ -1071,7 +1071,7 @@ async function editRadar(radarId, links, parameters, state, isCommit, radarVersi
             ]
         });
 
-        if (!isCommit) queries.push(await utils.deleteBlipLinks(radarVersionId, userInfo, false));
+        if (!isCommit) queries.push(await utils.deleteBlipLinks(undefined, radarVersionId, userInfo, false));
         queries.push(await utils.insertBlipLinks(linksRows, userInfo, false));
     }
 
@@ -1086,7 +1086,7 @@ async function editRadar(radarId, links, parameters, state, isCommit, radarVersi
             ]
         });
 
-        if (!isCommit) queries.push(await utils.deleteRadarParameters(radarVersionId, userInfo, false));
+        if (!isCommit) queries.push(await utils.deleteRadarParameters(undefined, radarVersionId, userInfo, false));
         queries.push(await utils.insertRadarParameters(parametersRows, userInfo, false));
     }
 
