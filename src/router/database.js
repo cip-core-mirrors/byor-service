@@ -378,7 +378,7 @@ router.put('/radar/:radar', async function(req, res, next) {
                 res.statusCode = 404;
                 return await res.json({message: `You have to commit when you are creating a new radar version`});
             }
-            version = Object.keys(radarVersions).length + 1; // increment radar version
+            version = Object.keys(radarVersions).length; // increment radar version
             forks = {};
         } else {
             forks = radarVersions[version] || {};
