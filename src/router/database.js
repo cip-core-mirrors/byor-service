@@ -351,6 +351,8 @@ router.put('/radar/:radar', async function(req, res, next) {
     let { version, fork } = req.body;
     if (version !== undefined) version = parseInt(version);
     if (fork !== undefined) fork = parseInt(fork);
+    if (isNaN(version)) version = undefined;
+    if (isNaN(fork)) fork = undefined;
 
     try {
         const radarFound = await utils.radarExists(radar);
@@ -707,6 +709,8 @@ router.put('/admin/radar/:radar', async function(req, res, next) {
     let { version, fork } = req.body;
     if (version !== undefined) version = parseInt(version);
     if (fork !== undefined) fork = parseInt(fork);
+    if (isNaN(version)) version = undefined;
+    if (isNaN(fork)) fork = undefined;
 
     try {
         const radarFound = await utils.radarExists(radar);
@@ -781,7 +785,7 @@ router.put('/admin/blips/permissions', async function(req, res, next) {
 async function getRadar(radarId, radarVersion, fork, forkVersion) {
     if (radarVersion === undefined) {
         const radarVersionsMap = await getRadarForkVersions(radarId);
-        radarVersion = Math.max(...Object.keys(radarVersionsMap).map(parseInt));
+        radarVersion = Math.max(...Object.keys(radarVersionsMap).map(x => parseInt(x)));
     }
 
     let radarVersionId = `${radarId}-${radarVersion}`;
