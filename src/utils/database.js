@@ -410,7 +410,7 @@ async function getRadarVersions(radarId, version, fork, user) {
 async function getRadarParameters(radarId, radarVersionId) {
     const conditions = [];
     conditions.push(`radar = '${radarId}'`);
-    conditions.push(`radar_version = '${radarVersionId}'`);
+    conditions.push(`radar_version = '${radarVersionId}'${radarVersionId === undefined ? ` OR radar_version IS NULL` : ''})`);
 
     const data = await utils.selectFrom(
         'radar_parameters',
@@ -468,7 +468,7 @@ async function selectBlipsWithColumnLinks(radarId, radarVersion) {
             ],
             [
                 `blip_links.radar = '${radarId}'`,
-                `(blip_links.radar_version = '${radarVersion}'${radarVersion === 0 ? ` OR blip_links.radar_version IS NULL` : ''})`,
+                `(blip_links.radar_version = '${radarVersion}'${radarVersion === undefined ? ` OR blip_links.radar_version IS NULL` : ''})`,
             ],
         );
     } else {

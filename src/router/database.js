@@ -769,20 +769,19 @@ router.put('/admin/blips/permissions', async function(req, res, next) {
 async function getRadar(radarId, radarVersion, fork, forkVersion) {
     if (radarVersion === undefined) {
         const radarVersionsMap = await getRadarForkVersions(radarId);
-        const lastRadarVersion = Math.max(...Object.keys(radarVersionsMap).map(parseInt));
-        radarVersion = `${radarId}-${lastRadarVersion}`;
+        radarVersion = Math.max(...Object.keys(radarVersionsMap).map(parseInt));
     }
 
-    if (fork !== undefined) {
-        radarVersion += `-${fork}-${forkVersion}`;
-    }
+    let radarVersionId = `${radarId}-${radarVersion}`;
+    if (fork !== undefined) radarVersionId += `-${fork}`;
+    if (forkVersion !== undefined) radarVersionId += `-${forkVersion}`;
 
-    const blips = await utils.selectBlipsWithColumnLinks(radarId, radarVersion);
+    const blips = await utils.selectBlipsWithColumnLinks(radarId, radarVersionId);
     const blipsVersion = parseInt(Math.max(...blips.map(blip => blip.version))) || 0;
 
     blips.map(blip => delete blip.version);
 
-    const params = await utils.getRadarParameters(radarId, radarVersion);
+    const params = await utils.getRadarParameters(radarId, radarVersionId);
     const dict = {};
     for (const row of blips) {
         let blip = dict[row.id];
