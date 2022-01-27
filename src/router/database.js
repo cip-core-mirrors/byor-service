@@ -583,7 +583,7 @@ router.get('/radar/:radar/:version/parameters', async function(req, res, next) {
             if (forkVersion !== undefined) radarVersionId += `-${forkVersion}`;
         }
 
-        const params = await utils.getRadarParameters(radar, radarVersionId);
+        const params = await utils.getRadarParameters(radar, radarVersionId, version === 0);
         return await res.json(params);
     } catch (e) {
         await errorHandling(e, res)
@@ -620,7 +620,7 @@ router.get('/radar/:radar/:version/blip-links', async function(req, res, next) {
             if (forkVersion !== undefined) radarVersionId += `-${forkVersion}`;
         }
 
-        const blipLinks = await utils.selectBlipsWithColumnLinks(radar, radarVersionId);
+        const blipLinks = await utils.selectBlipsWithColumnLinks(radar, radarVersionId, version === 0);
         return await res.json(blipLinks);
     } catch (e) {
         await errorHandling(e, res)

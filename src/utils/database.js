@@ -407,10 +407,10 @@ async function getRadarVersions(radarId, version, fork, user) {
     return data.rows;
 }
 
-async function getRadarParameters(radarId, radarVersionId) {
+async function getRadarParameters(radarId, radarVersionId, lookForNull = false) {
     const conditions = [];
     conditions.push(`radar = '${radarId}'`);
-    conditions.push(`(radar_version = '${radarVersionId}'${radarVersionId === undefined ? ` OR radar_version IS NULL` : ''})`);
+    conditions.push(`(radar_version = '${radarVersionId}'${lookForNull ? ` OR radar_version IS NULL` : ''})`);
 
     const data = await utils.selectFrom(
         'radar_parameters',
@@ -445,7 +445,7 @@ async function deleteRadarParameters(radarId, radarVersionId, userInfo, shouldQu
     return await utils.deleteFrom('radar_parameters', conditions, userInfo, shouldQuery);
 }
 
-async function selectBlipsWithColumnLinks(radarId, radarVersion) {
+async function selectBlipsWithColumnLinks(radarId, radarVersion, lookForNull = false) {
     let data;
     if (radarId) {
         data = await utils.selectFromInnerJoin(
@@ -468,7 +468,7 @@ async function selectBlipsWithColumnLinks(radarId, radarVersion) {
             ],
             [
                 `blip_links.radar = '${radarId}'`,
-                `(blip_links.radar_version = '${radarVersion}'${radarVersion === undefined ? ` OR blip_links.radar_version IS NULL` : ''})`,
+                `(blip_links.radar_version = '${radarVersion}'${lookForNull ? ` OR blip_links.radar_version IS NULL` : ''})`,
             ],
         );
     } else {
