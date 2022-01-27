@@ -38,11 +38,12 @@ router.get('/radar/:radar', async function(req, res, next) {
     }
 
     const radar = req.params.radar;
+    let { version, fork, forkVersion } = req.query;
 
     utils.logHeaders(req.headers);
 
     try {
-        const { output, blipsVersion } = await getRadar(radar);
+        const { output, blipsVersion } = await getRadar(radar, version, fork, forkVersion);
         res.header('blips-version', blipsVersion);
         res.set('access-control-expose-headers', 'blips-version');
 
