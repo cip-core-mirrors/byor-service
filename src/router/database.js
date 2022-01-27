@@ -559,8 +559,10 @@ router.get('/radar/:radar/:version/parameters', async function(req, res, next) {
     const version = parseInt(req.params.version);
 
     let { fork, forkVersion } = req.query;
-    if (fork !== undefined && fork !== null) fork = parseInt(fork);
-    if (forkVersion !== undefined && forkVersion !== null) forkVersion = parseInt(forkVersion);
+    if (fork !== undefined) fork = parseInt(fork);
+    if (forkVersion !== undefined) forkVersion = parseInt(forkVersion);
+    if (isNaN(fork)) fork = undefined;
+    if (isNaN(fork)) forkVersion = undefined;
 
     try {
         const radarFound = await utils.radarExists(radar);
@@ -576,9 +578,9 @@ router.get('/radar/:radar/:version/parameters', async function(req, res, next) {
         }
 
         let radarVersionId = `${radar}-${version}`;
-        if (fork !== undefined && fork !== null) {
+        if (fork !== undefined) {
             radarVersionId += `-${fork}`;
-            if (forkVersion !== undefined && forkVersion !== null) radarVersionId += `-${forkVersion}`;
+            if (forkVersion !== undefined) radarVersionId += `-${forkVersion}`;
         }
 
         const params = await utils.getRadarParameters(radar, radarVersionId);
@@ -594,8 +596,10 @@ router.get('/radar/:radar/:version/blip-links', async function(req, res, next) {
     const version = parseInt(req.params.version);
 
     let { fork, forkVersion } = req.query;
-    if (fork !== undefined && fork !== null) fork = parseInt(fork);
-    if (forkVersion !== undefined && forkVersion !== null) forkVersion = parseInt(forkVersion);
+    if (fork !== undefined) fork = parseInt(fork);
+    if (forkVersion !== undefined) forkVersion = parseInt(forkVersion);
+    if (isNaN(fork)) fork = undefined;
+    if (isNaN(fork)) forkVersion = undefined;
 
     try {
         const radarFound = await utils.radarExists(radar);
@@ -611,9 +615,9 @@ router.get('/radar/:radar/:version/blip-links', async function(req, res, next) {
         }
 
         let radarVersionId = `${radar}-${version}`;
-        if (fork !== undefined && fork !== null) {
+        if (fork !== undefined) {
             radarVersionId += `-${fork}`;
-            if (forkVersion !== undefined && forkVersion !== null) radarVersionId += `-${forkVersion}`;
+            if (forkVersion !== undefined) radarVersionId += `-${forkVersion}`;
         }
 
         const blipLinks = await utils.selectBlipsWithColumnLinks(radar, radarVersionId);
