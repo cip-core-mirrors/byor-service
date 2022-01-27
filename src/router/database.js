@@ -369,8 +369,13 @@ router.put('/radar/:radar', async function(req, res, next) {
 
         const radarVersions = await getRadarForkVersions(radar);
         if (version !== undefined && radarVersions[version] === undefined) {
-            res.statusCode = 404;
-            return await res.json({message: `Version ${version} does not exist in radar "${radar}"`});
+            if (version === 0 && Object.keys(radarVersions).length === 0) {
+                // Instancing a first version for old radars
+                version = undefined;
+            } else {
+                res.statusCode = 404;
+                return await res.json({message: `Version ${version} does not exist in radar "${radar}"`});
+            }
         }
 
         let forks;
