@@ -560,6 +560,38 @@ router.get('/parameters/themes', async function(req, res, next) {
     }
 });
 
+router.delete('/radar/:radar/versions/:radarVersionId', async function(req, res, next) {
+    const userId = req.user.mail;
+    const radar = req.params.radar;
+    const radarVersionId = req.params.radarVersionId;
+
+    try {
+        const radarFound = await utils.radarExists(radar);
+        if (!radarFound) {
+            res.status(404);
+            return await res.json({message: `Radar "${radar}" does not exist`});
+        }
+
+        const usersVersions = await utils.getRadarVersions(radar, undefined, undefined, userId);
+        let found = false;
+        for (const row of usersVersions) {
+            if (row.id === radarVersionId) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            res.status(403);
+            return await res.json({message: `You cannot delete radar version "${radarVersionId}"`});
+        }
+
+        await utils.deleteRadarVersion(radarVersionId, req.user);
+        await res.json({ status: 'ok' });
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
 router.get('/radar/:radar/:version/parameters', async function(req, res, next) {
     const userId = req.user.mail;
     const radar = req.params.radar;
