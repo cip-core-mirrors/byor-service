@@ -79,14 +79,12 @@ CREATE TABLE IF NOT EXISTS radar_versions (
     user_id varchar
 );
 
-/*
 CREATE TABLE IF NOT EXISTS radar_tags (
     id varchar unique,
     name varchar,
     radar varchar,
-    version_id varchar
+    radar_version varchar
 );
- */
 
 CREATE TABLE IF NOT EXISTS radar_rights (
     id varchar unique,

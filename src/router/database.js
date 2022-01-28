@@ -634,6 +634,150 @@ router.get('/radar/:radar/:version/blip-links', async function(req, res, next) {
     }
 });
 
+router.delete('/radar/:radar/tags/:tagName', async function(req, res, next) {
+    const radar = req.params.radar;
+    const tagName = req.params.tagName;
+
+    try {
+        const radarFound = await utils.radarExists(radar);
+        if (!radarFound) {
+            res.status(404);
+            return await res.json({message: `Radar "${radar}" does not exist`});
+        }
+
+        const rows = await utils.getRadarTag(radar, tagName);
+        const tag = rows[0];
+
+        if (!tag) {
+            res.status(404);
+            return await res.json({message: `Tag "${tagName}" does not exist for radar "${radar}"`});
+        }
+
+        await utils.deleteRadarTag(radar, tagName, req.user);
+        await res.json({ status: 'ok' });
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
+router.get('/radar/:radar/tags/:tagName', async function(req, res, next) {
+    const radar = req.params.radar;
+    const tagName = req.params.tagName;
+
+    try {
+        const radarFound = await utils.radarExists(radar);
+        if (!radarFound) {
+            res.status(404);
+            return await res.json({message: `Radar "${radar}" does not exist`});
+        }
+
+        const rows = await utils.getRadarTag(radar, tagName);
+        const tag = rows[0];
+
+        if (!tag) {
+            res.status(404);
+            return await res.json({message: `Tag "${tagName}" does not exist for radar "${radar}"`});
+        }
+
+        await res.json(tag);
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
+router.get('/radar/:radar/tags', async function(req, res, next) {
+    const radar = req.params.radar;
+
+    try {
+        const radarFound = await utils.radarExists(radar);
+        if (!radarFound) {
+            res.status(404);
+            return await res.json({message: `Radar "${radar}" does not exist`});
+        }
+
+        const rows = await utils.getRadarTag(radar);
+        await res.json(rows);
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
+router.post('/radar/:radar/tags', async function(req, res, next) {
+    const userId = req.user.mail;
+    const radar = req.params.radar;
+    const {
+        name: tagName,
+    } = req.body;
+    let {
+        version,
+        fork,
+        forkVersion,
+    } = req.body;
+
+    version = getIntegerValue(version);
+    fork = getIntegerValue(fork);
+    forkVersion = getIntegerValue(forkVersion);
+
+    try {
+        const radarFound = await utils.radarExists(radar);
+        if (!radarFound) {
+            res.status(404);
+            return await res.json({message: `Radar "${radar}" does not exist`});
+        }
+
+        const isOwner = await utils.userRadarOwner(userId, radar);
+        if (!isOwner) {
+            res.statusCode = 403;
+            return await res.json({message: `You cannot add tag to radar "${radar}"`});
+        }
+
+        if (version === undefined) {
+            res.status(404);
+            return await res.json({message: `Radar version should be specified and must be an integer`});
+        }
+
+        let radarVersionId = radar;
+        const radarVersions = await getRadarForkVersions(radar);
+        const forksMap = radarVersions[version];
+        if (forksMap === undefined) {
+            res.status(404);
+            return await res.json({message: `Radar version ${version} does not exist`});
+        }
+        radarVersionId += `-${version}`;
+
+        if (fork !== undefined) {
+            const forkVersions = forksMap[fork];
+            if (forkVersions === undefined) {
+                res.status(404);
+                return await res.json({message: `Fork ${fork} does not exist for radar "${radar}"`});
+            }
+            radarVersionId += `-${fork}`;
+
+            if (forkVersion === undefined) {
+                res.status(404);
+                return await res.json({message: `You have to specify a fork version when specifying a fork`});
+            }
+            if (forkVersions.indexOf(forkVersion) === -1) {
+                res.status(404);
+                return await res.json({message: `Fork version ${forkVersion} does not exist in fork ${fork} for radar "${radar}"`});
+            }
+            radarVersionId += `-${forkVersion}`;
+        }
+
+        await utils.addRadarTag(radar, radarVersionId, tagName, req.user);
+        await res.json({ status: 'ok' });
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
+function getIntegerValue(value) {
+    if (value !== undefined) value = parseInt(value);
+    if (isNaN(value)) value = undefined;
+
+    return value;
+}
+
 router.use('/admin', async function(req, res, next) {
    if (utils.isAdminUser(req.user.mail)) {
        next();

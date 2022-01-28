@@ -576,6 +576,45 @@ async function deleteRadarVersions(radarId, userInfo, shouldQuery = true) {
     return await utils.deleteFrom('radar_versions', conditions, userInfo, shouldQuery);
 }
 
+async function addRadarTag(radarId, radarVersion, tagName, userInfo, shouldQuery = true) {
+    return await utils.upsert(
+        'radar_tags',
+        [
+            'id',
+            'name',
+            'radar',
+            'radar_version',
+        ],
+        [
+            [ `${radarId}-${tagName}`, tagName, radarId, radarVersion ],
+        ],
+        userInfo,
+        shouldQuery,
+    );
+}
+
+async function deleteRadarTag(radarId, tagName, userInfo, shouldQuery = true) {
+    const conditions = [ `radar = '${radarId}'` ];
+    conditions.push(`name = '${tagName}'`);
+
+    return await utils.deleteFrom('radar_tags', conditions, userInfo, shouldQuery);
+}
+
+async function getRadarTag(radarId, tagName) {
+    const conditions = [];
+    conditions.push(`radar = '${radarId}'`);
+    if (tagName) {
+        conditions.push(`name = '${tagName}'`);
+    }
+
+    const data = await utils.selectFrom(
+        'radar_tags',
+        [ 'id', 'name', 'radar', 'radar_version', ],
+        conditions,
+    );
+    return data.rows;
+}
+
 async function radarExists(radarId) {
     const radars = await getRadars([
         `id = '${radarId}'`,
@@ -656,6 +695,10 @@ module.exports = {
     getRadarRights,
     insertRadarRights,
     deleteRadarRights,
+
+    addRadarTag,
+    deleteRadarTag,
+    getRadarTag,
 
     radarExists,
     userRadarOwner,
