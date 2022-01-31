@@ -39,6 +39,9 @@ router.get('/radar/:radar', async function(req, res, next) {
 
     const radar = req.params.radar;
     let { tag, version, fork, forkVersion } = req.query;
+    version = getIntegerValue(version);
+    fork = getIntegerValue(fork);
+    forkVersion = getIntegerValue(forkVersion);
 
     utils.logHeaders(req.headers);
 
@@ -60,9 +63,9 @@ router.get('/radar/:radar', async function(req, res, next) {
             const radarVersion = (await utils.getRadarVersionsFromId(radar, radarVersionId))[0];
 
             if (radarVersion) {
-                version = parseInt(radarVersion.version);
-                fork = parseInt(radarVersion.fork);
-                forkVersion = parseInt(radarVersion.fork_version);
+                version = getIntegerValue(radarVersion.version);
+                fork = getIntegerValue(radarVersion.fork);
+                forkVersion = getIntegerValue(radarVersion.fork_version);
             }
         }
         const { output, blipsVersion } = await getRadar(radar, version, fork, forkVersion);
