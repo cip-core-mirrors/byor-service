@@ -49,6 +49,7 @@ async function insertBlips(blips, userInfo, shouldQuery = true) {
                 blip.lastUpdate,
             ]
         }),
+        false,
         userInfo,
         shouldQuery,
     );
@@ -61,6 +62,7 @@ async function deleteBlip(blipId, userInfo) {
         'themes',
         [ 'id' ],
         [[ blipId ]],
+        false,
         userInfo,
         false,
     ));
@@ -120,6 +122,7 @@ async function insertBlipsRights(blipsPermissions, userInfo, shouldQuery = true)
         'blip_rights',
         [ 'id', 'blip', 'user_id', 'rights' ],
         rows,
+        false,
         userInfo,
         shouldQuery,
     );
@@ -154,6 +157,7 @@ async function insertTheme(theme, userInfo, isCreate) {
             'themes',
             [ 'id' ],
             [[ theme.id ]],
+            false,
             userInfo,
             false,
         ));
@@ -185,6 +189,7 @@ async function insertTheme(theme, userInfo, isCreate) {
                 'value',
             ],
             parameters,
+            false,
             userInfo,
             false,
         ));
@@ -216,6 +221,7 @@ async function insertTheme(theme, userInfo, isCreate) {
                 'rights',
             ],
             rights,
+            false,
             userInfo,
             false,
         ));
@@ -279,6 +285,7 @@ async function insertRadar(id, userInfo) {
         'radars',
         [ 'id', 'state' ],
         [[ id, defaultState ]],
+        false,
         userInfo,
         false,
     ));
@@ -567,6 +574,7 @@ async function insertRadarRights(radarId, userId, rights, userInfo, shouldQuery 
             'rights',
         ],
         [ [ `${radarId}-${userId}` , radarId, userId, rights.join(',') ] ],
+        false,
         userInfo,
         shouldQuery,
     );
@@ -597,6 +605,7 @@ async function addRadarTag(radarId, radarVersion, tagName, userInfo, shouldQuery
         [
             [ `${radarId}-${tagName}`, tagName, radarId, radarVersion ],
         ],
+        false,
         userInfo,
         shouldQuery,
     );
