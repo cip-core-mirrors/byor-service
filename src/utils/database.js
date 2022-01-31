@@ -605,7 +605,7 @@ async function addRadarTag(radarId, radarVersion, tagName, userInfo, shouldQuery
         [
             [ `${radarId}-${tagName}`, tagName, radarId, radarVersion ],
         ],
-        false,
+        true,
         userInfo,
         shouldQuery,
     );

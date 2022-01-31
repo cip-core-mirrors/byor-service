@@ -796,8 +796,8 @@ router.post('/radar/:radar/tags', async function(req, res, next) {
             radarVersionId += `-${forkVersion}`;
         }
 
-        await utils.addRadarTag(radar, radarVersionId, tagName, req.user);
-        await res.json({ status: 'ok' });
+        const response = await utils.addRadarTag(radar, radarVersionId, tagName, req.user);
+        await res.json(response.rows[0]);
     } catch (e) {
         await errorHandling(e, res)
     }
