@@ -38,11 +38,33 @@ router.get('/radar/:radar', async function(req, res, next) {
     }
 
     const radar = req.params.radar;
-    let { version, fork, forkVersion } = req.query;
+    let { tag, version, fork, forkVersion } = req.query;
 
     utils.logHeaders(req.headers);
 
     try {
+        const radarFound = await utils.radarExists(radar);
+        if (!radarFound) {
+            res.statusCode = 404;
+            return await res.json({message: `Radar "${radar}" does not exist`});
+        }
+
+        if (tag !== undefined) {
+            const tagObject = (await utils.getRadarTag(radar, tag))[0];
+            if (!tagObject) {
+                res.statusCode = 404;
+                return await res.json({message: `Tag "${tag}" does not exist for radar "${radar}"`});
+            }
+
+            const radarVersionId = tagObject.radar_version;
+            const radarVersion = (await utils.getRadarVersionsFromId(radar, radarVersionId))[0];
+
+            if (radarVersion) {
+                version = parseInt(radarVersion.version);
+                fork = parseInt(radarVersion.fork);
+                forkVersion = parseInt(radarVersion.fork_version);
+            }
+        }
         const { output, blipsVersion } = await getRadar(radar, version, fork, forkVersion);
         res.header('blips-version', blipsVersion);
         res.set('access-control-expose-headers', 'blips-version');

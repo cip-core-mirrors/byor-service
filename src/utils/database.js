@@ -414,6 +414,20 @@ async function getRadarVersions(radarId, version, fork, user) {
     return data.rows;
 }
 
+async function getRadarVersionsFromId(radarId, radarVersionId) {
+    const conditions = [];
+    conditions.push(`radar = '${radarId}'`);
+    if (radarVersionId) conditions.push(`radar_version = ${radarVersionId}`);
+
+    const data = await utils.selectFrom(
+        'radar_versions',
+        [ 'id', 'radar', 'version', 'fork', 'fork_version', 'user_id' ],
+        conditions,
+    );
+
+    return data.rows;
+}
+
 async function deleteRadarVersion(radarVersionId, userInfo, shouldQuery = true) {
     return await utils.deleteFrom(
         'radar_versions',
@@ -699,6 +713,7 @@ module.exports = {
 
     addRadarVersion,
     getRadarVersions,
+    getRadarVersionsFromId,
     deleteRadarVersion,
 
     getRadarParameters,
