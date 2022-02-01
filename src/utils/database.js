@@ -174,12 +174,6 @@ async function insertTheme(theme, userInfo, isCreate) {
     });
 
     if (parameters.length > 0) {
-        queries.push(await utils.deleteFrom(
-            'theme_parameters',
-            [ `theme = '${theme.id}'` ],
-            userInfo,
-            false,
-        ));
         queries.push(await utils.upsert(
             'theme_parameters',
             [
@@ -189,7 +183,7 @@ async function insertTheme(theme, userInfo, isCreate) {
                 'value',
             ],
             parameters,
-            false,
+            true,
             userInfo,
             false,
         ));
@@ -206,12 +200,6 @@ async function insertTheme(theme, userInfo, isCreate) {
     });
 
     if (rights.length > 0) {
-        queries.push(await utils.deleteFrom(
-            'theme_rights',
-            [ `theme = '${theme.id}'` ],
-            userInfo,
-            false,
-        ));
         queries.push(await utils.upsert(
             'theme_rights',
             [
@@ -221,7 +209,7 @@ async function insertTheme(theme, userInfo, isCreate) {
                 'rights',
             ],
             rights,
-            false,
+            true,
             userInfo,
             false,
         ));
