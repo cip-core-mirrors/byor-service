@@ -37,13 +37,13 @@ router.get('/radar/:radar', async function(req, res, next) {
         return;
     }
 
+    utils.logHeaders(req.headers);
+
     const radar = req.params.radar;
     let { tag, version, fork, forkVersion } = req.query;
     version = getIntegerValue(version);
     fork = getIntegerValue(fork);
     forkVersion = getIntegerValue(forkVersion);
-
-    utils.logHeaders(req.headers);
 
     try {
         const radarFound = await utils.radarExists(radar);
