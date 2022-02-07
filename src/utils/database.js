@@ -134,6 +134,20 @@ async function deleteBlipRights(blipId, userInfo, shouldQuery = true) {
     ], userInfo, shouldQuery);
 }
 
+async function duplicateTheme(oldThemeId, newThemeId, userInfo) {
+    const theme = {};
+
+    theme.id = newThemeId;
+    theme.permissions = [{
+        userId: userInfo.mail,
+        rights: [ 'owner', 'edit' ],
+    }];
+
+    theme.parameters = await getThemeParameters(oldThemeId);
+
+    return await insertTheme(theme, userInfo, true);
+}
+
 async function getThemes() {
     const data = await utils.selectFromInnerJoin(
         'themes',
@@ -701,6 +715,7 @@ module.exports = {
     insertBlipsRights,
     deleteBlipRights,
 
+    duplicateTheme,
     getThemes,
     insertTheme,
     deleteTheme,

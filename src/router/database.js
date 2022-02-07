@@ -476,6 +476,32 @@ router.post('/themes', async function(req, res, next) {
     }
 });
 
+router.post('/themes/:themeId/duplicate', async function(req, res, next) {
+    const oldThemeId = req.params.themeId;
+    const newThemeId = req.body.id;
+
+    try {
+        if (!newThemeId) {
+            res.status(400);
+            return await res.json({message: `You have to provide a new theme ID`});
+        }
+
+        const themes = await utils.getThemes();
+        if (!themeExists(themes, oldThemeId)) {
+            res.status(404);
+            return await res.json({message: `Theme "${oldThemeId}" does not exist`});
+        } else if (themeExists(themes, newThemeId)) {
+            res.status(404);
+            return await res.json({message: `Theme "${newThemeId}" already exists`});
+        }
+
+        await utils.duplicateTheme(oldThemeId, newThemeId, req.user);
+        return await res.json({message: 'ok'});
+    } catch (e) {
+        await errorHandling(e, res)
+    }
+});
+
 router.put('/themes', async function(req, res, next) {
     const theme = req.body;
     const userId = req.user.mail;
