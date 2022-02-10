@@ -49,6 +49,7 @@ async function insertBlips(blips, userInfo, shouldQuery = true) {
                 blip.lastUpdate,
             ]
         }),
+        false,
         userInfo,
         shouldQuery,
     );
@@ -61,6 +62,7 @@ async function deleteBlip(blipId, userInfo) {
         'themes',
         [ 'id' ],
         [[ blipId ]],
+        false,
         userInfo,
         false,
     ));
@@ -120,6 +122,7 @@ async function insertBlipsRights(blipsPermissions, userInfo, shouldQuery = true)
         'blip_rights',
         [ 'id', 'blip', 'user_id', 'rights' ],
         rows,
+        false,
         userInfo,
         shouldQuery,
     );
@@ -129,6 +132,20 @@ async function deleteBlipRights(blipId, userInfo, shouldQuery = true) {
     return await utils.deleteFrom('blip_rights', [
         `blip = '${blipId}'`,
     ], userInfo, shouldQuery);
+}
+
+async function duplicateTheme(oldThemeId, newThemeId, userInfo) {
+    const theme = {};
+
+    theme.id = newThemeId;
+    theme.permissions = [{
+        userId: userInfo.mail,
+        rights: [ 'owner', 'edit' ],
+    }];
+
+    theme.parameters = await getThemeParameters(oldThemeId);
+
+    return await insertTheme(theme, userInfo, true);
 }
 
 async function getThemes() {
@@ -154,6 +171,7 @@ async function insertTheme(theme, userInfo, isCreate) {
             'themes',
             [ 'id' ],
             [[ theme.id ]],
+            false,
             userInfo,
             false,
         ));
@@ -185,6 +203,7 @@ async function insertTheme(theme, userInfo, isCreate) {
                 'value',
             ],
             parameters,
+            true,
             userInfo,
             false,
         ));
@@ -216,6 +235,7 @@ async function insertTheme(theme, userInfo, isCreate) {
                 'rights',
             ],
             rights,
+            true,
             userInfo,
             false,
         ));
@@ -267,7 +287,7 @@ async function getThemeParameters(themeId) {
 }
 
 async function getRadars(conditions = []) {
-    const data = await utils.selectFrom('radars', [ 'id', 'published_version', 'state' ], conditions);
+    const data = await utils.selectFrom('radars', [ 'id', 'state' ], conditions);
     return data.rows;
 }
 
@@ -277,8 +297,9 @@ async function insertRadar(id, userInfo) {
     const defaultState = 0;
     queries.push(await utils.upsert(
         'radars',
-        [ 'id', 'state' ], // published_version omitted in order to keep it empty
+        [ 'id', 'state' ],
         [[ id, defaultState ]],
+        false,
         userInfo,
         false,
     ));
@@ -287,10 +308,21 @@ async function insertRadar(id, userInfo) {
     queries.push(await utils.insertInto(
         'radar_versions',
         [
+            'id',
+            'radar',
+            'version',
+            'fork',
+            'fork_version',
+            'user_id',
+        ],
+        [
             [
                 `${id}-${defaultVersion}`,
                 id,
                 defaultVersion,
+                null,
+                null,
+                userInfo.mail,
             ],
         ],
         userInfo,
@@ -315,11 +347,13 @@ async function deleteRadar(radarId, userInfo) {
 
     queries.push(await deleteRadarParameters(
         radarId,
+        undefined,
         userInfo,
         false,
     ));
     queries.push(await deleteBlipLinks(
         radarId,
+        undefined,
         userInfo,
         false,
     ));
@@ -356,36 +390,76 @@ async function updateRadarState(id, state, userInfo, shouldQuery = true) {
     );
 }
 
-async function addRadarVersion(radarId, version, userInfo, shouldQuery = true) {
+async function addRadarVersion(radarId, radarVersion, fork, forkVersion, userInfo = {}, shouldQuery = true) {
+    let radarVersionId = `${radarId}-${radarVersion}`;
+    if (fork !== undefined) radarVersionId += `-${fork}-${forkVersion}`;
+
     return await utils.insertInto(
         'radar_versions',
-        [ 'id', 'radar', 'version' ],
+        [ 'id', 'radar', 'version', 'fork', 'fork_version', 'user_id' ],
         [
-            [ `${radarId}-${version}`, radarId, version ],
+            [
+                radarVersionId,
+                radarId,
+                radarVersion,
+                fork,
+                forkVersion,
+                userInfo.mail,
+            ],
         ],
         userInfo,
         shouldQuery,
     );
 }
 
-async function getRadarVersions(radarId) {
+async function getRadarVersions(radarId, version, fork, user) {
+    const conditions = [];
+    conditions.push(`radar = '${radarId}'`);
+    if (version) conditions.push(`version = ${version}`);
+    if (fork) conditions.push(`fork = ${fork}`);
+    if (user) conditions.push(`user_id = '${user}'`);
+
     const data = await utils.selectFrom(
         'radar_versions',
-        [ 'id', 'radar', 'version' ],
-        [ `radar = '${radarId}'` ],
+        [ 'id', 'radar', 'version', 'fork', 'fork_version', 'user_id' ],
+        conditions,
     );
 
     return data.rows;
 }
 
-async function getRadarParameters(radarId, radarVersion) {
+async function getRadarVersionsFromId(radarId, radarVersionId) {
+    const conditions = [];
+    conditions.push(`radar = '${radarId}'`);
+    if (radarVersionId) conditions.push(`id = '${radarVersionId}'`);
+
+    const data = await utils.selectFrom(
+        'radar_versions',
+        [ 'id', 'radar', 'version', 'fork', 'fork_version', 'user_id' ],
+        conditions,
+    );
+
+    return data.rows;
+}
+
+async function deleteRadarVersion(radarVersionId, userInfo, shouldQuery = true) {
+    return await utils.deleteFrom(
+        'radar_versions',
+        [`id = '${radarVersionId}'`],
+        userInfo,
+        shouldQuery,
+    );
+}
+
+async function getRadarParameters(radarId, radarVersionId, lookForNull = false) {
+    const conditions = [];
+    conditions.push(`radar = '${radarId}'`);
+    conditions.push(`(radar_version = '${radarVersionId}'${lookForNull ? ` OR radar_version IS NULL` : ''})`);
+
     const data = await utils.selectFrom(
         'radar_parameters',
         [ 'name', 'value' ],
-        [
-            `radar = '${radarId}'`,
-            `(radar_version = ${radarVersion}${radarVersion === 0 ? ` OR radar_version IS NULL` : ''})`,
-        ],
+        conditions,
     );
 
     return data.rows;
@@ -407,13 +481,15 @@ async function insertRadarParameters(radarParameters, userInfo, shouldQuery = tr
     )
 }
 
-async function deleteRadarParameters(radarId, userInfo, shouldQuery = true) {
-    return await utils.deleteFrom('radar_parameters', [
-        `radar = '${radarId}'`,
-    ], userInfo, shouldQuery);
+async function deleteRadarParameters(radarId, radarVersionId, userInfo, shouldQuery = true) {
+    const conditions = [];
+    if (radarId !== undefined) conditions.push(`radar = '${radarId}'`);
+    if (radarVersionId !== undefined) conditions.push(`radar_version = '${radarVersionId}'`);
+
+    return await utils.deleteFrom('radar_parameters', conditions, userInfo, shouldQuery);
 }
 
-async function selectBlipsWithColumnLinks(radarId, radarVersion) {
+async function selectBlipsWithColumnLinks(radarId, radarVersion, lookForNull = false) {
     let data;
     if (radarId) {
         data = await utils.selectFromInnerJoin(
@@ -436,7 +512,7 @@ async function selectBlipsWithColumnLinks(radarId, radarVersion) {
             ],
             [
                 `blip_links.radar = '${radarId}'`,
-                `(blip_links.radar_version = ${radarVersion}${radarVersion === 0 ? ` OR blip_links.radar_version IS NULL` : ''})`,
+                `(blip_links.radar_version = '${radarVersion}'${lookForNull ? ` OR blip_links.radar_version IS NULL` : ''})`,
             ],
         );
     } else {
@@ -493,10 +569,12 @@ async function insertBlipLinks(blipLinks, userInfo, shouldQuery = true) {
     )
 }
 
-async function deleteBlipLinks(radarId, userInfo, shouldQuery = true) {
-    return await utils.deleteFrom('blip_links', [
-        `radar = '${radarId}'`,
-    ], userInfo, shouldQuery);
+async function deleteBlipLinks(radarId, radarVersionId, userInfo, shouldQuery = true) {
+    const conditions = [];
+    if (radarId !== undefined) conditions.push(`radar = '${radarId}'`);
+    if (radarVersionId !== undefined) conditions.push(`radar_version = '${radarVersionId}'`);
+
+    return await utils.deleteFrom('blip_links', conditions, userInfo, shouldQuery);
 }
 
 async function getUserRadarRights(userId) {
@@ -524,6 +602,7 @@ async function insertRadarRights(radarId, userId, rights, userInfo, shouldQuery 
             'rights',
         ],
         [ [ `${radarId}-${userId}` , radarId, userId, rights.join(',') ] ],
+        false,
         userInfo,
         shouldQuery,
     );
@@ -540,6 +619,46 @@ async function deleteRadarRights(radarId, userId, userInfo, shouldQuery = true) 
 async function deleteRadarVersions(radarId, userInfo, shouldQuery = true) {
     const conditions = [ `radar = '${radarId}'` ];
     return await utils.deleteFrom('radar_versions', conditions, userInfo, shouldQuery);
+}
+
+async function addRadarTag(radarId, radarVersion, tagName, userInfo, shouldQuery = true) {
+    return await utils.upsert(
+        'radar_tags',
+        [
+            'id',
+            'name',
+            'radar',
+            'radar_version',
+        ],
+        [
+            [ `${radarId}-${tagName}`, tagName, radarId, radarVersion ],
+        ],
+        true,
+        userInfo,
+        shouldQuery,
+    );
+}
+
+async function deleteRadarTag(radarId, tagName, userInfo, shouldQuery = true) {
+    const conditions = [ `radar = '${radarId}'` ];
+    conditions.push(`name = '${tagName}'`);
+
+    return await utils.deleteFrom('radar_tags', conditions, userInfo, shouldQuery);
+}
+
+async function getRadarTag(radarId, tagName) {
+    const conditions = [];
+    conditions.push(`radar = '${radarId}'`);
+    if (tagName) {
+        conditions.push(`name = '${tagName}'`);
+    }
+
+    const data = await utils.selectFrom(
+        'radar_tags',
+        [ 'id', 'name', 'radar', 'radar_version', ],
+        conditions,
+    );
+    return data.rows;
 }
 
 async function radarExists(radarId) {
@@ -596,6 +715,7 @@ module.exports = {
     insertBlipsRights,
     deleteBlipRights,
 
+    duplicateTheme,
     getThemes,
     insertTheme,
     deleteTheme,
@@ -608,6 +728,8 @@ module.exports = {
 
     addRadarVersion,
     getRadarVersions,
+    getRadarVersionsFromId,
+    deleteRadarVersion,
 
     getRadarParameters,
     insertRadarParameters,
@@ -622,6 +744,10 @@ module.exports = {
     getRadarRights,
     insertRadarRights,
     deleteRadarRights,
+
+    addRadarTag,
+    deleteRadarTag,
+    getRadarTag,
 
     radarExists,
     userRadarOwner,
