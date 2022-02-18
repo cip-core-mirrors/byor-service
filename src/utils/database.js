@@ -291,7 +291,7 @@ async function getRadars(conditions = []) {
     return data.rows;
 }
 
-async function insertRadar(id, userInfo) {
+async function insertRadar(id, newRadarVersion, userInfo) {
     const queries = [];
 
     const defaultState = 0;
@@ -304,30 +304,32 @@ async function insertRadar(id, userInfo) {
         false,
     ));
 
-    const defaultVersion = 0;
-    queries.push(await utils.insertInto(
-        'radar_versions',
-        [
-            'id',
-            'radar',
-            'version',
-            'fork',
-            'fork_version',
-            'user_id',
-        ],
-        [
+    if (newRadarVersion) {
+        const defaultVersion = 0;
+        queries.push(await utils.insertInto(
+            'radar_versions',
             [
-                `${id}-${defaultVersion}`,
-                id,
-                defaultVersion,
-                null,
-                null,
-                userInfo.mail,
+                'id',
+                'radar',
+                'version',
+                'fork',
+                'fork_version',
+                'user_id',
             ],
-        ],
-        userInfo,
-        false,
-    ));
+            [
+                [
+                    `${id}-${defaultVersion}`,
+                    id,
+                    defaultVersion,
+                    null,
+                    null,
+                    userInfo.mail,
+                ],
+            ],
+            userInfo,
+            false,
+        ));
+    }
 
     if (userInfo && userInfo.mail) {
         queries.push(await insertRadarRights(
