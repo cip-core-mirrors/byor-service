@@ -111,7 +111,7 @@ router.put('/anonymous', async function(req, res, next) {
 
 router.put('/anonymous/radar/:radar', async function(req, res, next) {
     const radar = req.params.radar;
-    const { links = [], parameters = [] } = req.body;
+    const { links = [], parameters = [], userInfo } = req.body;
 
     try {
         const radarFound = await utils.radarExists(radar);
@@ -120,8 +120,8 @@ router.put('/anonymous/radar/:radar', async function(req, res, next) {
             return await res.json({message: `Radar "${radar}" already exists`});
         }
 
-        await utils.insertRadar(radar);
-        await editRadar(radar, links, parameters, 0, true, 0, undefined, 0, req.user);
+        await utils.insertRadar(radar, userInfo);
+        await editRadar(radar, links, parameters, 0, true, 0, undefined, 0, userInfo);
 
         await res.json({ status: 'ok' })
     } catch (e) {
