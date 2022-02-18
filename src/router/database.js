@@ -120,7 +120,7 @@ router.put('/anonymous/radar/:radar', async function(req, res, next) {
             return await res.json({message: `Radar "${radar}" already exists`});
         }
 
-        await utils.insertRadar(radar, userInfo);
+        await utils.insertRadar(radar, false, userInfo);
         await editRadar(radar, links, parameters, 0, true, 0, undefined, 0, userInfo);
 
         await res.json({ status: 'ok' })
@@ -305,7 +305,7 @@ router.post('/radar', async function(req, res, next) {
         return await res.json({ message: response.message });
     }
 
-    await utils.insertRadar(radarId, req.user);
+    await utils.insertRadar(radarId, true, req.user);
 
     await res.json({ status: 'ok' });
 });
@@ -886,7 +886,7 @@ router.post('/admin/radar', async function(req, res, next) {
         return await res.json({ message: response.message });
     }
 
-    await utils.insertRadar(radarId, req.user);
+    await utils.insertRadar(radarId, true, req.user);
 
     await res.json({ status: 'ok' });
 });
