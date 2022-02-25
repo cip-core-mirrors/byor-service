@@ -1096,7 +1096,7 @@ async function getAllRadars() {
     return out;
 }
 
-async function insertBlips(blips, users, userInfo) {
+async function inserinsertBlipstBlips(blips, users, userInfo) {
     const tempCache = {};
     let maxVersion = 0;
 
@@ -1134,7 +1134,7 @@ async function insertBlips(blips, users, userInfo) {
         delete blip.hash;
         delete blip.id;
         delete blip.name;
-        delete blip.lastUpdate;
+        delete blip.lastupdate;
         delete blip.version;
         delete blip.id_version;
 
