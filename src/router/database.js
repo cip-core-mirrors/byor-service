@@ -1096,7 +1096,7 @@ async function getAllRadars() {
     return out;
 }
 
-async function inserinsertBlipstBlips(blips, users, userInfo) {
+async function insertBlips(blips, users, userInfo) {
     const tempCache = {};
     let maxVersion = 0;
 
