@@ -94,6 +94,10 @@ router.get('/themes/:themeId', async function(req, res, next) {
     }
 });
 
+router.options('/', async function(req, res, next) {
+    await res.send(200)
+});
+
 router.put('/anonymous', async function(req, res, next) {
     const { blips = [], defaultBlipEditors = [] } = req.body;
 
@@ -164,7 +168,7 @@ router.use(async function(req, res, next) {
 router.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   next();
 });
 
@@ -1132,6 +1136,7 @@ async function insertBlips(blips, users, userInfo) {
         delete blip.name;
         delete blip.lastUpdate;
         delete blip.version;
+        delete blip.id_version;
 
         if (lastUpdate) {
             lastUpdate = new Date(lastUpdate);
