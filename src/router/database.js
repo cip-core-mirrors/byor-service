@@ -1051,6 +1051,7 @@ async function getRadar(radarId, radarVersion, fork, forkVersion) {
         'lastUpdate',
         'sector',
         'ring',
+        'oldring',
     ];
     headers.push(...columns);
     const output = [ headers ];
@@ -1315,7 +1316,7 @@ async function editRadar(radarId, links, parameters, state, isCommit, radarVersi
             let oldRing;
             for (const blipLink of blipLinks) {
                 if (blipLink.blip === blipIdVersion) {
-                    oldRing = blipLink.ring;
+                    if (link.ring !== blipLink.ring) oldRing = blipLink.ring;
                     break;
                 }
             }
