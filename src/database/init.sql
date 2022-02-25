@@ -61,6 +61,7 @@ CREATE TABLE IF NOT EXISTS blip_links (
     radar_version varchar,
     sector varchar,
     ring varchar,
+    oldring varchar,
     blip varchar,
     value integer
 );
