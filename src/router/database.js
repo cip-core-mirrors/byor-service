@@ -1051,6 +1051,7 @@ async function getRadar(radarId, radarVersion, fork, forkVersion) {
         'lastUpdate',
         'sector',
         'ring',
+        'oldring',
     ];
     headers.push(...columns);
     const output = [ headers ];
