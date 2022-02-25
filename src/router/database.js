@@ -1305,16 +1305,28 @@ async function editRadar(radarId, links, parameters, state, isCommit, radarVersi
     if (fork !== undefined) radarVersionId += `-${fork}-${versionNumber}`;
 
     if (links.length > 0) {
+        const blipLinks = await utils.getBlipLinks(radarVersionId);
+
         const linksRows = links.map(function (link) {
             const blipCache = blipsHashCache[link.blip];
             const version = blipCache ? blipCache.version : 0;
             const blipIdVersion = `${link.blip}-${version}`;
+
+            let oldRing;
+            for (const blipLink of blipLinks) {
+                if (blipLink.blip === blipIdVersion) {
+                    oldRing = blipLink.ring;
+                    break;
+                }
+            }
+
             return [
                 `${radarVersionId}-${blipIdVersion}`,
                 radarId,
                 radarVersionId,
                 link.sector,
                 link.ring,
+                oldRing || null,
                 blipIdVersion,
                 link.value || 0,
             ]

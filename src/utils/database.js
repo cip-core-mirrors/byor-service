@@ -505,6 +505,7 @@ async function selectBlipsWithColumnLinks(radarId, radarVersion, lookForNull = f
                 'blips.lastupdate AS lastupdate',
                 'blip_links.sector AS sector',
                 'blip_links.ring AS ring',
+                'blip_links.oldring AS oldring',
                 'column_links.name AS columnname',
                 'column_links.value AS columnvalue',
             ],
@@ -553,6 +554,29 @@ async function insertColumnLinks(columnLinks, userInfo, shouldQuery = true) {
     );
 }
 
+async function getBlipLinks(radarVersionId) {
+    const conditions = [];
+    if (radarVersionId) {
+        conditions.push(`radar_version = '${radarVersionId}'`);
+    }
+
+    const data = await utils.selectFrom(
+        'blip_links',
+        [
+            'id',
+            'radar',
+            'radar_version',
+            'sector',
+            'ring',
+            'oldring',
+            'blip',
+            'value',
+        ],
+        conditions,
+    );
+    return data.rows;
+}
+
 async function insertBlipLinks(blipLinks, userInfo, shouldQuery = true) {
     return await utils.insertInto(
         'blip_links',
@@ -562,6 +586,7 @@ async function insertBlipLinks(blipLinks, userInfo, shouldQuery = true) {
             'radar_version',
             'sector',
             'ring',
+            'oldring',
             'blip',
             'value',
         ],
@@ -740,6 +765,7 @@ module.exports = {
     selectBlipsWithColumnLinks,
     insertColumnLinks,
 
+    getBlipLinks,
     insertBlipLinks,
     deleteBlipLinks,
 
