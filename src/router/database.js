@@ -292,7 +292,7 @@ router.delete('/radar/:radarId', async function(req, res, next) {
         return await res.json({message: `You cannot delete radar "${radarId}"`});
     }
 
-    await utils.deleteRadar(radarId, req.user);
+    await utils.deleteRadar(radarId, undefined, req.user);
     await res.json({message: 'ok'});
 });
 
@@ -636,7 +636,7 @@ router.delete('/radar/:radar/versions/:radarVersionId', async function(req, res,
             return await res.json({message: `You cannot delete radar version "${radarVersionId}"`});
         }
 
-        await utils.deleteRadarVersion(radarVersionId, req.user);
+        await utils.deleteRadar(radar, radarVersionId, req.user);
         await res.json({ status: 'ok' });
     } catch (e) {
         await errorHandling(e, res)
@@ -873,7 +873,7 @@ router.use('/admin', async function(req, res, next) {
 router.delete('/admin/radar/:radarId', async function(req, res, next) {
     const radarId = req.params.radarId;
 
-    await utils.deleteRadar(radarId, req.user);
+    await utils.deleteRadar(radarId, undefined, req.user);
     await res.json({message: 'ok'});
 });
 

@@ -344,38 +344,43 @@ async function insertRadar(id, newRadarVersion, userInfo) {
     await utils.transaction(queries, userInfo);
 }
 
-async function deleteRadar(radarId, userInfo) {
+async function deleteRadar(radarId, radarVersionId, userInfo) {
     const queries = [];
 
     queries.push(await deleteRadarParameters(
         radarId,
-        undefined,
+        radarVersionId,
         userInfo,
         false,
     ));
     queries.push(await deleteBlipLinks(
         radarId,
-        undefined,
+        radarVersionId,
         userInfo,
         false,
     ));
-    queries.push(await deleteRadarRights(
-        radarId,
-        undefined,
-        userInfo,
-        false,
-    ));
-    queries.push(await deleteRadarVersions(
-        radarId,
-        userInfo,
-        false,
-    ));
-    queries.push(await utils.deleteFrom(
-        'radars',
-        [ `id = '${radarId}'` ],
-        userInfo,
-        false,
-    ));
+
+    if (radarVersionId) {
+        queries.push(await deleteRadarVersion(radarVersionId, userInfo, false));
+    } else {
+        queries.push(await deleteRadarRights(
+            radarId,
+            undefined,
+            userInfo,
+            false,
+        ));
+        queries.push(await deleteRadarVersions(
+            radarId,
+            userInfo,
+            false,
+        ));
+        queries.push(await utils.deleteFrom(
+            'radars',
+            [ `id = '${radarId}'` ],
+            userInfo,
+            false,
+        ));
+    }
 
     await utils.transaction(queries, userInfo);
 }
