@@ -359,6 +359,12 @@ async function deleteRadar(radarId, radarVersionId, userInfo) {
         userInfo,
         false,
     ));
+    queries.push(await deleteRadarTags(
+        radarId,
+        radarVersionId,
+        userInfo,
+        false,
+    ));
 
     if (radarVersionId) {
         queries.push(await deleteRadarVersion(radarVersionId, userInfo, false));
@@ -669,6 +675,13 @@ async function addRadarTag(radarId, radarVersion, tagName, userInfo, shouldQuery
         userInfo,
         shouldQuery,
     );
+}
+
+async function deleteRadarTags(radarId, radarVersionId, userInfo, shouldQuery = true) {
+    const conditions = [ `radar = '${radarId}'` ];
+    if (radarVersionId) conditions.push(`radar_version = '${radarId}'`);
+
+    return await utils.deleteFrom('radar_tags', conditions, userInfo, shouldQuery);
 }
 
 async function deleteRadarTag(radarId, tagName, userInfo, shouldQuery = true) {
