@@ -679,7 +679,7 @@ async function addRadarTag(radarId, radarVersion, tagName, userInfo, shouldQuery
 
 async function deleteRadarTags(radarId, radarVersionId, userInfo, shouldQuery = true) {
     const conditions = [ `radar = '${radarId}'` ];
-    if (radarVersionId) conditions.push(`radar_version = '${radarId}'`);
+    if (radarVersionId) conditions.push(`radar_version = '${radarVersionId}'`);
 
     return await utils.deleteFrom('radar_tags', conditions, userInfo, shouldQuery);
 }
