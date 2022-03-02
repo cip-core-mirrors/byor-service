@@ -1130,7 +1130,7 @@ async function insertBlips(blips, users, userInfo) {
         let {
             id,
             name,
-            lastUpdate,
+            lastupdate,
         } = blip;
         delete blip.hash;
         delete blip.id;
@@ -1139,22 +1139,22 @@ async function insertBlips(blips, users, userInfo) {
         delete blip.version;
         delete blip.id_version;
 
-        if (lastUpdate) {
-            lastUpdate = new Date(lastUpdate);
-            if (typeof lastUpdate.getMonth !== 'function' || Number.isNaN(lastUpdate.getMonth())) {
-                lastUpdate = now;
+        if (lastupdate) {
+            lastupdate = new Date(lastupdate);
+            if (typeof lastupdate.getMonth !== 'function' || Number.isNaN(lastupdate.getMonth())) {
+                lastupdate = now;
             }
         } else {
-            lastUpdate = now;
+            lastupdate = now;
         }
 
         const columns = Object.entries(blip);
         blip.hash = crypto.SHA256(
-            `${name}${lastUpdate ? `-${lastUpdate}` : ''}-${columns.map(row => row.join('-')).join('-')}`
+            `${name}${lastupdate ? `-${lastupdate}` : ''}-${columns.map(row => row.join('-')).join('-')}`
         ).toString();
         blip.id = id;
         blip.name = name;
-        blip.lastUpdate = lastUpdate;
+        blip.lastupdate = lastupdate;
 
         const cachedBlip = blipsHashCache[blip.id] || {};
         if (cachedBlip.hash !== blip.hash) {
