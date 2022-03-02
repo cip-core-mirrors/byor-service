@@ -37,7 +37,7 @@ async function insertBlips(blips, userInfo, shouldQuery = true) {
             'hash',
             'name',
             'version',
-            'lastUpdate',
+            'lastupdate',
         ],
         blips.map(function (blip) {
             return [
@@ -46,7 +46,7 @@ async function insertBlips(blips, userInfo, shouldQuery = true) {
                 blip.hash,
                 blip.name,
                 blip.version,
-                blip.lastUpdate,
+                blip.lastupdate,
             ]
         }),
         false,
