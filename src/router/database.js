@@ -1123,6 +1123,7 @@ async function insertBlips(blips, users, userInfo) {
             id,
             name,
             lastupdate,
+            version,
         } = blip;
         delete blip.hash;
         delete blip.id;
@@ -1147,6 +1148,7 @@ async function insertBlips(blips, users, userInfo) {
         blip.id = id;
         blip.name = name;
         blip.lastupdate = lastupdate;
+        blip.version = version;
 
         const blipId = `${blip.id}-${blip.version}`;
         const cachedBlip = blipsHashCache[blipId] || {};
