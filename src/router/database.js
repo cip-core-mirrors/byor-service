@@ -1105,6 +1105,8 @@ async function insertBlips(blips, users, userInfo) {
                 blip.id = `${owner}-${now.getTime()}-${index}`;
             }
         }
+        if (blip.version === undefined) blip.version = 1;
+
         if (owner) {
             blipsRights.push({
                 blip: blip.id,
