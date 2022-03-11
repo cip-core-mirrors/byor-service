@@ -1299,10 +1299,7 @@ async function editRadar(radarId, links, parameters, state, isCommit, radarVersi
         const blipLinks = await utils.getBlipLinks(radarVersionId);
 
         const linksRows = links.map(function (link) {
-            const blipId = `${link.blip}-${link.version}`;
-            const blipCache = blipsHashCache[blipId];
-            const version = blipCache ? blipCache.version : 0;
-            const blipIdVersion = `${link.blip}-${version}`;
+            const blipIdVersion = `${link.blip}-${link.version}`;
 
             let oldRing;
             for (const blipLink of blipLinks) {
