@@ -14,19 +14,9 @@ utils.init().then(async function() {
     const blips = await utils.getBlips();
 
     for (const blip of blips) {
-        const cache = blipsHashCache[blip.id];
-        if (cache) {
-            if (blip.version > cache.version) {
-                blipsHashCache[blip.id] = {
-                    hash: blip.hash,
-                    version: blip.version,
-                }
-            }
-        } else {
-            blipsHashCache[blip.id] = {
-                hash: blip.hash,
-                version: blip.version || 0,
-            }
+        blipsHashCache[`${blip.id}-${blip.version}`] = {
+            hash: blip.hash,
+            version: blip.version,
         }
     }
 });
@@ -1156,7 +1146,8 @@ async function insertBlips(blips, users, userInfo) {
         blip.name = name;
         blip.lastupdate = lastupdate;
 
-        const cachedBlip = blipsHashCache[blip.id] || {};
+        const blipId = `${blip.id}-${blip.version}`;
+        const cachedBlip = blipsHashCache[blipId] || {};
         if (cachedBlip.hash !== blip.hash) {
             blip.version = (cachedBlip.version || 0) + 1;
             if (blip.version > maxVersion) maxVersion = blip.version;
@@ -1165,13 +1156,12 @@ async function insertBlips(blips, users, userInfo) {
 
             columns.forEach(function(row) {
                 const columnName = row[0];
-                const blipId = `${blip.id}-${blip.version}`;
                 row.unshift(blipId);
                 row.unshift(`${blipId}-${columnName}`)
             })
             columnLinks.push(...columns);
 
-            tempCache[blip.id] = {
+            tempCache[blipId] = {
                 hash: blip.hash,
                 version: blip.version,
             }
@@ -1309,7 +1299,8 @@ async function editRadar(radarId, links, parameters, state, isCommit, radarVersi
         const blipLinks = await utils.getBlipLinks(radarVersionId);
 
         const linksRows = links.map(function (link) {
-            const blipCache = blipsHashCache[link.blip];
+            const blipId = `${link.blip}-${link.version}`;
+            const blipCache = blipsHashCache[blipId];
             const version = blipCache ? blipCache.version : 0;
             const blipIdVersion = `${link.blip}-${version}`;
 
