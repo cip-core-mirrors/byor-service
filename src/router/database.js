@@ -1052,7 +1052,7 @@ async function getRadar(radarId, radarVersion, fork, forkVersion) {
     const outputBlips = [];
     for (const id in dict) {
         const blip = dict[id];
-        outputBlips.push(Object.values(blip));
+        outputBlips.push(Object.values(blip).map(v => v === null ? '' : v));
     }
 
     const idIndex = 2;
