@@ -1038,7 +1038,7 @@ async function getRadar(radarId, radarVersion, fork, forkVersion) {
         'value',
         'id',
         'hash',
-        'lastUpdate',
+        'lastupdate',
         'sector',
         'ring',
         'oldring',
@@ -1050,9 +1050,13 @@ async function getRadar(radarId, radarVersion, fork, forkVersion) {
     }
 
     const outputBlips = [];
-    for (const id in dict) {
-        const blip = dict[id];
-        outputBlips.push(Object.values(blip).map(v => v === null ? '' : v));
+    for (const blip of Object.values(dict)) {
+        const outputRow = [];
+        for (const header of headers) {
+            const value = blip[header];
+            outputRow.push((value === null || value === undefined) ? '' : value);
+        }
+        outputBlips.push(outputRow);
     }
 
     const idIndex = 2;
