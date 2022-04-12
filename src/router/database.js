@@ -1154,11 +1154,12 @@ async function insertBlips(blips, users, userInfo) {
         blip.lastupdate = lastupdate;
         blip.version = version;
 
-        const blipId = `${blip.id}-${blip.version}`;
+        let blipId = `${blip.id}-${blip.version}`;
         const cachedBlip = blipsHashCache[blipId] || {};
         if (cachedBlip.hash !== blip.hash) {
             blip.version = (cachedBlip.version || 0) + 1;
             if (blip.version > maxVersion) maxVersion = blip.version;
+            blipId = `${blip.id}-${blip.version}`; // update blip ID after version increment
 
             blipsToInsert.push(blip);
 
