@@ -12,7 +12,7 @@ spr = new sprequest.create({
     realm: spRealmId
 });
 
-async function getListItems(siteName, listName, viewName) {
+async function getListItems(siteName, listName, viewName, viewFilter) {
     // Main logic
     // 1. get requested list's fields and map EntityPropertyName with Title and Title with EntityPropertyName
     // 2. get requested view's fields and build an array containing field's "Title"
@@ -22,8 +22,9 @@ async function getListItems(siteName, listName, viewName) {
 
     const spListUrl = spBaseUrl + '/sites/' + siteName + '/_api/web/lists/getbytitle(\'' + listName + '\')/';
     const spFieldsFilter = '?$filter=(substringof(\'http://schemas.microsoft.com/sharepoint/v3\',SchemaXml) eq false) or (EntityPropertyName eq \'Modified\') or (EntityPropertyName eq \'Title\') or (EntityPropertyName eq \'ID\')&$select=EntityPropertyName,Title';
-    const spViewsFilter = '?$filter=Title%20eq%20\'' + viewName + '\'&$select=HtmlSchemaXml';
+    const spViewsFilter = '?$filter=Title%20eq%20\'' + viewName + '\'&$select=HtmlSchemaXml,ViewQuery';
     const spNbItems = '$top=300';
+    const spFilter = typeof(viewFilter) === 'undefined' ? '' : '&$filter=' + viewFilter;
 
     // Get list fields
     url = spListUrl + 'fields' + spFieldsFilter;
@@ -43,8 +44,12 @@ async function getListItems(siteName, listName, viewName) {
     // Get view fields
     url = spListUrl + 'views' + spViewsFilter;
     views = await spr.get(url);
-    var HtmlSchemaJson = JSON.parse(xmlToJson.xml2json(views.body.d.results[0].HtmlSchemaXml, {compact: true, spaces: 4}));
+    const HtmlSchemaJson = JSON.parse(xmlToJson.xml2json(views.body.d.results[0].HtmlSchemaXml, {compact: true, spaces: 4}));
+    // Todo: handle ViewQuery parameter, using CAML
+    // check https://github.com/SharePoint/sp-dev-docs/blob/main/docs/schema/introduction-to-collaborative-application-markup-language-caml.md
+    //const viewQuery = JSON.parse(xmlToJson.xml2json(views.body.d.results[0].ViewQuery, {compact: true, spaces: 4}));
     //console.log(HtmlSchemaJson.View.ViewFields.FieldRef);
+    //console.log(viewQuery)
 
     var ViewFieldsMapping = {};
     var arrViewFields = [];
@@ -60,7 +65,7 @@ async function getListItems(siteName, listName, viewName) {
 
 
     // generate list of columns from the view
-    url = spListUrl + 'items?viewid=' + HtmlSchemaJson.View._attributes.Name + "&" + spNbItems;
+    url = spListUrl + 'items?viewid=' + HtmlSchemaJson.View._attributes.Name + spFilter + "&" + spNbItems;
     items  = await spr.get(url);
 
     //Use the mapping to appropriately rearrange the value array before returning(Assuming that we have field_1,2,3,4 available)
@@ -75,10 +80,6 @@ async function getListItems(siteName, listName, viewName) {
     })
     
     var index = -1
-    index = arrViewFields.indexOf('Title');
-    if (index !== -1) {
-        arrViewFields[index] = 'name';
-    }
     index = arrViewFields.indexOf('Modified');
     if (index !== -1) {
         arrViewFields[index] = 'lastupdate';
