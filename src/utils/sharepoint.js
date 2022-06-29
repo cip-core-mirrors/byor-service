@@ -1,3 +1,9 @@
+// Some useful pointers:
+// - https://www.npmjs.com/package/sp-request
+// - https://dattabase.com/blog/sharepoint-rest-api-odata
+// - https://github.com/SharePoint/sp-dev-docs/
+// - https://dattabase.com/blog/sharepoint-field-schema-xml-examples (not used yet in this code)
+// - https://dattabase.com/blog/ (multiple articles on Sharepoint REST)
 const sprequest = require('sp-request');
 const xmlToJson = require('xml-js');
 
@@ -68,10 +74,11 @@ async function getListItems(siteName, listName, viewName, viewFilter) {
     url = spListUrl + 'items?viewid=' + HtmlSchemaJson.View._attributes.Name + spFilter + "&" + spNbItems;
     items  = await spr.get(url);
 
-    //Use the mapping to appropriately rearrange the value array before returning(Assuming that we have field_1,2,3,4 available)
+    //Use the mapping to appropriately rearrange the value array before returning
     radarData = items.body.d.results.map(x => {
         arr =[];
         for (let i = 0; i < arrViewFields.length; i++) {
+            // add value to array
             arr.push(x[namesMapping[arrViewFields[i]]])
             //console.log(arr);
         }
@@ -79,7 +86,31 @@ async function getListItems(siteName, listName, viewName, viewFilter) {
         return arr;
     })
     
-    var index = -1
+    // Check if we got special backend directives
+    var index = 0;
+    while (radarData[index]) {
+        var arr = radarData[index];
+        // check if column should be renamed
+        if (arr.includes('byorBackendRenameColumn') ) {
+            //console.log('found!');
+            for (let j = 0; j < arr.length; j++) {
+                let fieldValue = arr[j];
+                let fieldName = namesMapping[arrViewFields[j]];
+                // Modified SharePoint entries will always have a value, including our special 
+                // metadata entry, so excluding it
+                if ( (fieldValue !== 'byorBackendRenameColumn') && (fieldValue !== null) && (fieldName !== 'Modified')) {
+                    let index = -1;
+                    index = arrViewFields.indexOf(arrViewFields[j]);
+                    if (index !== -1) {
+                        arrViewFields[index] = fieldValue;
+                    }
+                }
+            }
+        }
+        index++;
+    }
+    // Renaming some additional fields
+    index = -1;
     index = arrViewFields.indexOf('Modified');
     if (index !== -1) {
         arrViewFields[index] = 'lastupdate';
