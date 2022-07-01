@@ -90,6 +90,13 @@ async function getListItems(siteName, listName, viewName, viewFilter) {
     var index = 0;
     while (radarData[index]) {
         var arr = radarData[index];
+        
+        // remove entry, as explicitely requested!
+        if (arr.includes('byorBackendExcludeEntry') ) {
+            radarData.splice(index,1);
+            continue;
+        }
+
         // check if column should be renamed
         if (arr.includes('byorBackendRenameColumn') ) {
             //console.log('found!');
@@ -106,6 +113,9 @@ async function getListItems(siteName, listName, viewName, viewFilter) {
                     }
                 }
             }
+            // Remove it, no need to send it to frontend
+            radarData.splice(index,1);
+            continue;
         }
         index++;
     }
