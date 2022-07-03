@@ -1,0 +1,1057 @@
+[
+  {
+    "id": "custom01",
+    "name": "customBlipColorFill0",
+    "value": "black"
+  },
+  {
+    "id": "custom01",
+    "name": "customBlipColorFill1",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "customBlipColorFill2",
+    "value": "darkgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "customBlipColorFill3",
+    "value": "dimgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "customBlipColorStroke0",
+    "value": "jet"
+  },
+  {
+    "id": "custom01",
+    "name": "customBlipColorStroke1",
+    "value": "jet"
+  },
+  {
+    "id": "custom01",
+    "name": "customBlipColorStroke2",
+    "value": "jet"
+  },
+  {
+    "id": "custom01",
+    "name": "customBlipColorStroke3",
+    "value": "jet"
+  },
+  {
+    "id": "custom01",
+    "name": "customBlipTextFontColor0",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "customBlipTextFontColor1",
+    "value": "black"
+  },
+  {
+    "id": "custom01",
+    "name": "customBlipTextFontColor2",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "customBlipTextFontColor3",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor1",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor2",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor3",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor4",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor5",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor6",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor7",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor8",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor9",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor10",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor11",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor12",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor13",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor14",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor15",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor16",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor17",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor18",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor19",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor20",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor21",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor22",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor23",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor24",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendBorderColor25",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor1",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor2",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor3",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor4",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor5",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor6",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor7",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor8",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor9",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor10",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor11",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor12",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor13",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor14",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor15",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor16",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor17",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor18",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor19",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor20",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor21",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor22",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor23",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor24",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFillColor25",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor1",
+    "value": "black"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor2",
+    "value": "black"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor3",
+    "value": "black"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor4",
+    "value": "black"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor5",
+    "value": "black"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor6",
+    "value": "black"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor7",
+    "value": "black"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor8",
+    "value": "black"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor9",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor10",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor11",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor12",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor13",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor14",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor15",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor16",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor17",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor18",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor19",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor20",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor21",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor22",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor23",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor24",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontColor25",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily1",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily2",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily3",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily4",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily5",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily6",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily7",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily8",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily9",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily10",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily11",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily12",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily13",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily14",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily15",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily16",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily17",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily18",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily19",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily20",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily21",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily22",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily23",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily24",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "legendFontFamily25",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "ringBorderColor1",
+    "value": "darkgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "ringBorderColor2",
+    "value": "darkgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "ringBorderColor3",
+    "value": "darkgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "ringBorderColor4",
+    "value": "darkgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "ringBorderColor5",
+    "value": "darkgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "ringBorderColor6",
+    "value": "darkgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "ringBorderColor7",
+    "value": "darkgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "ringBorderColor8",
+    "value": "darkgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "ringBorderColor9",
+    "value": "darkgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "ringBorderColor10",
+    "value": "darkgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "ringFillColor1",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "ringFillColor2",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "ringFillColor3",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "ringFillColor4",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "ringFillColor5",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "ringFillColor6",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "ringFillColor7",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "ringFillColor8",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "ringFillColor9",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "ringFillColor10",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "ringLegendBorderColor1",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "ringLegendFontColor1",
+    "value": "jet"
+  },
+  {
+    "id": "custom01",
+    "name": "ringLegendFontFamily1",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorBlipTextColor1",
+    "value": "red"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor1",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor2",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor3",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor4",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor5",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor6",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor7",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor8",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor9",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor10",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor11",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor12",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor13",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor14",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor15",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor16",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor17",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor18",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor19",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor20",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor21",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor22",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor23",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor24",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleBorderColor25",
+    "value": "lightgrey"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor1",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor2",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor3",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor4",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor5",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor6",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor7",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor8",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor9",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor10",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor11",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor12",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor13",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor14",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor15",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor16",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor17",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor18",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor19",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor20",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor21",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor22",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor23",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor24",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFillColor25",
+    "value": "#white"
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont1",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont2",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont3",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont4",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont5",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont6",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont7",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont8",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont9",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont10",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont11",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont12",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont13",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont14",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont15",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont16",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont17",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont18",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont19",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont20",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont21",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont22",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont23",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont24",
+    "value": ""
+  },
+  {
+    "id": "custom01",
+    "name": "sectorTitleFont25",
+    "value": ""
+  }
+]
