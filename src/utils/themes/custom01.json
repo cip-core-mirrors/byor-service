@@ -1,6 +1,66 @@
 [
   {
     "id": "custom01",
+    "name": "customBlipColorFill0",
+    "value": "black"
+  },
+  {
+    "id": "custom01",
+    "name": "customBlipColorFill1",
+    "value": "lime"
+  },
+  {
+    "id": "custom01",
+    "name": "customBlipColorFill2",
+    "value": "yellow"
+  },
+  {
+    "id": "custom01",
+    "name": "customBlipColorFill3",
+    "value": "red"
+  },
+  {
+    "id": "custom01",
+    "name": "customBlipColorStroke0",
+    "value": "black"
+  },
+  {
+    "id": "custom01",
+    "name": "customBlipColorStroke1",
+    "value": "lime"
+  },
+  {
+    "id": "custom01",
+    "name": "customBlipColorStroke2",
+    "value": "yellow"
+  },
+  {
+    "id": "custom01",
+    "name": "customBlipColorStroke3",
+    "value": "red"
+  },
+  {
+    "id": "custom01",
+    "name": "customBlipTextFontColor0",
+    "value": "white"
+  },
+  {
+    "id": "custom01",
+    "name": "customBlipTextFontColor1",
+    "value": "black"
+  },
+  {
+    "id": "custom01",
+    "name": "customBlipTextFontColor2",
+    "value": "black"
+  },
+  {
+    "id": "custom01",
+    "name": "customBlipTextFontColor3",
+    "value": "white"
+  },
+{
+    "id": "custom01",
     "name": "legendBorderColor1",
     "value": ""
   },
@@ -572,7 +632,7 @@
   {
     "id": "custom01",
     "name": "ringFillColor5",
-    "value": "white"
+    "value": "#EEE"
   },
   {
     "id": "custom01",
