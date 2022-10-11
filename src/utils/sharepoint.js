@@ -11,6 +11,8 @@ const spClientId     = process.env.SHAREPOINT_CLIENT_ID;
 const spClientSecret = process.env.SHAREPOINT_CLIENT_SECRET;
 const spRealmId      = process.env.SHAREPOINT_REALM_ID;
 const spBaseUrl      = process.env.SHAREPOINT_BASE_URL;
+const shouldLog      = process.env.LOG_QUERIES === 'true';
+
 
 spr = new sprequest.create({
     clientId: spClientId,
@@ -18,13 +20,17 @@ spr = new sprequest.create({
     realm: spRealmId
 });
 
+function logQuery(logBegin, values = [], logEnd = '') {
+    const log = logBegin + values + logEnd
+    console.log(`[${new Date().toISOString()}] === SharePoint Driver ===\n${log}`)
+}
 
 async function getListItems(siteName, listName, viewName, viewFilter) {
     // Main logic
     // 1. get requested list's fields and map EntityPropertyName with Title and Title with EntityPropertyName
     // 2. get requested view's fields and build an array containing field's "Title"
     // 3. get requested list and push items in array
-    console.log('[DEBUG] calling spr');
+    if (shouldLog) logQuery('Entering getListItems function');
     const spSiteUrl = spBaseUrl + '/sites/' + siteName;
     const spListUrl = spSiteUrl + '/_api/web/lists/getByTitle(\'' + listName + '\')';
     const spNbItems = '$top=300';
@@ -38,6 +44,7 @@ async function getListItems(siteName, listName, viewName, viewFilter) {
 
     // Get list fields
     url = spListUrl + '/fields' + spFieldsFilter;
+    if (shouldLog) logQuery("Fetching fields list from >> ", url, " <<");
     response = await spr.get(url);
     if (response.statusCode !== 200) {
       console.log("ERROR: couldn't retrieve from '", url, "'!");
@@ -53,6 +60,7 @@ async function getListItems(siteName, listName, viewName, viewFilter) {
     });
 
     // Retrieve view query definition
+    if (shouldLog) logQuery("Fetching query definition from >> ", viewQueryUrl, " <<");
     response = await spr.get(viewQueryUrl);
     if (response.statusCode !== 200) {
         console.log("ERROR: couldn't retrieve from '", viewQueryUrl, "'!");
@@ -85,9 +93,11 @@ async function getListItems(siteName, listName, viewName, viewFilter) {
     };
 
     // Get a request digest
+    if (shouldLog) logQuery("Getting a request digest from >> ", spSiteUrl, " <<");
     let spRequestDigest = await spr.requestDigest(spSiteUrl);
     
     // Pull items
+    if (shouldLog) logQuery("Fetching list items from >> ", itemsUrl, " <<");
     response = await spr.post(itemsUrl, {
         body: queryPayload,
         headers: {
