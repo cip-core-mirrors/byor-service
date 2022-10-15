@@ -61,6 +61,16 @@
   },
   {
     "id": "custom01",
+    "name": "interSectorLineStrokeColor",
+    "value": "none"
+  },
+  {
+    "id": "custom01",
+    "name": "interSectorLineStrokeWidth",
+    "value": "2"
+  },
+  {
+    "id": "custom01",
     "name": "legendBorderColor1",
     "value": ""
   },
