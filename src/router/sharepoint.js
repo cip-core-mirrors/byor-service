@@ -15,11 +15,18 @@ router.get('/:siteName/:listName/:viewName?/:viewFilter?', async function(req, r
       const sheet = await sharepoint.getListItems(siteName, listName, viewName, viewFilter);
       await res.json(sheet);
     } catch (e) {
-      if (e.message && e.code) {
+      if (e.response) {
+        var error = new Object();
+        error.message = e.message;
+        error.statusCode = e.response.statusCode;
+        error.url = e.response.url;
+        res.status(e.response.statusCode);
+        return await res.json(error);
+      } else if (e.message) {
         var error = new Object();
         error.code = e.code; 
         error.message = e.message;
-        res.status(523);
+        res.status(e.response.statusCode);
         return await res.json(error);
       }
       res.status(500);
