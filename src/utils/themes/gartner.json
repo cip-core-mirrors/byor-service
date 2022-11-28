@@ -1,0 +1,942 @@
+[
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor1",
+    "value": "#8b1e3f"
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor2",
+    "value": "#3c153b"
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor3",
+    "value": "#89bd9e"
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor4",
+    "value": "#f0c987"
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor1",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont1",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor1",
+    "value": "black"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor1",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor1",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily1",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor2",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont2",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor2",
+    "value": "black"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor2",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor2",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily2",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor3",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont3",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor3",
+    "value": "black"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor3",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor3",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily3",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor4",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont4",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor4",
+    "value": "black"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor4",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor4",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily4",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor5",
+    "value": "#70F7F0"
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor5",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont5",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor5",
+    "value": "black"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor5",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor5",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily5",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor6",
+    "value": "#91908A"
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor6",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont6",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor6",
+    "value": "black"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor6",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor6",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily6",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor7",
+    "value": "#FF9CAF"
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor7",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont7",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor7",
+    "value": "black"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor7",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor7",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily7",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor8",
+    "value": "#d96c06"
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor8",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont8",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor8",
+    "value": "black"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor8",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor8",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily8",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor9",
+    "value": "#EBCC50"
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor9",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont9",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor9",
+    "value": "white"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor9",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor9",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily9",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor10",
+    "value": "#036016"
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor10",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont10",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor10",
+    "value": "white"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor10",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor10",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily10",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor11",
+    "value": "#EBEB38"
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor11",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont11",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor11",
+    "value": "white"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor11",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor11",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily11",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor12",
+    "value": "#832400"
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor12",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont12",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor12",
+    "value": "white"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor12",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor12",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily12",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor13",
+    "value": "#002400"
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor13",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont13",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor13",
+    "value": "white"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor13",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor13",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily13",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor14",
+    "value": "#70F743"
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor14",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont14",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor14",
+    "value": "white"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor14",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor14",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily14",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor15",
+    "value": "#7016F0"
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor15",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont15",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor15",
+    "value": "white"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor15",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor15",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily15",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor16",
+    "value": "#DB2400"
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor16",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont16",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor16",
+    "value": "white"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor16",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor16",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily16",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor17",
+    "value": "#DB8F40"
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor17",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont17",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor17",
+    "value": "white"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor17",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor17",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily17",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor18",
+    "value": "#EB1BB8"
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor18",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont18",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor18",
+    "value": "white"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor18",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor18",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily18",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor19",
+    "value": "#19A6F0"
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor19",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont19",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor19",
+    "value": "white"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor19",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor19",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily19",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor20",
+    "value": "#22F202"
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor20",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont20",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor20",
+    "value": "white"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor20",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor20",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily20",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor21",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor21",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont21",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor21",
+    "value": "white"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor21",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor21",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily21",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor22",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor22",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont22",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor22",
+    "value": "white"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor22",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor22",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily22",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor23",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor23",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont23",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor23",
+    "value": "white"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor23",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor23",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily23",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor24",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor24",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont24",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor24",
+    "value": "white"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor24",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor24",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily24",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFillColor25",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleBorderColor25",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "sectorTitleFont25",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontColor25",
+    "value": "white"
+  },
+  {
+    "id": "gartner",
+    "name": "legendFillColor25",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendBorderColor25",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "legendFontFamily25",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "ringFillColor1",
+    "value": "#A9A9A9"
+  },
+  {
+    "id": "gartner",
+    "name": "ringFillColor2",
+    "value": "#BABABA"
+  },
+  {
+    "id": "gartner",
+    "name": "ringFillColor3",
+    "value": "#DADADA"
+  },
+  {
+    "id": "gartner",
+    "name": "ringFillColor4",
+    "value": "#EEE"
+  },
+  {
+    "id": "gartner",
+    "name": "ringFillColor5",
+    "value": "#FAFAFA"
+  },
+  {
+    "id": "gartner",
+    "name": "ringFillColor6",
+    "value": "#A9A9A9"
+  },
+  {
+    "id": "gartner",
+    "name": "ringFillColor7",
+    "value": "#BABABA"
+  },
+  {
+    "id": "gartner",
+    "name": "ringFillColor8",
+    "value": "#DADADA"
+  },
+  {
+    "id": "gartner",
+    "name": "ringFillColor9",
+    "value": "#EEE"
+  },
+  {
+    "id": "gartner",
+    "name": "ringFillColor10",
+    "value": "#FAFAFA"
+  },
+  {
+    "id": "gartner",
+    "name": "ringLegendFontColor",
+    "value": "black"
+  },
+  {
+    "id": "gartner",
+    "name": "ringLegendBorderColor",
+    "value": ""
+  },
+  {
+    "id": "gartner",
+    "name": "ringLegendFontFamily",
+    "value": ""
+  }
+]

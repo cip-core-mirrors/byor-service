@@ -1,996 +1,941 @@
 [
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor1",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor2",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor3",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor4",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor5",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor6",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor7",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor8",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor9",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor10",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor11",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor12",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor13",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor14",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor15",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor16",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor17",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor18",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor19",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor20",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor21",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor22",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor23",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor24",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendBorderColor25",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor1",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor2",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor3",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor4",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor5",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor6",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor7",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor8",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor9",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor10",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor11",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor12",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor13",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor14",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor15",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor16",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor17",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor18",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor19",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor20",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor21",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor22",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor23",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor24",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFillColor25",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor1",
     "value": "black"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor2",
     "value": "black"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor3",
     "value": "black"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor4",
     "value": "black"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor5",
     "value": "black"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor6",
     "value": "black"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor7",
     "value": "black"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor8",
     "value": "black"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor9",
     "value": "white"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor10",
     "value": "white"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor11",
     "value": "white"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor12",
     "value": "white"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor13",
     "value": "white"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor14",
     "value": "white"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor15",
     "value": "white"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor16",
     "value": "white"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor17",
     "value": "white"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor18",
     "value": "white"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor19",
     "value": "white"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor20",
     "value": "white"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor21",
     "value": "white"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor22",
     "value": "white"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor23",
     "value": "white"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor24",
     "value": "white"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontColor25",
     "value": "white"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily1",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily2",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily3",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily4",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily5",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily6",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily7",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily8",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily9",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily10",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily11",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily12",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily13",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily14",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily15",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily16",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily17",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily18",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily19",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily20",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily21",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily22",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily23",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily24",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "legendFontFamily25",
     "value": ""
   },
   {
-    "id": "custom01",
-    "name": "ringBorderColor1",
-    "value": "darkgrey"
-  },
-  {
-    "id": "custom01",
-    "name": "ringBorderColor2",
-    "value": "darkgrey"
-  },
-  {
-    "id": "custom01",
-    "name": "ringBorderColor3",
-    "value": "darkgrey"
-  },
-  {
-    "id": "custom01",
-    "name": "ringBorderColor4",
-    "value": "darkgrey"
-  },
-  {
-    "id": "custom01",
-    "name": "ringBorderColor5",
-    "value": "darkgrey"
-  },
-  {
-    "id": "custom01",
-    "name": "ringBorderColor6",
-    "value": "darkgrey"
-  },
-  {
-    "id": "custom01",
-    "name": "ringBorderColor7",
-    "value": "darkgrey"
-  },
-  {
-    "id": "custom01",
-    "name": "ringBorderColor8",
-    "value": "darkgrey"
-  },
-  {
-    "id": "custom01",
-    "name": "ringBorderColor9",
-    "value": "darkgrey"
-  },
-  {
-    "id": "custom01",
-    "name": "ringBorderColor10",
-    "value": "darkgrey"
-  },
-  {
-    "id": "custom01",
+    "id": "default",
     "name": "ringFillColor1",
-    "value": "#EEE"
+    "value": "#A9A9A9"
   },
   {
-    "id": "custom01",
+    "id": "default",
+    "name": "ringFillColor10",
+    "value": "#FAFAFA"
+  },
+  {
+    "id": "default",
     "name": "ringFillColor2",
-    "value": "white"
+    "value": "#BABABA"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "ringFillColor3",
-    "value": "white"
+    "value": "#DADADA"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "ringFillColor4",
-    "value": "white"
+    "value": "#EEE"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "ringFillColor5",
-    "value": "#EEE"
+    "value": "#FAFAFA"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "ringFillColor6",
-    "value": "#EEE"
+    "value": "#A9A9A9"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "ringFillColor7",
-    "value": "#EEE"
+    "value": "#BABABA"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "ringFillColor8",
-    "value": "#EEE"
+    "value": "#DADADA"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "ringFillColor9",
     "value": "#EEE"
   },
   {
-    "id": "custom01",
-    "name": "ringFillColor10",
-    "value": "#EEE"
-  },
-  {
-    "id": "custom01",
+    "id": "default",
     "name": "ringLegendBorderColor",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "ringLegendFontColor",
-    "value": "royalblue"
+    "value": "black"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "ringLegendFontFamily",
     "value": ""
   },
   {
-    "id": "custom01",
-    "name": "sectorBlipTextColor1",
-    "value": "red"
-  },
-  {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor1",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor2",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor3",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor4",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor5",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor6",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor7",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor8",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor9",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor10",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor11",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor12",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor13",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor14",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor15",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor16",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor17",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor18",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor19",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor20",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor21",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor22",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor23",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor24",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleBorderColor25",
-    "value": "lightgrey"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor1",
-    "value": "#white"
+    "value": "#8b1e3f"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor2",
-    "value": "#white"
+    "value": "#3c153b"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor3",
-    "value": "#white"
+    "value": "#89bd9e"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor4",
-    "value": "#white"
+    "value": "#f0c987"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor5",
-    "value": "#white"
+    "value": "#70F7F0"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor6",
-    "value": "#white"
+    "value": "#91908A"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor7",
-    "value": "#white"
+    "value": "#FF9CAF"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor8",
-    "value": "#white"
+    "value": "#d96c06"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor9",
-    "value": "#white"
+    "value": "#EBCC50"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor10",
-    "value": "#white"
+    "value": "#036016"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor11",
-    "value": "#white"
+    "value": "#EBEB38"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor12",
-    "value": "#white"
+    "value": "#832400"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor13",
-    "value": "#white"
+    "value": "#002400"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor14",
-    "value": "#white"
+    "value": "#70F743"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor15",
-    "value": "#white"
+    "value": "#7016F0"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor16",
-    "value": "#white"
+    "value": "#DB2400"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor17",
-    "value": "#white"
+    "value": "#DB8F40"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor18",
-    "value": "#white"
+    "value": "#EB1BB8"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor19",
-    "value": "#white"
+    "value": "#19A6F0"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor20",
-    "value": "#white"
+    "value": "#22F202"
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor21",
-    "value": "#white"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor22",
-    "value": "#white"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor23",
-    "value": "#white"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor24",
-    "value": "#white"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFillColor25",
-    "value": "#white"
+    "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont1",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont2",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont3",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont4",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont5",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont6",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont7",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont8",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont9",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont10",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont11",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont12",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont13",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont14",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont15",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont16",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont17",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont18",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont19",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont20",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont21",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont22",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont23",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont24",
     "value": ""
   },
   {
-    "id": "custom01",
+    "id": "default",
     "name": "sectorTitleFont25",
     "value": ""
   }

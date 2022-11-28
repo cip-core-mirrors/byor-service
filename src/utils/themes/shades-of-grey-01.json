@@ -661,17 +661,17 @@
   },
   {
     "id": "custom01",
-    "name": "ringLegendBorderColor1",
+    "name": "ringLegendBorderColor",
     "value": ""
   },
   {
     "id": "custom01",
-    "name": "ringLegendFontColor1",
+    "name": "ringLegendFontColor",
     "value": "jet"
   },
   {
     "id": "custom01",
-    "name": "ringLegendFontFamily1",
+    "name": "ringLegendFontFamily",
     "value": ""
   },
   {
