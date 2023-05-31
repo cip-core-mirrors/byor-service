@@ -7,6 +7,9 @@ router.use(function(req, res, next) {
     next();
 });
 
+router.use('/appdefaults', require('./appdefaults'));
+console.log('[ROUTE] /defaults');
+
 if (process.env.GOOGLE_CLIENT_EMAIL && process.env.GOOGLE_PRIVATE_KEY) {
     console.log('[Spreadsheet] Connecting service...');
     const spreadsheet = require('../utils/spreadsheet');
@@ -28,6 +31,10 @@ if (process.env.KEYCLOAK_URL) {
 if (process.env.IAM_URL) {
     router.use('/iam', require('./iam'));
     console.log('[ROUTE] /iam');
+}
+if (process.env.SHAREPOINT_BASE_URL) {
+    router.use('/sharepoint', require('./sharepoint'));
+    console.log('[ROUTE] /sharepoint');
 }
 if (process.env.POSTGRESQL_HOST) {
     console.log('[Database] Connecting service...');
